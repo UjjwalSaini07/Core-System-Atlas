@@ -4,9 +4,10 @@ import { useState, useCallback, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
-import { Search, Zap, Clock, ArrowDown, Keyboard } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Search, Zap, Clock, Keyboard, Sparkles, ArrowRight } from 'lucide-react'
 
-export function SearchBar({ onSearch, onAutocomplete, isLoading }) {
+export function SearchBar({ onSearch, isLoading }) {
   const [query, setQuery] = useState('')
   const [searching, setSearching] = useState(false)
   const [suggestions, setSuggestions] = useState([])
@@ -16,7 +17,6 @@ export function SearchBar({ onSearch, onAutocomplete, isLoading }) {
   const inputRef = useRef(null)
   const debounceTimer = useRef(null)
 
-  // Debounce autocomplete
   useEffect(() => {
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current)
@@ -31,7 +31,6 @@ export function SearchBar({ onSearch, onAutocomplete, isLoading }) {
     }
   }, [query])
 
-  // Handle autocomplete
   useEffect(() => {
     if (debouncedQuery.length >= 2) {
       handleAutocomplete(debouncedQuery)
@@ -45,16 +44,13 @@ export function SearchBar({ onSearch, onAutocomplete, isLoading }) {
 
     setSearching(true)
     
-    // Add to recent searches
     if (!recentSearches.includes(query)) {
       setRecentSearches((prev) => [query, ...prev.slice(0, 4)])
     }
 
     try {
       const response = await fetch(
-        `http://localhost:3001/api/search?q=${encodeURIComponent(
-          query
-        )}&limit=20`
+        `http://localhost:3001/api/search?q=${encodeURIComponent(query)}&limit=20`
       )
       const result = await response.json()
 
@@ -72,9 +68,7 @@ export function SearchBar({ onSearch, onAutocomplete, isLoading }) {
   const handleAutocomplete = async (prefix) => {
     try {
       const response = await fetch(
-        `http://localhost:3001/api/autocomplete?prefix=${encodeURIComponent(
-          prefix
-        )}&limit=5`
+        `http://localhost:3001/api/autocomplete?prefix=${encodeURIComponent(prefix)}&limit=5`
       )
       const result = await response.json()
 
@@ -97,139 +91,132 @@ export function SearchBar({ onSearch, onAutocomplete, isLoading }) {
     setRecentSearches([])
   }
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'ArrowDown') {
-      e.preventDefault()
-      const firstSuggestion = suggestions[0]
-      if (firstSuggestion) {
-        setQuery(firstSuggestion)
-      }
-    }
-  }
-
   return (
-    <div className="space-y-4">
-      <Card className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
-        <div className="flex items-center gap-2 mb-4">
-          <Search className="w-5 h-5 text-cyan-400" />
-          <h3 className="text-lg font-semibold text-white">
-            Search Files
-          </h3>
-          <div className="ml-auto flex items-center gap-2 text-xs text-slate-500">
-            <Keyboard className="w-3 h-3" />
-            <span>Ctrl+K to focus</span>
+    <Card className="group relative overflow-hidden p-6 bg-gradient-to-br from-[var(--color-card)] to-[var(--color-muted)]/30 border-[var(--color-border)] hover-lift animated-border">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="p-3 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/20">
+            <Search className="w-5 h-5 text-purple-400" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-[var(--color-foreground)]">Search Files</h3>
+            <p className="text-sm text-[var(--color-muted-foreground)]">Find indexed documents</p>
+          </div>
+        </div>
+        <Badge variant="outline" className="bg-purple-500/10 border-purple-500/20 text-purple-400">
+          <Zap className="w-3 h-3 mr-1" />
+          Instant
+        </Badge>
+      </div>
+
+      {/* Search Input */}
+      <div className="relative">
+        <div className="relative flex items-center">
+          <div className="absolute left-4 flex items-center pointer-events-none">
+            {searching ? (
+              <div className="w-5 h-5 border-2 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
+            ) : (
+              <Search className="w-5 h-5 text-[var(--color-muted-foreground)]" />
+            )}
+          </div>
+          <Input
+            ref={inputRef}
+            placeholder="Search indexed files..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+            onFocus={() => {
+              if (suggestions.length > 0) setShowSuggestions(true)
+            }}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+            className="pl-12 pr-24 py-4 bg-[var(--color-muted)]/50 border-[var(--color-border)] focus:border-purple-500 text-lg"
+          />
+          <div className="absolute right-2 flex items-center gap-2">
+            <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 bg-[var(--color-muted)]/50 rounded text-xs text-[var(--color-muted-foreground)]">
+              <Keyboard className="w-3 h-3" />
+              ⌘K
+            </kbd>
           </div>
         </div>
 
-        <div className="space-y-3">
-          <div className="relative flex gap-2">
-            <div className="relative flex-1">
-              <Input
-                ref={inputRef}
-                placeholder="Search indexed files..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                onKeyDown={handleKeyDown}
-                onFocus={() => {
-                  if (suggestions.length > 0) setShowSuggestions(true)
-                }}
-                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500 pr-20"
-                disabled={searching || isLoading}
-              />
-              {/* Character count */}
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500">
-                {query.length}/100
+        {/* Suggestions Dropdown */}
+        {(showSuggestions && suggestions.length > 0) && (
+          <div className="absolute top-full left-0 right-0 mt-2 rounded-xl bg-[var(--color-card)] border border-[var(--color-border)] shadow-xl overflow-hidden z-50">
+            <div className="px-4 py-2 bg-[var(--color-muted)]/30 border-b border-[var(--color-border)] flex items-center justify-between">
+              <span className="text-xs text-[var(--color-muted-foreground)] flex items-center gap-1">
+                <Sparkles className="w-3 h-3" />
+                Suggestions
+              </span>
+              <span className="text-xs text-[var(--color-muted-foreground)]">
+                Press ↓ to select
               </span>
             </div>
-
-            <Button
-              onClick={handleSearch}
-              disabled={searching || isLoading || !query.trim()}
-              className="bg-cyan-600 hover:bg-cyan-700 text-white"
-            >
-              {searching ? (
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              ) : (
-                <Zap className="w-4 h-4" />
-              )}
-            </Button>
+            {suggestions.map((suggestion, idx) => (
+              <button
+                key={suggestion}
+                onClick={() => handleSelectSuggestion(suggestion)}
+                className={`w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-[var(--color-muted)] transition-colors ${
+                  idx === 0 ? 'bg-[var(--color-muted)]/50' : ''
+                }`}
+              >
+                <Search className="w-4 h-4 text-[var(--color-muted-foreground)]" />
+                <span className="text-[var(--color-foreground)]">{suggestion}</span>
+                <ArrowRight className="w-4 h-4 text-[var(--color-muted-foreground)] ml-auto opacity-0 group-hover:opacity-100" />
+              </button>
+            ))}
           </div>
+        )}
 
-          {/* Suggestions Dropdown */}
-          {(showSuggestions && suggestions.length > 0) && (
-            <div className="bg-slate-800 border border-slate-600 rounded-lg overflow-hidden">
-              <div className="px-3 py-2 bg-slate-700/50 border-b border-slate-600 flex items-center justify-between">
-                <span className="text-xs text-slate-400 flex items-center gap-1">
-                  <Zap className="w-3 h-3" />
-                  Suggestions
-                </span>
-                <span className="text-xs text-slate-500">
-                  Press ↓ to select
-                </span>
-              </div>
-              {suggestions.map((suggestion, idx) => (
+        {/* Recent Searches */}
+        {recentSearches.length > 0 && !showSuggestions && (
+          <div className="absolute top-full left-0 right-0 mt-2 rounded-xl bg-[var(--color-card)] border border-[var(--color-border)] shadow-xl p-4 z-40">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs text-[var(--color-muted-foreground)] flex items-center gap-1">
+                <Clock className="w-3 h-3" />
+                Recent Searches
+              </span>
+              <button
+                onClick={handleClearRecent}
+                className="text-xs text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]"
+              >
+                Clear
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {recentSearches.map((search) => (
                 <button
-                  key={suggestion}
-                  onClick={() => handleSelectSuggestion(suggestion)}
-                  className={`w-full text-left px-3 py-2 text-sm text-slate-300 hover:bg-slate-700 transition-colors flex items-center gap-2 ${
-                    idx === 0 ? 'bg-slate-700/50' : ''
-                  }`}
+                  key={search}
+                  onClick={() => {
+                    setQuery(search)
+                    handleSearch()
+                  }}
+                  className="px-3 py-1.5 bg-[var(--color-muted)]/50 hover:bg-[var(--color-muted)] rounded-full text-sm text-[var(--color-foreground)] transition-colors flex items-center gap-2"
                 >
-                  <Search className="w-3 h-3 text-slate-500" />
-                  {suggestion}
+                  <Clock className="w-3 h-3 text-[var(--color-muted-foreground)]" />
+                  {search}
                 </button>
               ))}
             </div>
-          )}
-
-          {/* Recent Searches */}
-          {recentSearches.length > 0 && !showSuggestions && (
-            <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-3">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-slate-400 flex items-center gap-1">
-                  <Clock className="w-3 h-3" />
-                  Recent Searches
-                </span>
-                <button
-                  onClick={handleClearRecent}
-                  className="text-xs text-slate-500 hover:text-slate-300"
-                >
-                  Clear
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {recentSearches.map((search) => (
-                  <button
-                    key={search}
-                    onClick={() => {
-                      setQuery(search)
-                      handleSearch()
-                    }}
-                    className="text-xs px-2 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-full transition-colors"
-                  >
-                    {search}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Search Tips */}
-        <div className="mt-4 pt-4 border-t border-slate-700">
-          <p className="text-xs text-slate-500 mb-2">Search Tips:</p>
-          <div className="flex flex-wrap gap-2">
-            <span className="text-xs px-2 py-1 bg-slate-700/50 text-slate-400 rounded">
-              Use quotes for exact match: "search term"
-            </span>
-            <span className="text-xs px-2 py-1 bg-slate-700/50 text-slate-400 rounded">
-              AND, OR, NOT supported
-            </span>
           </div>
+        )}
+      </div>
+
+      {/* Search Tips */}
+      <div className="mt-6 pt-4 border-t border-[var(--color-border)]">
+        <p className="text-xs text-[var(--color-muted-foreground)] mb-3">Search Tips:</p>
+        <div className="flex flex-wrap gap-2">
+          <span className="px-2 py-1 bg-[var(--color-muted)]/30 rounded text-xs text-[var(--color-muted-foreground)]">
+            "exact phrase"
+          </span>
+          <span className="px-2 py-1 bg-[var(--color-muted)]/30 rounded text-xs text-[var(--color-muted-foreground)]">
+            AND, OR, NOT
+          </span>
+          <span className="px-2 py-1 bg-[var(--color-muted)]/30 rounded text-xs text-[var(--color-muted-foreground)]">
+            ←→ Arrow keys
+          </span>
         </div>
-      </Card>
-    </div>
+      </div>
+    </Card>
   )
 }
