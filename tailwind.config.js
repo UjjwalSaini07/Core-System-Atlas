@@ -10,79 +10,65 @@ const config = {
   theme: {
     extend: {
       colors: {
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
+        background: 'var(--color-background)',
+        foreground: 'var(--color-foreground)',
         card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
+          DEFAULT: 'var(--color-card)',
+          foreground: 'var(--color-card-foreground)',
         },
         popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
+          DEFAULT: 'var(--color-popover)',
+          foreground: 'var(--color-popover-foreground)',
         },
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
+          DEFAULT: 'var(--color-primary)',
+          foreground: 'var(--color-primary-foreground)',
         },
         secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
+          DEFAULT: 'var(--color-secondary)',
+          foreground: 'var(--color-secondary-foreground)',
         },
         muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
+          DEFAULT: 'var(--color-muted)',
+          foreground: 'var(--color-muted-foreground)',
         },
         accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
+          DEFAULT: 'var(--color-accent)',
+          foreground: 'var(--color-accent-foreground)',
         },
         destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
+          DEFAULT: 'var(--color-destructive)',
+          foreground: 'var(--color-destructive-foreground)',
         },
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
+        border: 'var(--color-border)',
+        input: 'var(--color-input)',
+        ring: 'var(--color-ring)',
         chart: {
-          '1': 'hsl(var(--chart-1))',
-          '2': 'hsl(var(--chart-2))',
-          '3': 'hsl(var(--chart-3))',
-          '4': 'hsl(var(--chart-4))',
-          '5': 'hsl(var(--chart-5))',
+          '1': 'var(--color-chart-1)',
+          '2': 'var(--color-chart-2)',
+          '3': 'var(--color-chart-3)',
+          '4': 'var(--color-chart-4)',
+          '5': 'var(--color-chart-5)',
         },
         sidebar: {
-          DEFAULT: 'hsl(var(--sidebar-background))',
-          foreground: 'hsl(var(--sidebar-foreground))',
-          primary: 'hsl(var(--sidebar-primary))',
-          'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-          accent: 'hsl(var(--sidebar-accent))',
-          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-          border: 'hsl(var(--sidebar-border))',
-          ring: 'hsl(var(--sidebar-ring))',
+          DEFAULT: 'var(--color-sidebar-background)',
+          foreground: 'var(--color-sidebar-foreground)',
+          primary: 'var(--color-sidebar-primary)',
+          'primary-foreground': 'var(--color-sidebar-primary-foreground)',
+          accent: 'var(--color-sidebar-accent)',
+          'accent-foreground': 'var(--color-sidebar-accent-foreground)',
+          border: 'var(--color-sidebar-border)',
+          ring: 'var(--color-sidebar-ring)',
         },
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
-      },
-      keyframes: {
-        'accordion-down': {
-          from: { height: '0' },
-          to: { height: 'var(--radix-accordion-content-height)' },
-        },
-        'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: '0' },
-        },
-      },
-      animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
+        lg: 'var(--radius-radius)',
+        md: 'calc(var(--radius-radius) - 2px)',
+        sm: 'calc(var(--radius-radius) - 4px)',
       },
     },
   },
   plugins: [require('tailwindcss-animate')],
-}
+};
 
-module.exports = config
+module.exports = config;

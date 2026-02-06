@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 /* Base font */
 body {
@@ -8,95 +6,92 @@ body {
 }
 
 /* Custom utilities */
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+@utility text-balance {
+  text-wrap: balance;
 }
 
-/* Base styles + CSS variables */
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
+/* CSS Variables for Tailwind v4 */
+@theme {
+  --color-background: hsl(0 0% 100%);
+  --color-foreground: hsl(0 0% 3.9%);
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(0 0% 3.9%);
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(0 0% 3.9%);
+  --color-primary: hsl(0 0% 9%);
+  --color-primary-foreground: hsl(0 0% 98%);
+  --color-secondary: hsl(0 0% 96.1%);
+  --color-secondary-foreground: hsl(0 0% 9%);
+  --color-muted: hsl(0 0% 96.1%);
+  --color-muted-foreground: hsl(0 0% 45.1%);
+  --color-accent: hsl(0 0% 96.1%);
+  --color-accent-foreground: hsl(0 0% 9%);
+  --color-destructive: hsl(0 84.2% 60.2%);
+  --color-destructive-foreground: hsl(0 0% 98%);
+  --color-border: hsl(0 0% 89.8%);
+  --color-input: hsl(0 0% 89.8%);
+  --color-ring: hsl(0 0% 3.9%);
+  --color-chart-1: hsl(12 76% 61%);
+  --color-chart-2: hsl(173 58% 39%);
+  --color-chart-3: hsl(197 37% 24%);
+  --color-chart-4: hsl(43 74% 66%);
+  --color-chart-5: hsl(27 87% 67%);
+  --radius-radius: 0.5rem;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
+  --color-sidebar-background: hsl(0 0% 98%);
+  --color-sidebar-foreground: hsl(240 5.3% 26.1%);
+  --color-sidebar-primary: hsl(240 5.9% 10%);
+  --color-sidebar-primary-foreground: hsl(0 0% 98%);
+  --color-sidebar-accent: hsl(240 4.8% 95.9%);
+  --color-sidebar-accent-foreground: hsl(240 5.9% 10%);
+  --color-sidebar-border: hsl(220 13% 91%);
+  --color-sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
 
-  .dark {
-    --background: 3 7% 6%;
-    --foreground: 210 40% 98%;
-    --card: 217 33% 17%;
-    --card-foreground: 210 40% 98%;
-    --popover: 217 33% 17%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 199 89% 48%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 188 100% 47%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 217 33% 35%;
-    --muted-foreground: 215 13% 71%;
-    --accent: 199 89% 48%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 217 33% 25%;
-    --input: 217 33% 25%;
-    --ring: 199 89% 48%;
+/* Dark mode */
+.dark {
+  --color-background: hsl(3 7% 6%);
+  --color-foreground: hsl(210 40% 98%);
+  --color-card: hsl(217 33% 17%);
+  --color-card-foreground: hsl(210 40% 98%);
+  --color-popover: hsl(217 33% 17%);
+  --color-popover-foreground: hsl(210 40% 98%);
+  --color-primary: hsl(199 89% 48%);
+  --color-primary-foreground: hsl(0 0% 9%);
+  --color-secondary: hsl(188 100% 47%);
+  --color-secondary-foreground: hsl(0 0% 9%);
+  --color-muted: hsl(217 33% 35%);
+  --color-muted-foreground: hsl(215 13% 71%);
+  --color-accent: hsl(199 89% 48%);
+  --color-accent-foreground: hsl(0 0% 9%);
+  --color-destructive: hsl(0 62.8% 30.6%);
+  --color-destructive-foreground: hsl(0 0% 98%);
+  --color-border: hsl(217 33% 25%);
+  --color-input: hsl(217 33% 25%);
+  --color-ring: hsl(199 89% 48%);
 
-    --chart-1: 199 89% 48%;
-    --chart-2: 188 100% 47%;
-    --chart-3: 168 85% 45%;
-    --chart-4: 199 89% 35%;
-    --chart-5: 210 50% 55%;
+  --color-chart-1: hsl(199 89% 48%);
+  --color-chart-2: hsl(188 100% 47%);
+  --color-chart-3: hsl(168 85% 45%);
+  --color-chart-4: hsl(199 89% 35%);
+  --color-chart-5: hsl(210 50% 55%);
 
-    --sidebar-background: 3 7% 6%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 199 89% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 217 33% 25%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 33% 25%;
-    --sidebar-ring: 199 89% 48%;
-  }
+  --color-sidebar-background: hsl(3 7% 6%);
+  --color-sidebar-foreground: hsl(210 40% 98%);
+  --color-sidebar-primary: hsl(199 89% 48%);
+  --color-sidebar-primary-foreground: hsl(0 0% 100%);
+  --color-sidebar-accent: hsl(217 33% 25%);
+  --color-sidebar-accent-foreground: hsl(210 40% 98%);
+  --color-sidebar-border: hsl(217 33% 25%);
+  --color-sidebar-ring: hsl(199 89% 48%);
+}
 
-  /* Global element defaults */
-  * {
-    border-color: var(--border);
-  }
+/* Base styles */
+* {
+  border-color: var(--color-border);
+}
 
-  body {
-    background-color: var(--background);
-    color: var(--foreground);
-  }
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
 }
