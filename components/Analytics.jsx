@@ -45,28 +45,28 @@ export function Analytics({ stats }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Search Operations */}
-      <Card className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
-        <h3 className="text-lg font-semibold text-white mb-4">
+      <Card className="p-6 glass-card">
+        <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-4">
           Search Operations
         </h3>
 
         <div className="space-y-2 mb-4">
           <div className="flex justify-between">
-            <span className="text-sm text-slate-400">Total Searches</span>
+            <span className="text-sm text-[var(--color-muted-foreground)]">Total Searches</span>
             <span className="text-lg font-bold text-cyan-400">
               {stats?.searchEngine?.searches || 0}
             </span>
           </div>
 
           <div className="flex justify-between">
-            <span className="text-sm text-slate-400">Autocompletes</span>
+            <span className="text-sm text-[var(--color-muted-foreground)]">Autocompletes</span>
             <span className="text-lg font-bold text-blue-400">
               {stats?.searchEngine?.autocompletes || 0}
             </span>
           </div>
 
           <div className="flex justify-between">
-            <span className="text-sm text-slate-400">Cache Hit Rate</span>
+            <span className="text-sm text-[var(--color-muted-foreground)]">Cache Hit Rate</span>
             <span className="text-lg font-bold text-green-400">
               {stats?.searchEngine?.hitRate || '0%'}
             </span>
@@ -77,17 +77,17 @@ export function Analytics({ stats }) {
           <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={searchChart}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#475569" />
-                <XAxis dataKey="time" stroke="#94a3b8" />
-                <YAxis stroke="#94a3b8" />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(217 33% 25%)" />
+                <XAxis dataKey="time" stroke="hsl(215 20% 65%)" />
+                <YAxis stroke="hsl(215 20% 65%)" />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1e293b',
-                    border: '1px solid #475569',
+                    backgroundColor: 'hsl(217 33% 12%)',
+                    border: '1px solid hsl(217 33% 20%)',
                     borderRadius: '8px',
                   }}
                 />
-                <Bar dataKey="resultCount" fill="#06b6d4" />
+                <Bar dataKey="resultCount" fill="hsl(199 89% 48%)" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -95,28 +95,28 @@ export function Analytics({ stats }) {
       </Card>
 
       {/* Index Statistics */}
-      <Card className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
-        <h3 className="text-lg font-semibold text-white mb-4">
+      <Card className="p-6 glass-card">
+        <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-4">
           Index Statistics
         </h3>
 
         <div className="space-y-2 mb-4">
           <div className="flex justify-between">
-            <span className="text-sm text-slate-400">Indexed Documents</span>
+            <span className="text-sm text-[var(--color-muted-foreground)]">Indexed Documents</span>
             <span className="text-lg font-bold text-green-400">
               {stats?.index?.indexedDocuments || 0}
             </span>
           </div>
 
           <div className="flex justify-between">
-            <span className="text-sm text-slate-400">Unique Words</span>
+            <span className="text-sm text-[var(--color-muted-foreground)]">Unique Words</span>
             <span className="text-lg font-bold text-purple-400">
               {stats?.index?.indexSize || 0}
             </span>
           </div>
 
           <div className="flex justify-between">
-            <span className="text-sm text-slate-400">
+            <span className="text-sm text-[var(--color-muted-foreground)]">
               Total Indexed Terms
             </span>
             <span className="text-lg font-bold text-pink-400">
@@ -139,31 +139,31 @@ export function Analytics({ stats }) {
                   >
                     <stop
                       offset="5%"
-                      stopColor="#8b5cf6"
+                      stopColor="hsl(199 89% 48%)"
                       stopOpacity={0.8}
                     />
                     <stop
                       offset="95%"
-                      stopColor="#8b5cf6"
+                      stopColor="hsl(199 89% 48%)"
                       stopOpacity={0}
                     />
                   </linearGradient>
                 </defs>
 
-                <CartesianGrid strokeDasharray="3 3" stroke="#475569" />
-                <XAxis dataKey="time" stroke="#94a3b8" />
-                <YAxis stroke="#94a3b8" />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(217 33% 25%)" />
+                <XAxis dataKey="time" stroke="hsl(215 20% 65%)" />
+                <YAxis stroke="hsl(215 20% 65%)" />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1e293b',
-                    border: '1px solid #475569',
+                    backgroundColor: 'hsl(217 33% 12%)',
+                    border: '1px solid hsl(217 33% 20%)',
                     borderRadius: '8px',
                   }}
                 />
                 <Area
                   type="monotone"
                   dataKey="value"
-                  stroke="#8b5cf6"
+                  stroke="hsl(199 89% 48%)"
                   fillOpacity={1}
                   fill="url(#colorIndex)"
                 />
@@ -174,25 +174,25 @@ export function Analytics({ stats }) {
       </Card>
 
       {/* Recent Operations */}
-      <Card className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700 lg:col-span-2">
-        <h3 className="text-lg font-semibold text-white mb-4">
+      <Card className="p-6 glass-card lg:col-span-2">
+        <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-4">
           Recent System Operations
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Cache Operations */}
           <div>
-            <p className="text-sm font-medium text-slate-300 mb-2">Cache</p>
+            <p className="text-sm font-medium text-[var(--color-foreground)] mb-2">Cache</p>
             <div className="space-y-1 max-h-48 overflow-y-auto">
               {stats?.cache?.operations
                 ?.slice(-8)
                 .map((op, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center justify-between p-2 bg-slate-800 rounded text-xs"
+                    className="flex items-center justify-between p-2 bg-[var(--color-muted)]/30 rounded text-xs"
                   >
-                    <span className="text-slate-400">{op.type}</span>
-                    <span className="text-slate-500 font-mono">
+                    <span className="text-[var(--color-muted-foreground)]">{op.type}</span>
+                    <span className="font-mono text-[var(--color-muted-foreground)] opacity-70">
                       {op.key}
                     </span>
                   </div>
@@ -202,7 +202,7 @@ export function Analytics({ stats }) {
 
           {/* Search Operations */}
           <div>
-            <p className="text-sm font-medium text-slate-300 mb-2">
+            <p className="text-sm font-medium text-[var(--color-foreground)] mb-2">
               Search
             </p>
             <div className="space-y-1 max-h-48 overflow-y-auto">
@@ -211,10 +211,10 @@ export function Analytics({ stats }) {
                 .map((op, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center justify-between p-2 bg-slate-800 rounded text-xs"
+                    className="flex items-center justify-between p-2 bg-[var(--color-muted)]/30 rounded text-xs"
                   >
-                    <span className="text-slate-400">{op.type}</span>
-                    <span className="text-slate-500 font-mono">
+                    <span className="text-[var(--color-muted-foreground)]">{op.type}</span>
+                    <span className="font-mono text-[var(--color-muted-foreground)] opacity-70">
                       {op.query?.substring(0, 20) || op.fileId}
                     </span>
                   </div>

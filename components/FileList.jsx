@@ -6,12 +6,12 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Input } from '@/components/ui/input'
-import { FileText, Trash2, Eye, Search, ArrowUpDown, Clock, Hash } from 'lucide-react'
+import { FileText, Trash2, Eye, Search, ArrowUpDown, Clock, Hash, Filter } from 'lucide-react'
 
 export function FileList({ files, onDelete, onView }) {
   const [searchQuery, setSearchQuery] = useState('')
-  const [sortBy, setSortBy] = useState('date') // 'date', 'name', 'size'
-  const [sortOrder, setSortOrder] = useState('desc') // 'asc', 'desc'
+  const [sortBy, setSortBy] = useState('date')
+  const [sortOrder, setSortOrder] = useState('desc')
 
   const formatSize = (bytes) => {
     if (bytes === 0) return '0 B'
@@ -34,7 +34,6 @@ export function FileList({ files, onDelete, onView }) {
   const filteredAndSortedFiles = useMemo(() => {
     let result = [...(files || [])]
 
-    // Filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
       result = result.filter(
@@ -44,7 +43,6 @@ export function FileList({ files, onDelete, onView }) {
       )
     }
 
-    // Sort
     result.sort((a, b) => {
       let comparison = 0
       switch (sortBy) {
@@ -76,10 +74,17 @@ export function FileList({ files, onDelete, onView }) {
 
   if (!files || files.length === 0) {
     return (
-      <Card className="p-8 bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700 text-center">
-        <FileText className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-        <p className="text-slate-400 text-lg">No files uploaded yet</p>
-        <p className="text-slate-500 text-sm mt-2">
+      <Card className="p-12 glass-card text-center">
+        <div className="relative inline-block mb-4">
+          <div className="w-20 h-20 rounded-full bg-[var(--color-muted)] flex items-center justify-center">
+            <FileText className="w-10 h-10 text-[var(--color-muted-foreground)]" />
+          </div>
+          <div className="absolute -top-1 -right-1 w-6 h-6 bg-purple-500/20 rounded-full flex items-center justify-center">
+            <div className="w-3 h-3 bg-purple-400 rounded-full" />
+          </div>
+        </div>
+        <p className="text-[var(--color-foreground)] text-lg mb-2">No files uploaded yet</p>
+        <p className="text-sm text-[var(--color-muted-foreground)]">
           Upload files using the search tab to get started
         </p>
       </Card>
@@ -88,127 +93,93 @@ export function FileList({ files, onDelete, onView }) {
 
   return (
     <div className="space-y-4">
-      {/* Header with Search and Sort */}
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-          <span>Uploaded Files</span>
-          <Badge className="bg-slate-700 text-slate-300">
+        <div className="flex items-center gap-3">
+          <h3 className="text-lg font-semibold text-[var(--color-foreground)]">Uploaded Files</h3>
+          <Badge className="bg-purple-500/20 border-purple-500/30 text-purple-400">
             {filteredAndSortedFiles.length}
           </Badge>
-        </h3>
+        </div>
 
         <div className="flex gap-2 w-full sm:w-auto">
           <div className="relative flex-1 sm:w-48">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-muted-foreground)]" />
             <Input
               placeholder="Filter files..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500 pl-9"
+              className="pl-9 bg-[var(--color-muted)]/50 border-[var(--color-border)]"
             />
           </div>
         </div>
       </div>
 
-      {/* Sort Controls */}
       <div className="flex gap-2">
-        <span className="text-xs text-slate-500 flex items-center gap-1">
-          <ArrowUpDown className="w-3 h-3" />
+        <span className="text-xs text-[var(--color-muted-foreground)] flex items-center gap-1">
+          <Filter className="w-3 h-3" />
           Sort by:
         </span>
-        <button
-          onClick={() => handleSort('date')}
-          className={`text-xs px-2 py-1 rounded transition-colors flex items-center gap-1 ${
-            sortBy === 'date'
-              ? 'bg-cyan-700 text-cyan-300'
-              : 'bg-slate-700 text-slate-400 hover:bg-slate-600'
-          }`}
-        >
-          <Clock className="w-3 h-3" />
-          Date
-          {sortBy === 'date' && (
-            <span className="text-xs">{sortOrder === 'desc' ? '↓' : '↑'}</span>
-          )}
-        </button>
-        <button
-          onClick={() => handleSort('name')}
-          className={`text-xs px-2 py-1 rounded transition-colors flex items-center gap-1 ${
-            sortBy === 'name'
-              ? 'bg-cyan-700 text-cyan-300'
-              : 'bg-slate-700 text-slate-400 hover:bg-slate-600'
-          }`}
-        >
-          <FileText className="w-3 h-3" />
-          Name
-          {sortBy === 'name' && (
-            <span className="text-xs">{sortOrder === 'desc' ? '↓' : '↑'}</span>
-          )}
-        </button>
-        <button
-          onClick={() => handleSort('size')}
-          className={`text-xs px-2 py-1 rounded transition-colors flex items-center gap-1 ${
-            sortBy === 'size'
-              ? 'bg-cyan-700 text-cyan-300'
-              : 'bg-slate-700 text-slate-400 hover:bg-slate-600'
-          }`}
-        >
-          <Hash className="w-3 h-3" />
-          Size
-          {sortBy === 'size' && (
-            <span className="text-xs">{sortOrder === 'desc' ? '↓' : '↑'}</span>
-          )}
-        </button>
+        {[
+          { key: 'date', icon: Clock, label: 'Date' },
+          { key: 'name', icon: FileText, label: 'Name' },
+          { key: 'size', icon: Hash, label: 'Size' },
+        ].map((item) => (
+          <button
+            key={item.key}
+            onClick={() => handleSort(item.key)}
+            className={`text-xs px-3 py-1 rounded-full transition-all flex items-center gap-1 ${
+              sortBy === item.key
+                ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
+                : 'bg-[var(--color-muted)] text-[var(--color-muted-foreground)] hover:bg-[var(--color-muted)]/80'
+            }`}
+          >
+            <item.icon className="w-3 h-3" />
+            {item.label}
+            {sortBy === item.key && (
+              <span className="text-xs">{sortOrder === 'desc' ? '↓' : '↑'}</span>
+            )}
+          </button>
+        ))}
       </div>
 
       <ScrollArea className="h-80">
-        <div className="space-y-2 pr-4">
+        <div className="space-y-3 pr-4">
           {filteredAndSortedFiles.map((file) => (
             <Card
               key={file.id}
-              className="p-4 bg-slate-800 border-slate-700 hover:border-slate-600 transition-all cursor-pointer group"
+              className="p-4 glass hover-lift cursor-pointer transition-all duration-300 group"
               onClick={() => onView(file)}
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-2">
-                    <FileText className="w-4 h-4 text-cyan-400 flex-shrink-0" />
-                    <p className="font-medium text-white truncate">
-                      {file.filename}
-                    </p>
-                    <Badge variant="outline" className="bg-slate-700 border-slate-600 text-slate-400 text-xs">
+                    <div className="p-1.5 rounded-lg bg-purple-500/10">
+                      <FileText className="w-4 h-4 text-purple-400" />
+                    </div>
+                    <p className="font-medium text-[var(--color-foreground)] truncate">{file.filename}</p>
+                    <Badge variant="outline" className="bg-[var(--color-muted)] border-[var(--color-border)] text-[var(--color-muted-foreground)] text-xs">
                       v{file.version}
                     </Badge>
                   </div>
 
-                  <p className="text-xs text-slate-400 line-clamp-1 mb-2">
-                    {file.preview}
-                  </p>
+                  <p className="text-xs text-[var(--color-muted-foreground)] line-clamp-1 mb-3">{file.preview}</p>
 
                   <div className="flex flex-wrap gap-2">
-                    <Badge
-                      variant="outline"
-                      className="bg-slate-700 border-slate-600 text-slate-300 flex items-center gap-1"
-                    >
+                    <Badge variant="outline" className="bg-blue-500/10 border-blue-500/20 text-blue-400 flex items-center gap-1 text-xs">
                       <div className="w-2 h-2 bg-blue-400 rounded-full" />
                       {formatSize(file.size)}
                     </Badge>
-                    <Badge
-                      variant="outline"
-                      className="bg-slate-700 border-slate-600 text-slate-300"
-                    >
+                    <Badge variant="outline" className="bg-cyan-500/10 border-cyan-500/20 text-cyan-400 text-xs">
                       {file.wordCount} words
                     </Badge>
-                    <Badge
-                      variant="outline"
-                      className="bg-slate-700 border-slate-600 text-slate-300 flex items-center gap-1"
-                    >
+                    <Badge variant="outline" className="bg-purple-500/10 border-purple-500/20 text-purple-400 flex items-center gap-1 text-xs">
                       <Clock className="w-3 h-3" />
                       {formatDate(file.uploadedAt)}
                     </Badge>
                   </div>
                 </div>
 
-                <div className="flex gap-2 flex-shrink-0">
+                <div className="flex gap-2 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
                   <Button
                     size="sm"
                     variant="outline"
@@ -216,7 +187,7 @@ export function FileList({ files, onDelete, onView }) {
                       e.stopPropagation()
                       onView(file)
                     }}
-                    className="bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600"
+                    className="bg-[var(--color-muted)] border-[var(--color-border)] hover:bg-[var(--color-muted)]/80"
                   >
                     <Eye className="w-4 h-4" />
                   </Button>
@@ -228,29 +199,22 @@ export function FileList({ files, onDelete, onView }) {
                       e.stopPropagation()
                       onDelete(file.id)
                     }}
-                    className="bg-red-900/30 border-red-700 text-red-400 hover:bg-red-900/50"
+                    className="bg-red-500/10 border-red-500/30 text-red-400 hover:bg-red-500/20"
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
               </div>
 
-              {/* Progress bar on hover */}
-              <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-cyan-500 to-blue-500 w-0 group-hover:w-full transition-all duration-300" />
+              <div className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 w-0 group-hover:w-full transition-all duration-300" />
             </Card>
           ))}
         </div>
       </ScrollArea>
 
-      {/* Summary */}
-      <div className="flex items-center justify-between text-xs text-slate-500">
-        <span>
-          {filteredAndSortedFiles.length} of {files.length} files
-        </span>
-        <span>
-          Total size:{' '}
-          {formatSize(files.reduce((acc, f) => acc + f.size, 0))}
-        </span>
+      <div className="flex items-center justify-between text-xs text-[var(--color-muted-foreground)]">
+        <span>{filteredAndSortedFiles.length} of {files.length} files</span>
+        <span>Total: {formatSize(files.reduce((acc, f) => acc + f.size, 0))}</span>
       </div>
     </div>
   )

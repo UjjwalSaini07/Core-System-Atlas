@@ -41,35 +41,35 @@ export function CacheVisualization({ cacheState }) {
 
   return (
     <div className="space-y-4">
-      <Card className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
-        <h3 className="text-lg font-semibold text-white mb-4">
+      <Card className="p-6 glass-card">
+        <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-4">
           LRU Cache Operations
         </h3>
 
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-slate-800 rounded p-3">
-            <p className="text-xs text-slate-400 mb-1">Hit Rate</p>
+          <div className="bg-[var(--color-muted)]/30 rounded p-3">
+            <p className="text-xs text-[var(--color-muted-foreground)] mb-1">Hit Rate</p>
             <p className="text-2xl font-bold text-green-400">{hitRate}</p>
           </div>
 
-          <div className="bg-slate-800 rounded p-3">
-            <p className="text-xs text-slate-400 mb-1">Cache Size</p>
+          <div className="bg-[var(--color-muted)]/30 rounded p-3">
+            <p className="text-xs text-[var(--color-muted-foreground)] mb-1">Cache Size</p>
             <p className="text-2xl font-bold text-blue-400">{size}</p>
           </div>
 
-          <div className="bg-slate-800 rounded p-3">
-            <p className="text-xs text-slate-400 mb-1">Capacity</p>
+          <div className="bg-[var(--color-muted)]/30 rounded p-3">
+            <p className="text-xs text-[var(--color-muted-foreground)] mb-1">Capacity</p>
             <p className="text-2xl font-bold text-cyan-400">{capacity}</p>
           </div>
         </div>
 
         {/* Operation Timeline */}
         <div className="space-y-2">
-          <p className="text-sm font-medium text-slate-300">
+          <p className="text-sm font-medium text-[var(--color-foreground)]">
             Recent Operations
           </p>
 
-          <div className="bg-slate-800 rounded p-4 space-y-2 max-h-64 overflow-y-auto">
+          <div className="bg-[var(--color-muted)]/30 rounded p-4 space-y-2 max-h-64 overflow-y-auto">
             {cacheState?.operations?.slice(-15).map((op, idx) => (
               <div key={idx} className="flex items-center gap-2">
                 <div
@@ -80,12 +80,12 @@ export function CacheVisualization({ cacheState }) {
                       ? 'bg-red-500'
                       : op.type === 'eviction'
                       ? 'bg-amber-500'
-                      : 'bg-slate-500'
+                      : 'bg-[var(--color-muted-foreground)]'
                   }`}
                 />
-                <span className="text-xs text-slate-300">
+                <span className="text-xs text-[var(--color-foreground)]">
                   {op.type}:{' '}
-                  <span className="font-mono text-slate-400">
+                  <span className="font-mono text-[var(--color-muted-foreground)] opacity-70">
                     {op.key}
                   </span>
                 </span>
@@ -97,21 +97,21 @@ export function CacheVisualization({ cacheState }) {
 
       {/* Operation Distribution */}
       {cacheState?.operations && cacheState.operations.length > 0 && (
-        <Card className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
-          <h3 className="text-lg font-semibold text-white mb-4">
+        <Card className="p-6 glass-card">
+          <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-4">
             Operation Distribution
           </h3>
 
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#475569" />
-                <XAxis dataKey="time" stroke="#94a3b8" />
-                <YAxis stroke="#94a3b8" />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(217 33% 25%)" />
+                <XAxis dataKey="time" stroke="hsl(215 20% 65%)" />
+                <YAxis stroke="hsl(215 20% 65%)" />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1e293b',
-                    border: '1px solid #475569',
+                    backgroundColor: 'hsl(217 33% 12%)',
+                    border: '1px solid hsl(217 33% 20%)',
                     borderRadius: '8px',
                   }}
                   formatter={(value, name) => {
@@ -121,7 +121,7 @@ export function CacheVisualization({ cacheState }) {
                       : [value, name]
                   }}
                 />
-                <Bar dataKey="type" fill="#06b6d4" />
+                <Bar dataKey="type" fill="hsl(199 89% 48%)" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -129,21 +129,21 @@ export function CacheVisualization({ cacheState }) {
       )}
 
       {/* Legend */}
-      <Card className="p-4 bg-slate-800 border-slate-700">
+      <Card className="p-4 glass-card">
         <div className="flex flex-wrap gap-3">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-green-500 rounded-full" />
-            <span className="text-sm text-slate-300">Cache Hit</span>
+            <span className="text-sm text-[var(--color-muted-foreground)]">Cache Hit</span>
           </div>
 
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-red-500 rounded-full" />
-            <span className="text-sm text-slate-300">Cache Miss</span>
+            <span className="text-sm text-[var(--color-muted-foreground)]">Cache Miss</span>
           </div>
 
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-amber-500 rounded-full" />
-            <span className="text-sm text-slate-300">Eviction</span>
+            <span className="text-sm text-[var(--color-muted-foreground)]">Eviction</span>
           </div>
         </div>
       </Card>
