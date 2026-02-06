@@ -1,20 +1,55 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
-import { Search, Zap } from 'lucide-react'
+import { Search, Zap, Clock, ArrowDown, Keyboard } from 'lucide-react'
 
-export function SearchBar({ onSearch, isLoading }) {
+export function SearchBar({ onSearch, onAutocomplete, isLoading }) {
   const [query, setQuery] = useState('')
   const [searching, setSearching] = useState(false)
   const [suggestions, setSuggestions] = useState([])
+  const [recentSearches, setRecentSearches] = useState([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [debouncedQuery, setDebouncedQuery] = useState('')
+  const inputRef = useRef(null)
+  const debounceTimer = useRef(null)
+
+  // Debounce autocomplete
+  useEffect(() => {
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current)
+    }
+    debounceTimer.current = setTimeout(() => {
+      setDebouncedQuery(query)
+    }, 150)
+    return () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current)
+      }
+    }
+  }, [query])
+
+  // Handle autocomplete
+  useEffect(() => {
+    if (debouncedQuery.length >= 2) {
+      handleAutocomplete(debouncedQuery)
+    } else {
+      setSuggestions([])
+    }
+  }, [debouncedQuery])
 
   const handleSearch = async () => {
     if (!query.trim()) return
 
     setSearching(true)
+    
+    // Add to recent searches
+    if (!recentSearches.includes(query)) {
+      setRecentSearches((prev) => [query, ...prev.slice(0, 4)])
+    }
+
     try {
       const response = await fetch(
         `http://localhost:3001/api/search?q=${encodeURIComponent(
@@ -25,21 +60,16 @@ export function SearchBar({ onSearch, isLoading }) {
 
       if (result.success) {
         onSearch(result.results, result.cacheHit)
+        setShowSuggestions(false)
       }
     } catch (error) {
       console.error('Search failed:', error)
     } finally {
       setSearching(false)
-      setSuggestions([])
     }
   }
 
   const handleAutocomplete = async (prefix) => {
-    if (prefix.length < 2) {
-      setSuggestions([])
-      return
-    }
-
     try {
       const response = await fetch(
         `http://localhost:3001/api/autocomplete?prefix=${encodeURIComponent(
@@ -50,15 +80,31 @@ export function SearchBar({ onSearch, isLoading }) {
 
       if (result.success) {
         setSuggestions(result.suggestions)
+        setShowSuggestions(result.suggestions.length > 0)
       }
     } catch (error) {
       console.error('Autocomplete failed:', error)
     }
   }
 
-  const handleInputChange = (value) => {
-    setQuery(value)
-    handleAutocomplete(value)
+  const handleSelectSuggestion = (suggestion) => {
+    setQuery(suggestion)
+    setShowSuggestions(false)
+    inputRef.current?.focus()
+  }
+
+  const handleClearRecent = () => {
+    setRecentSearches([])
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      const firstSuggestion = suggestions[0]
+      if (firstSuggestion) {
+        setQuery(firstSuggestion)
+      }
+    }
   }
 
   return (
@@ -69,46 +115,119 @@ export function SearchBar({ onSearch, isLoading }) {
           <h3 className="text-lg font-semibold text-white">
             Search Files
           </h3>
+          <div className="ml-auto flex items-center gap-2 text-xs text-slate-500">
+            <Keyboard className="w-3 h-3" />
+            <span>Ctrl+K to focus</span>
+          </div>
         </div>
 
         <div className="space-y-3">
-          <div className="flex gap-2">
-            <Input
-              placeholder="Search indexed files..."
-              value={query}
-              onChange={(e) => handleInputChange(e.target.value)}
-              onKeyPress={(e) =>
-                e.key === 'Enter' && handleSearch()
-              }
-              className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500"
-              disabled={searching || isLoading}
-            />
+          <div className="relative flex gap-2">
+            <div className="relative flex-1">
+              <Input
+                ref={inputRef}
+                placeholder="Search indexed files..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                onKeyDown={handleKeyDown}
+                onFocus={() => {
+                  if (suggestions.length > 0) setShowSuggestions(true)
+                }}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500 pr-20"
+                disabled={searching || isLoading}
+              />
+              {/* Character count */}
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500">
+                {query.length}/100
+              </span>
+            </div>
 
             <Button
               onClick={handleSearch}
               disabled={searching || isLoading || !query.trim()}
               className="bg-cyan-600 hover:bg-cyan-700 text-white"
             >
-              <Zap className="w-4 h-4" />
+              {searching ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <Zap className="w-4 h-4" />
+              )}
             </Button>
           </div>
 
-          {suggestions.length > 0 && (
-            <div className="bg-slate-800 border border-slate-600 rounded-lg p-2 space-y-1">
-              {suggestions.map((suggestion) => (
+          {/* Suggestions Dropdown */}
+          {(showSuggestions && suggestions.length > 0) && (
+            <div className="bg-slate-800 border border-slate-600 rounded-lg overflow-hidden">
+              <div className="px-3 py-2 bg-slate-700/50 border-b border-slate-600 flex items-center justify-between">
+                <span className="text-xs text-slate-400 flex items-center gap-1">
+                  <Zap className="w-3 h-3" />
+                  Suggestions
+                </span>
+                <span className="text-xs text-slate-500">
+                  Press ↓ to select
+                </span>
+              </div>
+              {suggestions.map((suggestion, idx) => (
                 <button
                   key={suggestion}
-                  onClick={() => {
-                    setQuery(suggestion)
-                    setSuggestions([])
-                  }}
-                  className="w-full text-left px-3 py-2 text-sm text-slate-300 hover:bg-slate-700 rounded transition-colors"
+                  onClick={() => handleSelectSuggestion(suggestion)}
+                  className={`w-full text-left px-3 py-2 text-sm text-slate-300 hover:bg-slate-700 transition-colors flex items-center gap-2 ${
+                    idx === 0 ? 'bg-slate-700/50' : ''
+                  }`}
                 >
+                  <Search className="w-3 h-3 text-slate-500" />
                   {suggestion}
                 </button>
               ))}
             </div>
           )}
+
+          {/* Recent Searches */}
+          {recentSearches.length > 0 && !showSuggestions && (
+            <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-3">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-slate-400 flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  Recent Searches
+                </span>
+                <button
+                  onClick={handleClearRecent}
+                  className="text-xs text-slate-500 hover:text-slate-300"
+                >
+                  Clear
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {recentSearches.map((search) => (
+                  <button
+                    key={search}
+                    onClick={() => {
+                      setQuery(search)
+                      handleSearch()
+                    }}
+                    className="text-xs px-2 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-full transition-colors"
+                  >
+                    {search}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Search Tips */}
+        <div className="mt-4 pt-4 border-t border-slate-700">
+          <p className="text-xs text-slate-500 mb-2">Search Tips:</p>
+          <div className="flex flex-wrap gap-2">
+            <span className="text-xs px-2 py-1 bg-slate-700/50 text-slate-400 rounded">
+              Use quotes for exact match: "search term"
+            </span>
+            <span className="text-xs px-2 py-1 bg-slate-700/50 text-slate-400 rounded">
+              AND, OR, NOT supported
+            </span>
+          </div>
         </div>
       </Card>
     </div>
