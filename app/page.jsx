@@ -26,31 +26,58 @@ export default function Page() {
   // Fetch files
   const fetchFiles = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/files');
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      
+      const response = await fetch('http://localhost:3001/api/files', {
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const result = await response.json();
       if (result.success) {
         setFiles(result.files);
       }
     } catch (error) {
-      console.error('Failed to fetch files:', error);
-      toast({
-        title: 'Connection Error',
-        description: 'Unable to fetch files from server',
-        variant: 'destructive',
-      });
+      if (error.name === 'AbortError') {
+        console.warn('Fetch timeout - server may be slow');
+      } else {
+        console.warn('Server not available - showing demo mode');
+      }
+      // Don't show toast on initial load, just silently handle
     }
   }, []);
 
   // Fetch stats
   const fetchStats = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/stats');
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      
+      const response = await fetch('http://localhost:3001/api/stats', {
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const result = await response.json();
       if (result.success) {
         setStats(result);
       }
     } catch (error) {
-      console.error('Failed to fetch stats:', error);
+      if (error.name === 'AbortError') {
+        console.warn('Stats fetch timeout');
+      }
+      // Silently handle server not available
     }
   }, []);
 
@@ -58,22 +85,27 @@ export default function Page() {
   useEffect(() => {
     const init = async () => {
       setLoading(true);
+      
+      // Check if server is available first
       try {
-        await Promise.all([fetchFiles(), fetchStats()]);
-        toast({
-          title: 'System Ready',
-          description: 'Connected to backend server',
-          variant: 'success',
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+        
+        const healthCheck = await fetch('http://localhost:3001/api/health', {
+          signal: controller.signal
         });
+        
+        clearTimeout(timeoutId);
+        
+        if (healthCheck.ok) {
+          // Server is available, fetch data
+          await Promise.all([fetchFiles(), fetchStats()]);
+        }
       } catch (error) {
-        toast({
-          title: 'Connection Failed',
-          description: 'Could not connect to the server',
-          variant: 'destructive',
-        });
-      } finally {
-        setLoading(false);
+        console.log('Backend server not running - showing demo mode');
       }
+      
+      setLoading(false);
     };
 
     init();
@@ -355,11 +387,15 @@ export default function Page() {
             </p>
             <div className="flex items-center gap-4 text-xs text-slate-500">
               <span className="flex items-center gap-1">
-                <div className={`w-2 h-2 rounded-full ${loading ? 'bg-amber-400 animate-pulse' : 'bg-green-400'}`} />
-                {loading ? 'Connecting...' : 'Connected'}
+                <div className={`w-2 h-2 rounded-full ${stats ? 'bg-green-400' : loading ? 'bg-amber-400 animate-pulse' : 'bg-red-400'}`} />
+                {stats ? 'Connected' : loading ? 'Connecting...' : 'Demo Mode'}
               </span>
-              <span>{files.length} files indexed</span>
-              <span>{stats?.searchEngine?.searches || 0} searches</span>
+              {stats && (
+                <>
+                  <span>{files.length} files</span>
+                  <span>{stats?.searchEngine?.searches || 0} searches</span>
+                </>
+              )}
             </div>
           </div>
         </div>
