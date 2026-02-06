@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Search, Zap, Clock, Keyboard, Sparkles, ArrowRight } from 'lucide-react'
+import { Search, Zap, Clock, Keyboard, Sparkles, ArrowRight, CloudOff, Cloud } from 'lucide-react'
 
 export function SearchBar({ onSearch, isLoading }) {
   const [query, setQuery] = useState('')
@@ -14,8 +14,33 @@ export function SearchBar({ onSearch, isLoading }) {
   const [recentSearches, setRecentSearches] = useState([])
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [debouncedQuery, setDebouncedQuery] = useState('')
+  const [isServerConnected, setIsServerConnected] = useState(false)
   const inputRef = useRef(null)
   const debounceTimer = useRef(null)
+
+  // Demo data for when server is not connected
+  const demoFiles = [
+    { id: '1', filename: 'sample.txt', preview: 'This is a sample document about scalable systems and distributed computing concepts...', wordCount: 150, uniqueWordCount: 80, score: 0.95 },
+    { id: '2', filename: 'readme.md', preview: 'Welcome to the Scalable Systems Simulator documentation and user guide...', wordCount: 250, uniqueWordCount: 120, score: 0.88 },
+    { id: '3', filename: 'notes.txt', preview: 'Technical notes on database optimization, caching strategies, and search algorithms...', wordCount: 180, uniqueWordCount: 95, score: 0.82 },
+  ]
+
+  useEffect(() => {
+    const checkServer = async () => {
+      try {
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 2000)
+        const response = await fetch('http://localhost:3001/api/health', { 
+          signal: controller.signal 
+        })
+        clearTimeout(timeoutId)
+        setIsServerConnected(response.ok)
+      } catch (error) {
+        setIsServerConnected(false)
+      }
+    }
+    checkServer()
+  }, [])
 
   useEffect(() => {
     if (debounceTimer.current) {
@@ -32,12 +57,19 @@ export function SearchBar({ onSearch, isLoading }) {
   }, [query])
 
   useEffect(() => {
-    if (debouncedQuery.length >= 2) {
+    if (debouncedQuery.length >= 2 && isServerConnected) {
       handleAutocomplete(debouncedQuery)
+    } else if (debouncedQuery.length >= 2 && !isServerConnected) {
+      // Demo autocomplete
+      const demoSuggestions = ['scalable', 'systems', 'search', 'cache', 'database']
+        .filter(s => s.toLowerCase().startsWith(debouncedQuery.toLowerCase()))
+        .slice(0, 5)
+      setSuggestions(demoSuggestions)
+      setShowSuggestions(demoSuggestions.length > 0)
     } else {
       setSuggestions([])
     }
-  }, [debouncedQuery])
+  }, [debouncedQuery, isServerConnected])
 
   const handleSearch = async () => {
     if (!query.trim()) return
@@ -49,17 +81,35 @@ export function SearchBar({ onSearch, isLoading }) {
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:3001/api/search?q=${encodeURIComponent(query)}&limit=20`
-      )
-      const result = await response.json()
+      if (isServerConnected) {
+        const response = await fetch(
+          `http://localhost:3001/api/search?q=${encodeURIComponent(query)}&limit=20`
+        )
+        const result = await response.json()
 
-      if (result.success) {
-        onSearch(result.results, result.cacheHit)
+        if (result.success) {
+          onSearch(result.results, result.cacheHit)
+          setShowSuggestions(false)
+        }
+      } else {
+        // Demo search
+        await new Promise(resolve => setTimeout(resolve, 500))
+        const filtered = demoFiles.filter(f => 
+          f.filename.toLowerCase().includes(query.toLowerCase()) ||
+          f.preview.toLowerCase().includes(query.toLowerCase())
+        )
+        onSearch(filtered.length > 0 ? filtered : demoFiles, false)
         setShowSuggestions(false)
       }
     } catch (error) {
       console.error('Search failed:', error)
+      // Fallback to demo mode
+      const filtered = demoFiles.filter(f => 
+        f.filename.toLowerCase().includes(query.toLowerCase()) ||
+        f.preview.toLowerCase().includes(query.toLowerCase())
+      )
+      onSearch(filtered.length > 0 ? filtered : demoFiles, false)
+      setShowSuggestions(false)
     } finally {
       setSearching(false)
     }
@@ -93,6 +143,21 @@ export function SearchBar({ onSearch, isLoading }) {
 
   return (
     <Card className="group relative overflow-hidden p-6 bg-gradient-to-br from-[var(--color-card)] to-[var(--color-muted)]/30 border-[var(--color-border)] hover-lift animated-border">
+      {/* Server Status Badge */}
+      <div className="absolute top-4 right-4">
+        {isServerConnected ? (
+          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-500/10 border border-green-500/30 text-xs text-green-400">
+            <Cloud className="w-3 h-3" />
+            Connected
+          </div>
+        ) : (
+          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs text-amber-400">
+            <CloudOff className="w-3 h-3" />
+            Demo Mode
+          </div>
+        )}
+      </div>
+
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
