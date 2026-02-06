@@ -14,7 +14,7 @@ export function Toaster() {
             <div className="grid gap-1">
               {title && <div className="font-semibold">{title}</div>}
               {description && (
-                <div className="text-sm text-slate-400">{description}</div>
+                <div className="text-sm text-[var(--color-muted-foreground)]">{description}</div>
               )}
             </div>
             {action}
