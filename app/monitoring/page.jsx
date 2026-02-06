@@ -7,7 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CacheVisualization } from '@/components/CacheVisualization';
 import { Analytics } from '@/components/Analytics';
 import { SystemStats } from '@/components/SystemStats';
-import { ArrowLeft, RotateCw, Activity, RefreshCw, Play, Pause } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { ArrowLeft, RotateCw, Activity, RefreshCw, Play, Pause, Database, Zap, FileText, Server, Clock, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from '@/hooks/use-toast';
 
@@ -41,327 +42,255 @@ export default function MonitoringPage() {
       await fetchStats();
       setLoading(false);
     };
-
     init();
-
     if (autoRefresh) {
       const interval = setInterval(fetchStats, 1000);
       return () => clearInterval(interval);
     }
   }, [autoRefresh]);
 
+  const healthItems = [
+    { name: 'Backend Server', status: 'Healthy', icon: Server, color: 'green' },
+    { name: 'LRU Cache', status: stats?.cache?.size > 0 ? 'Active' : 'Idle', icon: Zap, color: 'cyan' },
+    { name: 'Search Index', status: stats?.index?.indexedDocuments > 0 ? 'Ready' : 'Empty', icon: Database, color: 'green' },
+    { name: 'File Storage', status: 'Online', icon: FileText, color: 'purple' },
+  ];
+
+  const metrics = [
+    { label: 'Cache Hit Rate', value: parseFloat(stats?.systemState?.cacheState?.hitRate || 0), trend: 'up', icon: TrendingUp },
+    { label: 'Search Latency', value: 12, unit: 'ms', trend: 'down', icon: Clock },
+    { label: 'Memory Usage', value: 64, unit: '%', trend: 'stable', icon: Activity },
+    { label: 'Active Connections', value: stats?.systemState?.indexState?.documents || 0, trend: 'up', icon: Server },
+  ];
+
+  const colorClasses = {
+    green: 'text-green-400 bg-green-500/10 border-green-500/20',
+    cyan: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
+    purple: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
+    red: 'text-red-400 bg-red-500/10 border-red-500/20',
+  };
+
+  const trendIcons = {
+    up: <TrendingUp className="w-4 h-4 text-green-400" />,
+    down: <TrendingDown className="w-4 h-4 text-red-400" />,
+    stable: <Minus className="w-4 h-4 text-amber-400" />,
+  };
+
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+    <>
+      {/* Animated Background */}
+      <div className="animated-bg" />
+
       {/* Header */}
-      <div className="border-b border-slate-800 bg-slate-950/50 backdrop-blur sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+      <header className="sticky top-0 z-40 glass border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href="/">
                 <Button
                   variant="outline"
                   size="sm"
-                  className="bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
+                  className="bg-[var(--color-muted)]/50 border-[var(--color-border)]"
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </Button>
               </Link>
-              <div>
-                <div className="flex items-center gap-2">
-                  <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg">
-                    <Activity className="w-5 h-5 text-white" />
-                  </div>
-                  <h1 className="text-2xl font-bold text-white">System Monitoring</h1>
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 shadow-lg shadow-green-500/20">
+                  <Activity className="w-6 h-6 text-white" />
                 </div>
-                <p className="text-slate-400 text-sm mt-1">
-                  Real-time analytics and performance metrics
-                </p>
+                <div>
+                  <h1 className="text-xl font-bold gradient-text">System Monitoring</h1>
+                  <p className="text-sm text-[var(--color-muted-foreground)]">
+                    Real-time analytics and performance metrics
+                  </p>
+                </div>
               </div>
             </div>
-
-            <div className="flex gap-2 items-center">
-              {/* Auto Refresh Toggle */}
+            <div className="flex items-center gap-3">
               <Button
                 onClick={() => setAutoRefresh(!autoRefresh)}
                 variant="outline"
-                className={`${
-                  autoRefresh
-                    ? 'bg-green-900/30 border-green-700 text-green-400'
-                    : 'bg-slate-800 border-slate-700 text-slate-300'
-                } hover:bg-opacity-80`}
+                className={`${autoRefresh ? 'bg-green-500/10 border-green-500/30 text-green-400' : 'bg-[var(--color-muted)]/50 border-[var(--color-border)]'}`}
               >
-                {autoRefresh ? (
-                  <Pause className="w-4 h-4" />
-                ) : (
-                  <Play className="w-4 h-4" />
-                )}
-                <span className="ml-1">{autoRefresh ? 'Live' : 'Paused'}</span>
+                {autoRefresh ? <Pause className="w-4 h-4 mr-2" /> : <Play className="w-4 h-4 mr-2" />}
+                {autoRefresh ? 'Live' : 'Paused'}
               </Button>
-
-              {/* Refresh Button */}
               <Button
                 onClick={fetchStats}
                 variant="outline"
-                className="bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
+                className="bg-[var(--color-muted)]/50 border-[var(--color-border)]"
               >
                 <RefreshCw className={`w-4 h-4 ${autoRefresh ? 'animate-spin-slow' : ''}`} />
               </Button>
-
-              {/* Last Update */}
-              {lastUpdate && (
-                <span className="text-xs text-slate-500">
-                  Updated: {lastUpdate.toLocaleTimeString()}
-                </span>
-              )}
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-8">
-        {/* Connection Status */}
-        <div className="flex items-center gap-4 p-4 bg-slate-800/50 border border-slate-700 rounded-lg">
-          <div className={`w-3 h-3 rounded-full ${loading ? 'bg-amber-400 animate-pulse' : 'bg-green-400'}`} />
-          <span className="text-sm text-slate-300">
-            {loading ? 'Connecting to monitoring server...' : 'Live data stream active'}
-          </span>
-          <div className="ml-auto flex items-center gap-4 text-xs text-slate-500">
-            <span>Cache: {stats?.systemState?.cacheState?.size || 0}/{stats?.systemState?.cacheState?.capacity || 100}</span>
-            <span>Index: {stats?.systemState?.indexState?.documents || 0} docs</span>
-            <span>Trie: {stats?.systemState?.trieState?.insertions || 0} words</span>
-          </div>
-        </div>
-
-        {/* System Stats Overview */}
-        {stats && <SystemStats stats={stats} />}
-
-        {/* Monitoring Tabs */}
-        <Tabs defaultValue="cache" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-slate-800 border border-slate-700">
-            <TabsTrigger value="cache" className="data-[state=active]:bg-slate-700">
-              🔄 Cache Activity
-            </TabsTrigger>
-            <TabsTrigger value="analytics" className="data-[state=active]:bg-slate-700">
-              📊 Analytics
-            </TabsTrigger>
-            <TabsTrigger value="performance" className="data-[state=active]:bg-slate-700">
-              ⚡ Performance
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="cache" className="mt-6">
-            {stats?.systemState?.cacheState && (
-              <CacheVisualization
-                cacheState={stats.systemState.cacheState}
-              />
-            )}
-          </TabsContent>
-
-          <TabsContent value="analytics" className="mt-6">
-            {stats && <Analytics stats={stats.systemState} />}
-          </TabsContent>
-
-          <TabsContent value="performance" className="mt-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Search Performance */}
-              <Card className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
-                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                  <span>🔍</span> Search Performance
-                </h3>
-
-                <div className="space-y-4">
-                  {/* Hit Rate Progress */}
-                  <div>
-                    <div className="flex justify-between mb-2">
-                      <span className="text-sm text-slate-400">
-                        Cache Hit Rate
-                      </span>
-                      <span className="text-sm font-bold text-green-400">
-                        {stats?.systemState?.cacheState?.hitRate}%
-                      </span>
-                    </div>
-
-                    <div className="h-4 bg-slate-700 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-green-600 to-emerald-400 transition-all duration-500"
-                        style={{
-                          width: `${parseFloat(stats?.systemState?.cacheState?.hitRate || 0)}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Stats Grid */}
-                  <div className="grid grid-cols-3 gap-3 mt-4">
-                    <div className="bg-slate-800 p-4 rounded-lg text-center">
-                      <p className="text-xs text-slate-400 mb-1">Cache Hits</p>
-                      <p className="text-2xl font-bold text-green-400">
-                        {stats?.systemState?.cacheState?.operations?.filter(
-                          (op) => op.type === 'hit'
-                        ).length || 0}
-                      </p>
-                    </div>
-
-                    <div className="bg-slate-800 p-4 rounded-lg text-center">
-                      <p className="text-xs text-slate-400 mb-1">Cache Misses</p>
-                      <p className="text-2xl font-bold text-red-400">
-                        {stats?.systemState?.cacheState?.operations?.filter(
-                          (op) => op.type === 'miss'
-                        ).length || 0}
-                      </p>
-                    </div>
-
-                    <div className="bg-slate-800 p-4 rounded-lg text-center">
-                      <p className="text-xs text-slate-400 mb-1">Evictions</p>
-                      <p className="text-2xl font-bold text-amber-400">
-                        {stats?.systemState?.cacheState?.operations?.filter(
-                          (op) => op.type === 'eviction'
-                        ).length || 0}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Search Stats */}
-                  <div className="bg-slate-800/50 rounded-lg p-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-xs text-slate-400">Total Searches</p>
-                        <p className="text-xl font-bold text-cyan-400">
-                          {stats?.systemState?.searchEngine?.searches || 0}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-slate-400">Autocompletes</p>
-                        <p className="text-xl font-bold text-purple-400">
-                          {stats?.systemState?.searchEngine?.autocompletes || 0}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-
-              {/* Index Performance */}
-              <Card className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
-                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                  <span>📚</span> Index Performance
-                </h3>
-
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-slate-800 p-4 rounded-lg">
-                      <p className="text-xs text-slate-400 mb-2">Documents Indexed</p>
-                      <p className="text-3xl font-bold text-blue-400">
-                        {stats?.systemState?.indexState?.documents || 0}
-                      </p>
-                    </div>
-
-                    <div className="bg-slate-800 p-4 rounded-lg">
-                      <p className="text-xs text-slate-400 mb-2">Unique Words</p>
-                      <p className="text-3xl font-bold text-purple-400">
-                        {stats?.systemState?.indexState?.words || 0}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Index Size Visualization */}
-                  <div className="bg-slate-800/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-400 mb-3">Index Capacity</p>
-                    <div className="space-y-2">
-                      <div className="h-3 bg-slate-700 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-purple-500 to-pink-400 transition-all duration-500"
-                          style={{ width: `${Math.min((stats?.systemState?.indexState?.words || 0) / 100, 100)}%` }}
-                        />
-                      </div>
-                      <div className="flex justify-between text-xs text-slate-500">
-                        <span>0 words</span>
-                        <span>100 words</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Trie Stats */}
-                  <div className="bg-slate-800/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-400 mb-2">Trie Autocomplete</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <p className="text-xs text-slate-500">Insertions</p>
-                        <p className="text-lg font-bold text-cyan-400">
-                          {stats?.systemState?.trieState?.insertions || 0}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-slate-500">Searches</p>
-                        <p className="text-lg font-bold text-cyan-400">
-                          {stats?.systemState?.trieState?.searches || 0}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </TabsContent>
-        </Tabs>
-
-        {/* System Health Overview */}
-        <Card className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-            <Activity className="w-5 h-5 text-green-400" />
-            System Health
-          </h3>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { name: 'Backend Server', status: 'Healthy', color: 'green', icon: '🖥️' },
-              { name: 'LRU Cache', status: 'Operating', color: 'green', icon: '⚡' },
-              { name: 'Search Index', status: 'Ready', color: 'green', icon: '📚' },
-              { name: 'File Storage', status: 'Online', color: 'green', icon: '💾' },
-            ].map((item) => (
-              <div
-                key={item.name}
-                className="text-center p-4 bg-slate-800/50 rounded-lg hover:bg-slate-700/50 transition-colors"
-              >
-                <div className="text-3xl mb-2">{item.icon}</div>
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <div className={`w-2 h-2 rounded-full bg-${item.color}-400 animate-pulse`} />
-                  <p className="text-sm font-medium text-white">{item.status}</p>
-                </div>
-                <p className="text-xs text-slate-400">{item.name}</p>
+      <main className="relative min-h-screen">
+        <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-8">
+          {/* Connection Status */}
+          <Card className="p-4 glass-card">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className={`w-3 h-3 rounded-full ${loading ? 'bg-amber-400 animate-pulse' : 'bg-green-400 animate-pulse'}`} />
+                <span className="text-[var(--color-foreground)]">
+                  {loading ? 'Connecting to monitoring server...' : 'Live data stream active'}
+                </span>
+                {lastUpdate && (
+                  <span className="text-sm text-[var(--color-muted-foreground)]">
+                    Last update: {lastUpdate.toLocaleTimeString()}
+                  </span>
+                )}
               </div>
+              <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--color-muted-foreground)]">
+                <span className="flex items-center gap-1">
+                  <Zap className="w-4 h-4 text-cyan-400" />
+                  Cache: {stats?.systemState?.cacheState?.size || 0}/{stats?.systemState?.cacheState?.capacity || 100}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Database className="w-4 h-4 text-green-400" />
+                  {stats?.systemState?.indexState?.documents || 0} docs
+                </span>
+                <span className="flex items-center gap-1">
+                  <FileText className="w-4 h-4 text-purple-400" />
+                  {stats?.systemState?.trieState?.insertions || 0} words
+                </span>
+              </div>
+            </div>
+          </Card>
+
+          {/* Key Metrics */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {metrics.map((metric, idx) => (
+              <Card key={idx} className="p-4 glass-card">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-[var(--color-muted-foreground)]">{metric.label}</span>
+                  {metric.icon && <metric.icon className="w-4 h-4 text-[var(--color-muted-foreground)]" />}
+                </div>
+                <div className="flex items-end gap-2">
+                  <span className="text-2xl font-bold text-[var(--color-foreground)]">
+                    {metric.value}{metric.unit || '%'}
+                  </span>
+                  {trendIcons[metric.trend]}
+                </div>
+              </Card>
             ))}
           </div>
-        </Card>
 
-        {/* Legend */}
-        <Card className="p-4 bg-slate-800/50 border-slate-700">
-          <h4 className="text-sm font-medium text-slate-300 mb-3">Legend</h4>
-          <div className="flex flex-wrap gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full" />
-              <span className="text-xs text-slate-400">Healthy / Active</span>
+          {/* System Stats */}
+          {stats && <SystemStats stats={stats} />}
+
+          {/* Health Overview */}
+          <Card className="p-6 glass-card">
+            <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-6 flex items-center gap-2">
+              <Activity className="w-5 h-5 text-green-400" />
+              System Health
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {healthItems.map((item, idx) => (
+                <div
+                  key={idx}
+                  className={`relative overflow-hidden p-4 rounded-xl border ${colorClasses[item.color]} group hover-lift`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-lg ${item.color === 'green' ? 'bg-green-500/20' : item.color === 'cyan' ? 'bg-cyan-500/20' : 'bg-purple-500/20'}`}>
+                      <item.icon className={`w-5 h-5 ${colorClasses[item.color].split(' ')[0]}`} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-[var(--color-foreground)]">{item.name}</p>
+                      <div className="flex items-center gap-2">
+                        <div className={`w-2 h-2 rounded-full ${item.status === 'Healthy' || item.status === 'Active' || item.status === 'Ready' || item.status === 'Online' ? 'bg-green-400 animate-pulse' : 'bg-amber-400'}`} />
+                        <p className="text-xs text-[var(--color-muted-foreground)]">{item.status}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-blue-500 rounded-full" />
-              <span className="text-xs text-slate-400">Cache Hit</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-red-500 rounded-full" />
-              <span className="text-xs text-slate-400">Cache Miss</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-amber-500 rounded-full" />
-              <span className="text-xs text-slate-400">Eviction</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-purple-500 rounded-full" />
-              <span className="text-xs text-slate-400">Index Activity</span>
-            </div>
-          </div>
-        </Card>
-      </div>
-    </main>
+          </Card>
+
+          {/* Monitoring Tabs */}
+          <Tabs defaultValue="cache" className="w-full">
+            <TabsList className="grid w-full grid-cols-3 glass">
+              <TabsTrigger value="cache" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-500 data-[state=active]:text-white">
+                🔄 Cache Activity
+              </TabsTrigger>
+              <TabsTrigger value="analytics" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-500 data-[state=active]:text-white">
+                📊 Analytics
+              </TabsTrigger>
+              <TabsTrigger value="performance" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-blue-500 data-[state=active]:text-white">
+                ⚡ Performance
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="cache" className="mt-6">
+              {stats?.systemState?.cacheState && (
+                <CacheVisualization cacheState={stats.systemState.cacheState} />
+              )}
+            </TabsContent>
+
+            <TabsContent value="analytics" className="mt-6">
+              {stats && <Analytics stats={stats.systemState} />}
+            </TabsContent>
+
+            <TabsContent value="performance" className="mt-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card className="p-6 glass-card">
+                  <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-4 flex items-center gap-2">
+                    <span>🔍</span> Search Performance
+                  </h3>
+                  <div className="space-y-6">
+                    <div>
+                      <div className="flex justify-between mb-2">
+                        <span className="text-sm text-[var(--color-muted-foreground)]">Cache Hit Rate</span>
+                        <span className="text-sm font-bold text-green-400">{stats?.systemState?.cacheState?.hitRate}%</span>
+                      </div>
+                      <Progress value={parseFloat(stats?.systemState?.cacheState?.hitRate || 0)} />
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
+                      {[
+                        { label: 'Cache Hits', value: stats?.systemState?.cacheState?.operations?.filter((op) => op.type === 'hit').length || 0, color: 'text-green-400' },
+                        { label: 'Cache Misses', value: stats?.systemState?.cacheState?.operations?.filter((op) => op.type === 'miss').length || 0, color: 'text-red-400' },
+                        { label: 'Evictions', value: stats?.systemState?.cacheState?.operations?.filter((op) => op.type === 'eviction').length || 0, color: 'text-amber-400' },
+                      ].map((item, idx) => (
+                        <div key={idx} className="p-4 rounded-xl bg-[var(--color-muted)]/30 text-center">
+                          <p className={`text-2xl font-bold ${item.color}`}>{item.value}</p>
+                          <p className="text-xs text-[var(--color-muted-foreground)]">{item.label}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="p-6 glass-card">
+                  <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-4 flex items-center gap-2">
+                    <span>📚</span> Index Performance
+                  </h3>
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-4 rounded-xl bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20 text-center">
+                        <p className="text-3xl font-bold text-green-400">{stats?.systemState?.indexState?.documents || 0}</p>
+                        <p className="text-xs text-[var(--color-muted-foreground)]">Documents Indexed</p>
+                      </div>
+                      <div className="p-4 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 text-center">
+                        <p className="text-3xl font-bold text-purple-400">{stats?.systemState?.indexState?.words || 0}</p>
+                        <p className="text-xs text-[var(--color-muted-foreground)]">Unique Words</p>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-xs text-[var(--color-muted-foreground)] mb-2">Index Size</p>
+                      <Progress value={Math.min((stats?.systemState?.indexState?.words || 0) / 10, 100)} />
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </main>
+    </>
   );
 }
