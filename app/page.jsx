@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { FileUpload } from '@/components/FileUpload';
 import { SearchBar } from '@/components/SearchBar';
 import { SearchResults } from '@/components/SearchResults';
@@ -9,7 +9,9 @@ import { SystemStats } from '@/components/SystemStats';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { RefreshCw, Info } from 'lucide-react';
+import { RefreshCw, Info, Keyboard, Sparkles } from 'lucide-react';
+import { Toaster } from '@/components/ui/toaster';
+import { toast } from '@/hooks/use-toast';
 
 export default function Page() {
   const [files, setFiles] = useState([]);
@@ -19,10 +21,10 @@ export default function Page() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [activeTab, setActiveTab] = useState('search');
 
   // Fetch files
-  const fetchFiles = async () => {
+  const fetchFiles = useCallback(async () => {
     try {
       const response = await fetch('http://localhost:3001/api/files');
       const result = await response.json();
@@ -31,11 +33,16 @@ export default function Page() {
       }
     } catch (error) {
       console.error('Failed to fetch files:', error);
+      toast({
+        title: 'Connection Error',
+        description: 'Unable to fetch files from server',
+        variant: 'destructive',
+      });
     }
-  };
+  }, []);
 
   // Fetch stats
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       const response = await fetch('http://localhost:3001/api/stats');
       const result = await response.json();
@@ -45,14 +52,28 @@ export default function Page() {
     } catch (error) {
       console.error('Failed to fetch stats:', error);
     }
-  };
+  }, []);
 
   // Initial load
   useEffect(() => {
     const init = async () => {
       setLoading(true);
-      await Promise.all([fetchFiles(), fetchStats()]);
-      setLoading(false);
+      try {
+        await Promise.all([fetchFiles(), fetchStats()]);
+        toast({
+          title: 'System Ready',
+          description: 'Connected to backend server',
+          variant: 'success',
+        });
+      } catch (error) {
+        toast({
+          title: 'Connection Failed',
+          description: 'Could not connect to the server',
+          variant: 'destructive',
+        });
+      } finally {
+        setLoading(false);
+      }
     };
 
     init();
@@ -62,11 +83,26 @@ export default function Page() {
     }, 2000);
 
     return () => clearInterval(interval);
+  }, [fetchFiles, fetchStats]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        const searchInput = document.querySelector('input[placeholder*="Search"]');
+        searchInput?.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   const handleFileUploaded = async (file) => {
     setFiles((prev) => [...prev, file]);
     await fetchStats();
+    setActiveTab('files');
   };
 
   const handleSearch = (results, hit) => {
@@ -78,49 +114,95 @@ export default function Page() {
   };
 
   const handleDeleteFile = async (fileId) => {
-    if (!confirm('Delete this file?')) return;
-
-    try {
-      const response = await fetch(`http://localhost:3001/api/files/${fileId}`, {
-        method: 'DELETE',
-      });
-      const result = await response.json();
-      if (result.success) {
-        setFiles((prev) => prev.filter((f) => f.id !== fileId));
-        await fetchStats();
-      }
-    } catch (error) {
-      console.error('Delete failed:', error);
-    }
+    toast({
+      title: 'Confirm Delete',
+      description: 'Are you sure you want to delete this file?',
+      variant: 'warning',
+      action: {
+        label: 'Delete',
+        onClick: async () => {
+          try {
+            const response = await fetch(`http://localhost:3001/api/files/${fileId}`, {
+              method: 'DELETE',
+            });
+            const result = await response.json();
+            if (result.success) {
+              setFiles((prev) => prev.filter((f) => f.id !== fileId));
+              await fetchStats();
+              toast({
+                title: 'File Deleted',
+                description: 'File has been removed',
+                variant: 'success',
+              });
+            }
+          } catch (error) {
+            console.error('Delete failed:', error);
+            toast({
+              title: 'Delete Failed',
+              description: 'Unable to delete the file',
+              variant: 'destructive',
+            });
+          }
+        },
+      },
+    });
   };
 
   const handleReset = async () => {
-    if (!confirm('Reset all systems?')) return;
-
-    try {
-      await fetch('http://localhost:3001/api/reset', { method: 'POST' });
-      setFiles([]);
-      setSearchResults([]);
-      setStats(null);
-      setRefreshKey((k) => k + 1);
-    } catch (error) {
-      console.error('Reset failed:', error);
-    }
+    toast({
+      title: 'Confirm Reset',
+      description: 'This will clear all files and reset the system. Continue?',
+      variant: 'warning',
+      action: {
+        label: 'Reset System',
+        onClick: async () => {
+          try {
+            await fetch('http://localhost:3001/api/reset', { method: 'POST' });
+            setFiles([]);
+            setSearchResults([]);
+            setStats(null);
+            toast({
+              title: 'System Reset',
+              description: 'All data has been cleared',
+              variant: 'success',
+            });
+            await Promise.all([fetchFiles(), fetchStats()]);
+          } catch (error) {
+            console.error('Reset failed:', error);
+            toast({
+              title: 'Reset Failed',
+              description: 'Unable to reset the system',
+              variant: 'destructive',
+            });
+          }
+        },
+      },
+    });
   };
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+      {/* Toaster for notifications */}
+      <Toaster />
+
       {/* Header */}
-      <div className="border-b border-slate-800 bg-slate-950/50 backdrop-blur">
+      <div className="border-b border-slate-800 bg-slate-950/50 backdrop-blur sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                Scalable Systems Simulator
-              </h1>
-              <p className="text-slate-400 text-sm mt-1">
-                Interactive search engine, cache, and file storage demo
-              </p>
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg">
+                  <Sparkles className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                    Scalable Systems Simulator
+                  </h1>
+                  <p className="text-slate-400 text-sm mt-1">
+                    Interactive search engine, cache, and file storage demo
+                  </p>
+                </div>
+              </div>
             </div>
             <div className="flex gap-2">
               <Button
@@ -155,8 +237,10 @@ export default function Page() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-8">
+        {/* System Stats */}
         {stats && <SystemStats stats={stats} />}
 
+        {/* Info Card */}
         <Card className="p-4 bg-blue-900/20 border-blue-700/50">
           <div className="flex items-start gap-3">
             <Info className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
@@ -169,15 +253,45 @@ export default function Page() {
               </p>
             </div>
           </div>
+          <div className="flex items-center gap-4 mt-3 pt-3 border-t border-blue-700/30">
+            <span className="text-xs text-blue-300/60 flex items-center gap-1">
+              <Keyboard className="w-3 h-3" />
+              Press Ctrl+K to focus search
+            </span>
+          </div>
         </Card>
 
-        <Tabs defaultValue="search" className="w-full">
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[
+            { title: 'Upload Files', desc: 'Add documents to index', icon: '📁' },
+            { title: 'Search', desc: 'Full-text search powered by inverted index', icon: '🔍' },
+            { title: 'Monitor', desc: 'View real-time analytics', icon: '📊' },
+          ].map((item, idx) => (
+            <Card
+              key={idx}
+              className="p-4 bg-slate-800/50 border-slate-700 hover:border-slate-600 cursor-pointer transition-all"
+              onClick={() => idx === 1 && setActiveTab('search')}
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">{item.icon}</span>
+                <div>
+                  <p className="font-medium text-white">{item.title}</p>
+                  <p className="text-xs text-slate-400">{item.desc}</p>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        {/* Main Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 bg-slate-800 border border-slate-700">
             <TabsTrigger value="search" className="data-[state=active]:bg-slate-700">
-              Search & Upload
+              🔍 Search & Upload
             </TabsTrigger>
             <TabsTrigger value="files" className="data-[state=active]:bg-slate-700">
-              File Browser
+              📁 File Browser
             </TabsTrigger>
           </TabsList>
 
@@ -188,7 +302,12 @@ export default function Page() {
                 <SearchBar onSearch={handleSearch} isLoading={loading} />
               </div>
               <div>
-                <SearchResults results={searchResults} cacheHit={cacheHit} query={lastQuery} />
+                <SearchResults
+                  results={searchResults}
+                  cacheHit={cacheHit}
+                  query={lastQuery}
+                  onView={setSelectedFile}
+                />
               </div>
             </div>
           </TabsContent>
@@ -198,31 +317,51 @@ export default function Page() {
           </TabsContent>
         </Tabs>
 
+        {/* File Preview Modal */}
         {selectedFile && (
           <Card className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700 max-h-96 overflow-auto">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-white">
-                {selectedFile.filename}
-              </h3>
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">📄</span>
+                <div>
+                  <h3 className="text-lg font-semibold text-white">
+                    {selectedFile.filename}
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Version {selectedFile.version} • {selectedFile.wordCount} words
+                  </p>
+                </div>
+              </div>
               <button
                 onClick={() => setSelectedFile(null)}
-                className="text-slate-400 hover:text-slate-300"
+                className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 hover:text-slate-300 transition-colors"
               >
                 ✕
               </button>
             </div>
             <p className="text-sm text-slate-300 font-mono whitespace-pre-wrap break-words">
-              {selectedFile.preview}
+              {selectedFile.content || selectedFile.preview}
             </p>
           </Card>
         )}
       </div>
 
+      {/* Footer */}
       <div className="border-t border-slate-800 bg-slate-950/50 mt-12">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-          <p className="text-center text-slate-500 text-sm">
-            Backend running on port 3001 • Real data structures: LRU Cache, Trie, Inverted Index
-          </p>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-slate-500 text-sm">
+              Backend running on port 3001 • Real data structures: LRU Cache, Trie, Inverted Index
+            </p>
+            <div className="flex items-center gap-4 text-xs text-slate-500">
+              <span className="flex items-center gap-1">
+                <div className={`w-2 h-2 rounded-full ${loading ? 'bg-amber-400 animate-pulse' : 'bg-green-400'}`} />
+                {loading ? 'Connecting...' : 'Connected'}
+              </span>
+              <span>{files.length} files indexed</span>
+              <span>{stats?.searchEngine?.searches || 0} searches</span>
+            </div>
+          </div>
         </div>
       </div>
     </main>

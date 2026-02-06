@@ -7,13 +7,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CacheVisualization } from '@/components/CacheVisualization';
 import { Analytics } from '@/components/Analytics';
 import { SystemStats } from '@/components/SystemStats';
-import { ArrowLeft, RotateCw, Activity } from 'lucide-react';
+import { ArrowLeft, RotateCw, Activity, RefreshCw, Play, Pause } from 'lucide-react';
 import Link from 'next/link';
+import { toast } from '@/hooks/use-toast';
 
 export default function MonitoringPage() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [autoRefresh, setAutoRefresh] = useState(true);
+  const [lastUpdate, setLastUpdate] = useState(null);
 
   const fetchStats = async () => {
     try {
@@ -21,16 +23,23 @@ export default function MonitoringPage() {
       const result = await response.json();
       if (result.success) {
         setStats(result);
+        setLastUpdate(new Date());
       }
     } catch (error) {
       console.error('Failed to fetch stats:', error);
+      toast({
+        title: 'Connection Error',
+        description: 'Unable to fetch monitoring data',
+        variant: 'destructive',
+      });
     }
   };
 
   useEffect(() => {
     const init = async () => {
-      setLoading(false);
+      setLoading(true);
       await fetchStats();
+      setLoading(false);
     };
 
     init();
@@ -59,7 +68,9 @@ export default function MonitoringPage() {
               </Link>
               <div>
                 <div className="flex items-center gap-2">
-                  <Activity className="w-5 h-5 text-green-400" />
+                  <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg">
+                    <Activity className="w-5 h-5 text-white" />
+                  </div>
                   <h1 className="text-2xl font-bold text-white">System Monitoring</h1>
                 </div>
                 <p className="text-slate-400 text-sm mt-1">
@@ -68,7 +79,8 @@ export default function MonitoringPage() {
               </div>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
+              {/* Auto Refresh Toggle */}
               <Button
                 onClick={() => setAutoRefresh(!autoRefresh)}
                 variant="outline"
@@ -78,17 +90,29 @@ export default function MonitoringPage() {
                     : 'bg-slate-800 border-slate-700 text-slate-300'
                 } hover:bg-opacity-80`}
               >
-                <RotateCw
-                  className={`w-4 h-4 ${autoRefresh ? 'animate-spin' : ''}`}
-                />
+                {autoRefresh ? (
+                  <Pause className="w-4 h-4" />
+                ) : (
+                  <Play className="w-4 h-4" />
+                )}
+                <span className="ml-1">{autoRefresh ? 'Live' : 'Paused'}</span>
               </Button>
+
+              {/* Refresh Button */}
               <Button
                 onClick={fetchStats}
                 variant="outline"
                 className="bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
               >
-                Refresh
+                <RefreshCw className={`w-4 h-4 ${autoRefresh ? 'animate-spin-slow' : ''}`} />
               </Button>
+
+              {/* Last Update */}
+              {lastUpdate && (
+                <span className="text-xs text-slate-500">
+                  Updated: {lastUpdate.toLocaleTimeString()}
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -96,18 +120,33 @@ export default function MonitoringPage() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-8">
+        {/* Connection Status */}
+        <div className="flex items-center gap-4 p-4 bg-slate-800/50 border border-slate-700 rounded-lg">
+          <div className={`w-3 h-3 rounded-full ${loading ? 'bg-amber-400 animate-pulse' : 'bg-green-400'}`} />
+          <span className="text-sm text-slate-300">
+            {loading ? 'Connecting to monitoring server...' : 'Live data stream active'}
+          </span>
+          <div className="ml-auto flex items-center gap-4 text-xs text-slate-500">
+            <span>Cache: {stats?.systemState?.cacheState?.size || 0}/{stats?.systemState?.cacheState?.capacity || 100}</span>
+            <span>Index: {stats?.systemState?.indexState?.documents || 0} docs</span>
+            <span>Trie: {stats?.systemState?.trieState?.insertions || 0} words</span>
+          </div>
+        </div>
+
+        {/* System Stats Overview */}
         {stats && <SystemStats stats={stats} />}
 
+        {/* Monitoring Tabs */}
         <Tabs defaultValue="cache" className="w-full">
           <TabsList className="grid w-full grid-cols-3 bg-slate-800 border border-slate-700">
             <TabsTrigger value="cache" className="data-[state=active]:bg-slate-700">
-              Cache Activity
+              🔄 Cache Activity
             </TabsTrigger>
             <TabsTrigger value="analytics" className="data-[state=active]:bg-slate-700">
-              Analytics
+              📊 Analytics
             </TabsTrigger>
             <TabsTrigger value="performance" className="data-[state=active]:bg-slate-700">
-              Performance
+              ⚡ Performance
             </TabsTrigger>
           </TabsList>
 
@@ -125,12 +164,14 @@ export default function MonitoringPage() {
 
           <TabsContent value="performance" className="mt-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Search Performance */}
               <Card className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
-                <h3 className="text-lg font-semibold text-white mb-4">
-                  Search Performance
+                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <span>🔍</span> Search Performance
                 </h3>
 
                 <div className="space-y-4">
+                  {/* Hit Rate Progress */}
                   <div>
                     <div className="flex justify-between mb-2">
                       <span className="text-sm text-slate-400">
@@ -141,80 +182,122 @@ export default function MonitoringPage() {
                       </span>
                     </div>
 
-                    <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                    <div className="h-4 bg-slate-700 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-gradient-to-r from-green-500 to-green-400"
+                        className="h-full bg-gradient-to-r from-green-600 to-emerald-400 transition-all duration-500"
                         style={{
-                          width: `${
-                            stats?.systemState?.cacheState?.hitRate || 0
-                          }%`,
+                          width: `${parseFloat(stats?.systemState?.cacheState?.hitRate || 0)}%`,
                         }}
                       />
                     </div>
                   </div>
 
+                  {/* Stats Grid */}
                   <div className="grid grid-cols-3 gap-3 mt-4">
-                    <div className="bg-slate-800 p-3 rounded">
+                    <div className="bg-slate-800 p-4 rounded-lg text-center">
                       <p className="text-xs text-slate-400 mb-1">Cache Hits</p>
-                      <p className="text-xl font-bold text-green-400">
+                      <p className="text-2xl font-bold text-green-400">
                         {stats?.systemState?.cacheState?.operations?.filter(
                           (op) => op.type === 'hit'
                         ).length || 0}
                       </p>
                     </div>
 
-                    <div className="bg-slate-800 p-3 rounded">
+                    <div className="bg-slate-800 p-4 rounded-lg text-center">
                       <p className="text-xs text-slate-400 mb-1">Cache Misses</p>
-                      <p className="text-xl font-bold text-red-400">
+                      <p className="text-2xl font-bold text-red-400">
                         {stats?.systemState?.cacheState?.operations?.filter(
                           (op) => op.type === 'miss'
                         ).length || 0}
                       </p>
                     </div>
 
-                    <div className="bg-slate-800 p-3 rounded">
+                    <div className="bg-slate-800 p-4 rounded-lg text-center">
                       <p className="text-xs text-slate-400 mb-1">Evictions</p>
-                      <p className="text-xl font-bold text-amber-400">
+                      <p className="text-2xl font-bold text-amber-400">
                         {stats?.systemState?.cacheState?.operations?.filter(
                           (op) => op.type === 'eviction'
                         ).length || 0}
                       </p>
                     </div>
                   </div>
+
+                  {/* Search Stats */}
+                  <div className="bg-slate-800/50 rounded-lg p-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-xs text-slate-400">Total Searches</p>
+                        <p className="text-xl font-bold text-cyan-400">
+                          {stats?.systemState?.searchEngine?.searches || 0}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-400">Autocompletes</p>
+                        <p className="text-xl font-bold text-purple-400">
+                          {stats?.systemState?.searchEngine?.autocompletes || 0}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </Card>
 
+              {/* Index Performance */}
               <Card className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
-                <h3 className="text-lg font-semibold text-white mb-4">
-                  Index Performance
+                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <span>📚</span> Index Performance
                 </h3>
 
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-slate-800 p-4 rounded">
-                      <p className="text-xs text-slate-400 mb-2">Documents</p>
-                      <p className="text-2xl font-bold text-blue-400">
+                    <div className="bg-slate-800 p-4 rounded-lg">
+                      <p className="text-xs text-slate-400 mb-2">Documents Indexed</p>
+                      <p className="text-3xl font-bold text-blue-400">
                         {stats?.systemState?.indexState?.documents || 0}
                       </p>
                     </div>
 
-                    <div className="bg-slate-800 p-4 rounded">
-                      <p className="text-xs text-slate-400 mb-2">
-                        Unique Words
-                      </p>
-                      <p className="text-2xl font-bold text-purple-400">
+                    <div className="bg-slate-800 p-4 rounded-lg">
+                      <p className="text-xs text-slate-400 mb-2">Unique Words</p>
+                      <p className="text-3xl font-bold text-purple-400">
                         {stats?.systemState?.indexState?.words || 0}
                       </p>
                     </div>
                   </div>
 
-                  <div className="bg-slate-800 p-4 rounded">
-                    <p className="text-xs text-slate-400 mb-3">Index Size</p>
-                    <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-purple-500 to-pink-400"
-                        style={{ width: '45%' }}
-                      />
+                  {/* Index Size Visualization */}
+                  <div className="bg-slate-800/50 rounded-lg p-4">
+                    <p className="text-xs text-slate-400 mb-3">Index Capacity</p>
+                    <div className="space-y-2">
+                      <div className="h-3 bg-slate-700 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-purple-500 to-pink-400 transition-all duration-500"
+                          style={{ width: `${Math.min((stats?.systemState?.indexState?.words || 0) / 100, 100)}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-xs text-slate-500">
+                        <span>0 words</span>
+                        <span>100 words</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Trie Stats */}
+                  <div className="bg-slate-800/50 rounded-lg p-4">
+                    <p className="text-xs text-slate-400 mb-2">Trie Autocomplete</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <p className="text-xs text-slate-500">Insertions</p>
+                        <p className="text-lg font-bold text-cyan-400">
+                          {stats?.systemState?.trieState?.insertions || 0}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500">Searches</p>
+                        <p className="text-lg font-bold text-cyan-400">
+                          {stats?.systemState?.trieState?.searches || 0}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -223,29 +306,59 @@ export default function MonitoringPage() {
           </TabsContent>
         </Tabs>
 
+        {/* System Health Overview */}
         <Card className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
-          <h3 className="text-lg font-semibold text-white mb-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+            <Activity className="w-5 h-5 text-green-400" />
             System Health
           </h3>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {['Backend', 'Cache', 'Index', 'Storage'].map((item) => (
-              <div key={item} className="text-center">
-                <div className="w-12 h-12 rounded-full bg-green-900/30 border-2 border-green-500 flex items-center justify-center mx-auto mb-2">
-                  <span className="text-green-400 font-bold">✓</span>
+            {[
+              { name: 'Backend Server', status: 'Healthy', color: 'green', icon: '🖥️' },
+              { name: 'LRU Cache', status: 'Operating', color: 'green', icon: '⚡' },
+              { name: 'Search Index', status: 'Ready', color: 'green', icon: '📚' },
+              { name: 'File Storage', status: 'Online', color: 'green', icon: '💾' },
+            ].map((item) => (
+              <div
+                key={item.name}
+                className="text-center p-4 bg-slate-800/50 rounded-lg hover:bg-slate-700/50 transition-colors"
+              >
+                <div className="text-3xl mb-2">{item.icon}</div>
+                <div className="flex items-center justify-center gap-2 mb-1">
+                  <div className={`w-2 h-2 rounded-full bg-${item.color}-400 animate-pulse`} />
+                  <p className="text-sm font-medium text-white">{item.status}</p>
                 </div>
-                <p className="text-sm font-medium text-green-400">{item}</p>
-                <p className="text-xs text-slate-400">
-                  {item === 'Backend'
-                    ? 'Healthy'
-                    : item === 'Cache'
-                    ? 'Operating'
-                    : item === 'Index'
-                    ? 'Ready'
-                    : 'Online'}
-                </p>
+                <p className="text-xs text-slate-400">{item.name}</p>
               </div>
             ))}
+          </div>
+        </Card>
+
+        {/* Legend */}
+        <Card className="p-4 bg-slate-800/50 border-slate-700">
+          <h4 className="text-sm font-medium text-slate-300 mb-3">Legend</h4>
+          <div className="flex flex-wrap gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-green-500 rounded-full" />
+              <span className="text-xs text-slate-400">Healthy / Active</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-blue-500 rounded-full" />
+              <span className="text-xs text-slate-400">Cache Hit</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-red-500 rounded-full" />
+              <span className="text-xs text-slate-400">Cache Miss</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-amber-500 rounded-full" />
+              <span className="text-xs text-slate-400">Eviction</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-purple-500 rounded-full" />
+              <span className="text-xs text-slate-400">Index Activity</span>
+            </div>
           </div>
         </Card>
       </div>
