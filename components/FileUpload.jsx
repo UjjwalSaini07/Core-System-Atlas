@@ -116,14 +116,14 @@ export function FileUpload({ onFileUploaded }) {
           })
         }
       } else {
-        // Demo mode - simulate upload
+        // offline mode - simulate upload
         await new Promise(resolve => setTimeout(resolve, 1500))
         clearInterval(progressInterval)
         setUploadProgress(100)
         setUploadStatus('success')
         
-        // Create demo metadata
-        const demoFile = {
+        // Create offline metadata
+        const offlineFile = {
           id: generateId(),
           filename,
           content,
@@ -136,11 +136,11 @@ export function FileUpload({ onFileUploaded }) {
         }
         
         toast({
-          title: 'Demo Mode - File Added',
+          title: 'offline Mode - File Added',
           description: `${filename} added locally (backend not connected)`,
           variant: 'success',
         })
-        onFileUploaded(demoFile)
+        onFileUploaded(offlineFile)
         setFilename('')
         setContent('')
       }
@@ -150,7 +150,7 @@ export function FileUpload({ onFileUploaded }) {
       console.error('Upload failed:', error)
       toast({
         title: 'Connection Error',
-        description: 'Unable to connect to the server. Using demo mode.',
+        description: 'Unable to connect to the server. Using offline mode.',
         variant: 'destructive',
       })
       setIsServerConnected(false)
@@ -188,7 +188,7 @@ export function FileUpload({ onFileUploaded }) {
         ) : (
           <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-sm text-amber-400">
             <CloudOff className="w-4 h-4" />
-            Demo Mode
+            offline Mode
           </div>
         )}
       </div>

@@ -18,8 +18,8 @@ export function SearchBar({ onSearch, isLoading }) {
   const inputRef = useRef(null)
   const debounceTimer = useRef(null)
 
-  // Demo data for when server is not connected
-  const demoFiles = [
+  // offline data for when server is not connected
+  const offlineFiles = [
     { id: '1', filename: 'sample.txt', preview: 'This is a sample document about scalable systems and distributed computing concepts...', wordCount: 150, uniqueWordCount: 80, score: 0.95 },
     { id: '2', filename: 'readme.md', preview: 'Welcome to the Scalable Systems Simulator documentation and user guide...', wordCount: 250, uniqueWordCount: 120, score: 0.88 },
     { id: '3', filename: 'notes.txt', preview: 'Technical notes on database optimization, caching strategies, and search algorithms...', wordCount: 180, uniqueWordCount: 95, score: 0.82 },
@@ -60,12 +60,12 @@ export function SearchBar({ onSearch, isLoading }) {
     if (debouncedQuery.length >= 2 && isServerConnected) {
       handleAutocomplete(debouncedQuery)
     } else if (debouncedQuery.length >= 2 && !isServerConnected) {
-      // Demo autocomplete
-      const demoSuggestions = ['scalable', 'systems', 'search', 'cache', 'database']
+      // offline autocomplete
+      const offlineSuggestions = ['scalable', 'systems', 'search', 'cache', 'database']
         .filter(s => s.toLowerCase().startsWith(debouncedQuery.toLowerCase()))
         .slice(0, 5)
-      setSuggestions(demoSuggestions)
-      setShowSuggestions(demoSuggestions.length > 0)
+      setSuggestions(offlineSuggestions)
+      setShowSuggestions(offlineSuggestions.length > 0)
     } else {
       setSuggestions([])
     }
@@ -92,23 +92,23 @@ export function SearchBar({ onSearch, isLoading }) {
           setShowSuggestions(false)
         }
       } else {
-        // Demo search
+        // offline search
         await new Promise(resolve => setTimeout(resolve, 500))
-        const filtered = demoFiles.filter(f => 
+        const filtered = offlineFiles.filter(f => 
           f.filename.toLowerCase().includes(query.toLowerCase()) ||
           f.preview.toLowerCase().includes(query.toLowerCase())
         )
-        onSearch(filtered.length > 0 ? filtered : demoFiles, false)
+        onSearch(filtered.length > 0 ? filtered : offlineFiles, false)
         setShowSuggestions(false)
       }
     } catch (error) {
       console.error('Search failed:', error)
-      // Fallback to demo mode
-      const filtered = demoFiles.filter(f => 
+      // Fallback to offline mode
+      const filtered = offlineFiles.filter(f => 
         f.filename.toLowerCase().includes(query.toLowerCase()) ||
         f.preview.toLowerCase().includes(query.toLowerCase())
       )
-      onSearch(filtered.length > 0 ? filtered : demoFiles, false)
+      onSearch(filtered.length > 0 ? filtered : offlineFiles, false)
       setShowSuggestions(false)
     } finally {
       setSearching(false)
@@ -153,7 +153,7 @@ export function SearchBar({ onSearch, isLoading }) {
         ) : (
           <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs text-amber-400">
             <CloudOff className="w-3 h-3" />
-            Demo Mode
+            offline Mode
           </div>
         )}
       </div>

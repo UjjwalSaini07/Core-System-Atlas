@@ -236,7 +236,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Reset all systems (for demo)
+// Reset all systems (for offline)
 app.post('/api/reset', (req, res) => {
   try {
     fileStorage.clear();

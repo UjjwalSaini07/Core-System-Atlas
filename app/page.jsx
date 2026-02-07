@@ -30,7 +30,7 @@ export default function Page() {
       const json = await res.json();
       if (json.success) setFiles(json.files);
     } catch {
-      console.warn('Files unavailable – demo mode');
+      console.warn('Files unavailable – offline mode');
     }
   }, []);
 
@@ -40,7 +40,7 @@ export default function Page() {
       const json = await res.json();
       if (json.success) setStats(json);
     } catch {
-      console.warn('Stats unavailable – demo mode');
+      console.warn('Stats unavailable – offline mode');
     }
   }, []);
 
@@ -53,7 +53,7 @@ export default function Page() {
           await Promise.all([fetchFiles(), fetchStats()]);
         }
       } catch {
-        console.info('Backend not running – demo mode');
+        console.info('Backend not running – offline mode');
       }
       setLoading(false);
     };
@@ -220,7 +220,7 @@ export default function Page() {
             Backend: LRU Cache · Trie · Inverted Index
           </span>
           <span>
-            {stats ? 'Connected' : loading ? 'Connecting…' : 'Demo Mode'}
+            {stats ? 'Connected' : loading ? 'Connecting…' : 'offline Mode'}
           </span>
         </div>
       </footer>
