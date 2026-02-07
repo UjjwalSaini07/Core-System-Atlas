@@ -1,8 +1,4 @@
-/**
- * LRU Cache Implementation using HashMap + Doubly Linked List
- * Real-world DSA pattern used in production systems
- */
-
+// LRU Cache Implementation using HashMap + Doubly Linked List
 class Node {
   constructor(key, value) {
     this.key = key;
@@ -52,7 +48,6 @@ class LRUCache {
       cacheSize: this.cache.size
     });
 
-    // Move to front (most recently used)
     this._moveToFront(node);
     return node.value;
   }

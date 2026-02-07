@@ -1,8 +1,4 @@
-/**
- * Trie (Prefix Tree) Implementation
- * Used for efficient autocomplete and prefix search operations
- */
-
+// Trie (Prefix Tree) Implementation
 class TrieNode {
   constructor() {
     this.children = {};
@@ -45,9 +41,7 @@ class Trie {
     });
   }
 
-  /**
-   * Autocomplete search: returns top K results by frequency
-   */
+  // Autocomplete search: returns top K results by frequency
   autocomplete(prefix, limit = 10) {
     let node = this.root;
     const lowerPrefix = prefix.toLowerCase();

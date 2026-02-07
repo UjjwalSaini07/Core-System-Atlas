@@ -1,9 +1,4 @@
-/**
- * Inverted Index Implementation
- * Core data structure for full-text search engines
- * Maps words to documents/files containing them
- */
-
+// Inverted Index Implementation Core data structure for full-text search engines
 class InvertedIndex {
   constructor() {
     this.index = new Map(); // word -> Set of document IDs
@@ -16,9 +11,7 @@ class InvertedIndex {
     };
   }
 
-  /**
-   * Index a document: extract words and build index
-   */
+  // Index a document: extract words and build index
   indexDocument(docId, content, metadata = {}) {
     if (this.documents.has(docId)) {
       this._removeDocument(docId);
@@ -63,10 +56,7 @@ class InvertedIndex {
     });
   }
 
-  /**
-   * Search: find documents matching query
-   * Returns results ranked by TF-IDF score
-   */
+  // Search: find documents matching query
   search(query, limit = 20) {
     const queryWords = this._tokenize(query);
     const docScores = new Map();
@@ -105,9 +95,7 @@ class InvertedIndex {
     return results;
   }
 
-  /**
-   * Boolean search: AND/OR/NOT operations
-   */
+  // Boolean search: AND/OR/NOT operations
   booleanSearch(query) {
     // Simple parser for "word1 AND word2 OR word3 NOT word4"
     const tokens = query.toLowerCase().split(/\s+/);

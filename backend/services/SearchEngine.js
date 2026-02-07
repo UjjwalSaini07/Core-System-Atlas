@@ -1,9 +1,4 @@
-/**
- * Search Engine Service
- * Integrates Inverted Index, Trie, and LRU Cache for optimized search
- * Implements cache-aside strategy and TF-IDF ranking
- */
-
+// Search Engine Service Integrates Inverted Index, Trie, and LRU Cache for optimized search
 const InvertedIndex = require('../dsa/InvertedIndex');
 const Trie = require('../dsa/Trie');
 const LRUCache = require('../dsa/LRUCache');
@@ -22,9 +17,7 @@ class SearchEngine {
     };
   }
 
-  /**
-   * Index a file for search
-   */
+  // Index a file for search
   indexFile(fileId, filename, content) {
     // Add to inverted index
     this.index.indexDocument(fileId, content, {
@@ -49,9 +42,7 @@ class SearchEngine {
     });
   }
 
-  /**
-   * Full-text search with caching
-   */
+  // Full-text search with caching
   search(query, limit = 20) {
     const cacheKey = `search:${query}:${limit}`;
     
@@ -94,9 +85,7 @@ class SearchEngine {
     };
   }
 
-  /**
-   * Autocomplete with suggestions
-   */
+  // Autocomplete with suggestions
   autocomplete(prefix, limit = 10) {
     const cacheKey = `autocomplete:${prefix}:${limit}`;
     
@@ -123,9 +112,7 @@ class SearchEngine {
     };
   }
 
-  /**
-   * Boolean search: AND/OR/NOT
-   */
+  // Boolean search: AND/OR/NOT
   booleanSearch(query) {
     const cacheKey = `boolean:${query}`;
     
@@ -149,9 +136,7 @@ class SearchEngine {
     };
   }
 
-  /**
-   * Get comprehensive stats about search system
-   */
+  // Get comprehensive stats about search system
   getStats() {
     const cacheStats = this.cache.getStats();
     const indexStats = this.index.getStats();
@@ -171,9 +156,7 @@ class SearchEngine {
     };
   }
 
-  /**
-   * Get detailed system state for visualization
-   */
+  // Get detailed system state for visualization
   getSystemState() {
     const stats = this.getStats();
     
@@ -208,7 +191,6 @@ class SearchEngine {
 
   _invalidateCachePrefix(prefix) {
     // Simple cache invalidation for related searches
-    // In production, would use more sophisticated strategy
   }
 
   clear() {

@@ -1,8 +1,4 @@
-/**
- * File Storage System
- * Handles file uploads, versioning, hashing, and metadata management
- */
-
+// File Storage System Handles file uploads, versioning, hashing, and metadata management
 const crypto = require('crypto');
 
 class FileStorage {
@@ -18,9 +14,7 @@ class FileStorage {
     };
   }
 
-  /**
-   * Upload a file with content hashing and metadata
-   */
+  // Upload a file with content hashing and metadata
   uploadFile(filename, content, mimeType = 'text/plain') {
     const fileId = `file_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const hash = this._hashContent(content);
@@ -84,9 +78,7 @@ class FileStorage {
     };
   }
 
-  /**
-   * Get file by ID
-   */
+  // Get file by ID
   getFile(fileId) {
     if (!this.files.has(fileId)) {
       return null;
@@ -103,9 +95,7 @@ class FileStorage {
     return file;
   }
 
-  /**
-   * Get file version history
-   */
+  // Get file version history
   getVersionHistory(filename) {
     if (!this.versions.has(filename)) {
       return [];
@@ -116,9 +106,7 @@ class FileStorage {
     );
   }
 
-  /**
-   * Delete a file
-   */
+  // Delete a file
   deleteFile(fileId) {
     if (!this.files.has(fileId)) {
       return false;
@@ -151,16 +139,12 @@ class FileStorage {
     return true;
   }
 
-  /**
-   * Get all files metadata
-   */
+  // Get all files metadata
   getAllFiles() {
     return Array.from(this.metadata.values());
   }
 
-  /**
-   * Get file statistics
-   */
+  // Get file statistics
   getStats() {
     return {
       ...this.stats,
