@@ -1,8 +1,3 @@
-/**
- * Scalable Systems Simulator - Backend Server
- * Express.js server with integrated Search Engine, Cache, and File Storage
- */
-
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -22,14 +17,7 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 const fileStorage = new FileStorage();
 const searchEngine = new SearchEngine(150);
 
-// ============================================================================
-// FILE STORAGE ENDPOINTS
-// ============================================================================
-
-/**
- * Upload file
- * POST /api/files/upload
- */
+// Upload file
 app.post('/api/files/upload', (req, res) => {
   try {
     const { filename, content, mimeType } = req.body;
@@ -57,10 +45,7 @@ app.post('/api/files/upload', (req, res) => {
   }
 });
 
-/**
- * Get all files metadata
- * GET /api/files
- */
+// Get all files metadata
 app.get('/api/files', (req, res) => {
   try {
     const files = fileStorage.getAllFiles();
@@ -76,10 +61,7 @@ app.get('/api/files', (req, res) => {
   }
 });
 
-/**
- * Get specific file
- * GET /api/files/:fileId
- */
+// Get specific file
 app.get('/api/files/:fileId', (req, res) => {
   try {
     const { fileId } = req.params;
@@ -104,10 +86,7 @@ app.get('/api/files/:fileId', (req, res) => {
   }
 });
 
-/**
- * Get file version history
- * GET /api/files/:filename/versions
- */
+// Get file version history
 app.get('/api/files/:filename/versions', (req, res) => {
   try {
     const { filename } = req.params;
@@ -126,10 +105,7 @@ app.get('/api/files/:filename/versions', (req, res) => {
   }
 });
 
-/**
- * Delete file
- * DELETE /api/files/:fileId
- */
+// Delete file
 app.delete('/api/files/:fileId', (req, res) => {
   try {
     const { fileId } = req.params;
@@ -147,14 +123,7 @@ app.delete('/api/files/:fileId', (req, res) => {
   }
 });
 
-// ============================================================================
-// SEARCH ENDPOINTS
-// ============================================================================
-
-/**
- * Full-text search
- * GET /api/search?q=query&limit=20
- */
+// Full-text search
 app.get('/api/search', (req, res) => {
   try {
     const { q, limit = 20 } = req.query;
@@ -181,10 +150,8 @@ app.get('/api/search', (req, res) => {
   }
 });
 
-/**
- * Autocomplete
- * GET /api/autocomplete?prefix=test&limit=10
- */
+// Autocomplete
+// GET /api/autocomplete?prefix=test&limit=10
 app.get('/api/autocomplete', (req, res) => {
   try {
     const { prefix, limit = 10 } = req.query;
@@ -211,10 +178,8 @@ app.get('/api/autocomplete', (req, res) => {
   }
 });
 
-/**
- * Boolean search
- * GET /api/search/boolean?q=word1+AND+word2
- */
+// Boolean search
+// GET /api/search/boolean?q=word1+AND+word2
 app.get('/api/search/boolean', (req, res) => {
   try {
     const { q } = req.query;
@@ -241,14 +206,8 @@ app.get('/api/search/boolean', (req, res) => {
   }
 });
 
-// ============================================================================
-// SYSTEM STATS & MONITORING ENDPOINTS
-// ============================================================================
-
-/**
- * Get complete system state
- * GET /api/stats
- */
+// Get complete system state
+// GET /api/stats
 app.get('/api/stats', (req, res) => {
   try {
     const systemState = searchEngine.getSystemState();
@@ -268,10 +227,7 @@ app.get('/api/stats', (req, res) => {
   }
 });
 
-/**
- * Health check
- * GET /api/health
- */
+// Health check
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'healthy',
@@ -280,10 +236,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-/**
- * Reset all systems (for demo)
- * POST /api/reset
- */
+// Reset all systems (for demo)
 app.post('/api/reset', (req, res) => {
   try {
     fileStorage.clear();
