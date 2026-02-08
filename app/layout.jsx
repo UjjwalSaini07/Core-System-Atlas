@@ -36,7 +36,7 @@ export const metadata = {
     maximumScale: 1,
     userScalable: false,
   },
-  themeColor: '#0B1220',
+  themeColor: '#F8FAFC',
 
   openGraph: {
     type: 'website',
@@ -56,7 +56,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body className="font-sans antialiased">
         <Toaster />
         {children}

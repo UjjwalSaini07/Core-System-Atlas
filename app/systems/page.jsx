@@ -25,29 +25,29 @@ export default function SystemsPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-slate-50">
       <header className="sticky top-0 z-40 border-b bg-white/95 backdrop-blur shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/">
-              <Button variant="ghost" size="icon">
-                <ArrowLeft className="w-4 h-4 text-blue-600" />
+              <Button variant="ghost" size="icon" className="text-slate-500 hover:text-slate-700">
+                <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
             <div>
-              <h1 className="text-xl font-semibold tracking-tight text-blue-900">System Components</h1>
-              <p className="text-sm text-blue-600/70">Distributed systems patterns</p>
+              <h1 className="text-xl font-semibold tracking-tight text-slate-800">System Components</h1>
+              <p className="text-sm text-slate-500">Distributed systems patterns</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Badge variant={isRunning ? 'default' : 'secondary'} className={isRunning ? 'bg-green-500' : ''}>
-              <span className={`w-2 h-2 rounded-full mr-2 ${isRunning ? 'bg-green-400 animate-pulse' : 'bg-gray-400'}`} />
+            <Badge variant={isRunning ? 'default' : 'secondary'} className={isRunning ? 'bg-emerald-500' : 'bg-slate-300'}>
+              <span className={`w-2 h-2 rounded-full mr-2 ${isRunning ? 'bg-emerald-400 animate-pulse' : 'bg-slate-400'}`} />
               {isRunning ? 'Running' : 'Idle'}
             </Badge>
             <Button
               variant={isRunning ? 'secondary' : 'default'}
               onClick={() => setIsRunning(!isRunning)}
-              className={!isRunning ? 'bg-blue-600 hover:bg-blue-700' : ''}
+              className={!isRunning ? 'bg-teal-600 hover:bg-teal-700' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}
             >
               {isRunning ? <><Pause className="w-4 h-4 mr-2" /> Stop</> : <><Play className="w-4 h-4 mr-2" /> Start Demo</>}
             </Button>
@@ -58,9 +58,9 @@ export default function SystemsPage() {
       <div className="max-w-7xl mx-auto px-6 py-6">
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-3 space-y-4">
-            <Card className="border-blue-200 bg-white/80 backdrop-blur">
+            <Card className="border-slate-200 bg-white shadow-sm">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-blue-900">Components</CardTitle>
+                <CardTitle className="text-sm font-medium text-slate-700">Components</CardTitle>
               </CardHeader>
               <CardContent className="space-y-1">
                 {SYSTEMCOMPONENTS.map((comp) => (
@@ -68,7 +68,7 @@ export default function SystemsPage() {
                     key={comp.id}
                     onClick={() => setActiveComponent(comp.id)}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
-                      activeComponent === comp.id ? 'bg-blue-600 text-white shadow-md' : 'hover:bg-blue-50 text-blue-700'
+                      activeComponent === comp.id ? 'bg-teal-600 text-white shadow-md' : 'hover:bg-slate-100 text-slate-700'
                     }`}
                   >
                     <comp.icon className="w-4 h-4" />
@@ -78,21 +78,21 @@ export default function SystemsPage() {
               </CardContent>
             </Card>
 
-            <Card className="mt-4 border-blue-200 bg-white/80 backdrop-blur">
+            <Card className="mt-4 border-slate-200 bg-white shadow-sm">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm flex items-center gap-2 text-blue-900">
+                <CardTitle className="text-sm flex items-center gap-2 text-slate-700">
                   <Activity className="w-4 h-4" />
                   Live Logs
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-48 overflow-y-auto space-y-1 text-xs font-mono bg-blue-50 rounded-lg p-3">
+                <div className="h-48 overflow-y-auto space-y-1 text-xs font-mono bg-slate-50 rounded-lg p-3">
                   {logs.map((log, i) => (
-                    <div key={i} className={log.type === 'success' ? 'text-green-600' : log.type === 'error' ? 'text-red-600' : 'text-blue-600'}>
+                    <div key={i} className={log.type === 'success' ? 'text-emerald-600' : log.type === 'error' ? 'text-red-600' : 'text-slate-600'}>
                       <span className="opacity-50">{new Date(log.timestamp).toLocaleTimeString()}</span> {log.message}
                     </div>
                   ))}
-                  {logs.length === 0 && <p className="text-blue-400 text-center py-4">No logs yet</p>}
+                  {logs.length === 0 && <p className="text-slate-400 text-center py-4">No logs yet</p>}
                 </div>
               </CardContent>
             </Card>
@@ -134,52 +134,52 @@ function RateLimiterDemo({ isRunning, addLog }) {
   };
 
   return (
-    <Card className="border-blue-200 bg-white/80 backdrop-blur">
+    <Card className="border-slate-200 bg-white shadow-sm">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-blue-900">
-          <Zap className="w-5 h-5 text-blue-600" />
+        <CardTitle className="flex items-center gap-2 text-slate-800">
+          <Zap className="w-5 h-5 text-teal-600" />
           Token Bucket Rate Limiter
         </CardTitle>
-        <CardDescription className="text-blue-600/70">Controls request rate using token bucket algorithm</CardDescription>
+        <CardDescription className="text-slate-500">Controls request rate using token bucket algorithm</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-6">
           <div className="space-y-4">
             <div>
-              <label className="text-sm text-blue-700 font-medium">Available Tokens</label>
+              <label className="text-sm text-slate-700 font-medium">Available Tokens</label>
               <div className="flex items-center gap-3 mt-2">
-                <Progress value={(tokens / config.capacity) * 100} className="flex-1 h-3" />
-                <span className="text-sm font-bold text-blue-700 w-24">{tokens.toFixed(1)} / {config.capacity}</span>
+                <Progress value={(tokens / config.capacity) * 100} className="flex-1 h-3 bg-slate-100" />
+                <span className="text-sm font-bold text-slate-700 w-24">{tokens.toFixed(1)} / {config.capacity}</span>
               </div>
               <div className="flex gap-1 mt-2">
                 {Array.from({ length: config.capacity }).map((_, i) => (
-                  <div key={i} className={`w-3 h-5 rounded-sm ${i < Math.floor(tokens) ? 'bg-blue-500' : 'bg-blue-200'}`} />
+                  <div key={i} className={`w-3 h-5 rounded-sm ${i < Math.floor(tokens) ? 'bg-teal-500' : 'bg-slate-200'}`} />
                 ))}
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 rounded-xl bg-green-50 border border-green-200">
-                <p className="text-2xl font-bold text-green-600">{requests.allowed}</p>
-                <p className="text-xs text-green-700">Allowed</p>
+              <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200">
+                <p className="text-2xl font-bold text-emerald-600">{requests.allowed}</p>
+                <p className="text-xs text-emerald-700">Allowed</p>
               </div>
               <div className="p-4 rounded-xl bg-red-50 border border-red-200">
                 <p className="text-2xl font-bold text-red-600">{requests.denied}</p>
                 <p className="text-xs text-red-700">Denied</p>
               </div>
             </div>
-            <Button onClick={handleRequest} disabled={!isRunning || tokens < 1} className="w-full bg-blue-600 hover:bg-blue-700">Send Request</Button>
+            <Button onClick={handleRequest} disabled={!isRunning || tokens < 1} className="w-full bg-teal-600 hover:bg-teal-700">Send Request</Button>
           </div>
           <div className="space-y-4">
-            <div className="p-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200">
-              <h4 className="font-semibold text-blue-900 mb-3">Configuration</h4>
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+              <h4 className="font-semibold text-slate-800 mb-3">Configuration</h4>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between items-center">
-                  <span className="text-blue-700">Bucket Capacity</span>
-                  <Badge className="bg-blue-100 text-blue-700 border-blue-300">{config.capacity} tokens</Badge>
+                  <span className="text-slate-700">Bucket Capacity</span>
+                  <Badge className="bg-teal-100 text-teal-700 border-teal-300">{config.capacity} tokens</Badge>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-blue-700">Refill Rate</span>
-                  <Badge className="bg-blue-100 text-blue-700 border-blue-300">{config.refillRate}/sec</Badge>
+                  <span className="text-slate-700">Refill Rate</span>
+                  <Badge className="bg-teal-100 text-teal-700 border-teal-300">{config.refillRate}/sec</Badge>
                 </div>
               </div>
             </div>
@@ -217,39 +217,39 @@ function CircuitBreakerDemo({ isRunning, addLog }) {
   const reset = () => { setState('CLOSED'); setFailures(0); setStats({ requests: 0, successes: 0, rejected: 0 }); addLog('success', 'Reset'); };
 
   return (
-    <Card className="border-blue-200 bg-white/80 backdrop-blur">
+    <Card className="border-slate-200 bg-white shadow-sm">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-blue-900">
-          <Shield className="w-5 h-5 text-blue-600" />
+        <CardTitle className="flex items-center gap-2 text-slate-800">
+          <Shield className="w-5 h-5 text-teal-600" />
           Circuit Breaker Pattern
         </CardTitle>
-        <CardDescription className="text-blue-600/70">Prevents cascade failures in distributed systems</CardDescription>
+        <CardDescription className="text-slate-500">Prevents cascade failures in distributed systems</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-6">
           <div className="space-y-4">
-            <div className={`p-6 rounded-2xl border-2 ${state === 'CLOSED' ? 'border-green-500 bg-green-50' : state === 'OPEN' ? 'border-red-500 bg-red-50' : 'border-amber-500 bg-amber-50'}`}>
+            <div className={`p-6 rounded-2xl border-2 ${state === 'CLOSED' ? 'border-emerald-500 bg-emerald-50' : state === 'OPEN' ? 'border-red-500 bg-red-50' : 'border-amber-500 bg-amber-50'}`}>
               <div className="flex items-center justify-between mb-3">
-                <span className="font-medium text-blue-900">Circuit State</span>
-                <Badge className={state === 'CLOSED' ? 'bg-green-500' : state === 'OPEN' ? 'bg-red-500' : 'bg-amber-500'}>{state}</Badge>
+                <span className="font-medium text-slate-800">Circuit State</span>
+                <Badge className={state === 'CLOSED' ? 'bg-emerald-500' : state === 'OPEN' ? 'bg-red-500' : 'bg-amber-500'}>{state}</Badge>
               </div>
               <div className="flex justify-center my-4">
-                <div className={`w-24 h-24 rounded-full flex items-center justify-center ${state === 'CLOSED' ? 'bg-green-500' : state === 'OPEN' ? 'bg-red-500' : 'bg-amber-500'}`}>
+                <div className={`w-24 h-24 rounded-full flex items-center justify-center ${state === 'CLOSED' ? 'bg-emerald-500' : state === 'OPEN' ? 'bg-red-500' : 'bg-amber-500'}`}>
                   {state === 'CLOSED' && <Shield className="w-12 h-12 text-white" />}
                   {state === 'OPEN' && <div className="w-3 h-3 rounded-full bg-white animate-ping" />}
                   {state === 'HALF_OPEN' && <Activity className="w-12 h-12 text-white animate-pulse" />}
                 </div>
               </div>
-              <p className="text-sm text-blue-700 text-center">{state === 'CLOSED' ? 'Normal operation' : state === 'OPEN' ? 'Blocking requests' : 'Testing recovery'}</p>
+              <p className="text-sm text-slate-700 text-center">{state === 'CLOSED' ? 'Normal operation' : state === 'OPEN' ? 'Blocking requests' : 'Testing recovery'}</p>
             </div>
             <div className="grid grid-cols-3 gap-3">
-              <div className="p-3 rounded-lg bg-blue-50 border border-blue-200">
-                <p className="text-xl font-bold text-blue-600">{failures}</p>
-                <p className="text-xs text-blue-700">Failures</p>
+              <div className="p-3 rounded-lg bg-slate-100 border border-slate-200">
+                <p className="text-xl font-bold text-slate-700">{failures}</p>
+                <p className="text-xs text-slate-500">Failures</p>
               </div>
-              <div className="p-3 rounded-lg bg-green-50 border border-green-200">
-                <p className="text-xl font-bold text-green-600">{stats.successes}</p>
-                <p className="text-xs text-green-700">Successes</p>
+              <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200">
+                <p className="text-xl font-bold text-emerald-600">{stats.successes}</p>
+                <p className="text-xs text-emerald-700">Successes</p>
               </div>
               <div className="p-3 rounded-lg bg-red-50 border border-red-200">
                 <p className="text-xl font-bold text-red-600">{stats.rejected}</p>
@@ -257,19 +257,19 @@ function CircuitBreakerDemo({ isRunning, addLog }) {
               </div>
             </div>
             <div className="flex gap-3">
-              <Button onClick={simulateRequest} disabled={!isRunning} className="flex-1 bg-blue-600 hover:bg-blue-700">Simulate Request</Button>
-              <Button variant="outline" onClick={reset} className="border-blue-300 text-blue-700"><RefreshCw className="w-4 h-4 mr-2" />Reset</Button>
+              <Button onClick={simulateRequest} disabled={!isRunning} className="flex-1 bg-teal-600 hover:bg-teal-700">Simulate Request</Button>
+              <Button variant="outline" onClick={reset} className="border-slate-300 text-slate-700"><RefreshCw className="w-4 h-4 mr-2" />Reset</Button>
             </div>
           </div>
           <div className="space-y-4">
-            <div className="p-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200">
-              <h4 className="font-semibold text-blue-900 mb-3">State Machine</h4>
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+              <h4 className="font-semibold text-slate-800 mb-3">State Machine</h4>
               <div className="flex items-center gap-2 text-sm">
-                <div className={`px-3 py-1 rounded ${state === 'CLOSED' ? 'bg-green-500 text-white' : 'bg-blue-100 text-blue-700'}`}>CLOSED</div>
-                <span className="text-blue-400">→</span>
-                <div className={`px-3 py-1 rounded ${state === 'OPEN' ? 'bg-red-500 text-white' : 'bg-blue-100 text-blue-700'}`}>OPEN</div>
-                <span className="text-blue-400">→</span>
-                <div className={`px-3 py-1 rounded ${state === 'HALF_OPEN' ? 'bg-amber-500 text-white' : 'bg-blue-100 text-blue-700'}`}>HALF_OPEN</div>
+                <div className={`px-3 py-1 rounded ${state === 'CLOSED' ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-700'}`}>CLOSED</div>
+                <span className="text-slate-400">→</span>
+                <div className={`px-3 py-1 rounded ${state === 'OPEN' ? 'bg-red-500 text-white' : 'bg-slate-200 text-slate-700'}`}>OPEN</div>
+                <span className="text-slate-400">→</span>
+                <div className={`px-3 py-1 rounded ${state === 'HALF_OPEN' ? 'bg-amber-500 text-white' : 'bg-slate-200 text-slate-700'}`}>HALF_OPEN</div>
               </div>
             </div>
           </div>
@@ -293,38 +293,38 @@ function LoadBalancerDemo({ isRunning, addLog }) {
   };
 
   return (
-    <Card className="border-blue-200 bg-white/80 backdrop-blur">
+    <Card className="border-slate-200 bg-white shadow-sm">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-blue-900">
-          <Globe className="w-5 h-5 text-blue-600" />
+        <CardTitle className="flex items-center gap-2 text-slate-800">
+          <Globe className="w-5 h-5 text-teal-600" />
           Load Balancer
         </CardTitle>
-        <CardDescription className="text-blue-600/70">Distributes traffic across multiple servers</CardDescription>
+        <CardDescription className="text-slate-500">Distributes traffic across multiple servers</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           <div className="grid grid-cols-3 gap-4">
             {servers.map((server) => (
-              <div key={server.id} className={`p-4 rounded-xl border-2 ${server.cpu > 80 ? 'border-red-400 bg-red-50' : 'border-blue-300 bg-blue-50'}`}>
+              <div key={server.id} className={`p-4 rounded-xl border-2 ${server.cpu > 80 ? 'border-red-400 bg-red-50' : 'border-slate-300 bg-slate-50'}`}>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="font-medium text-blue-900">{server.name}</span>
-                  <Badge className={server.cpu > 80 ? 'bg-red-100 text-red-700 border-red-300' : 'bg-green-100 text-green-700 border-green-300'}>healthy</Badge>
+                  <span className="font-medium text-slate-800">{server.name}</span>
+                  <Badge className={server.cpu > 80 ? 'bg-red-100 text-red-700 border-red-300' : 'bg-emerald-100 text-emerald-700 border-emerald-300'}>healthy</Badge>
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-blue-700">CPU</span>
-                    <span className="font-medium text-blue-900">{server.cpu.toFixed(0)}%</span>
+                    <span className="text-slate-700">CPU</span>
+                    <span className="font-medium text-slate-800">{server.cpu.toFixed(0)}%</span>
                   </div>
-                  <Progress value={server.cpu} className={`h-2 ${server.cpu > 80 ? 'bg-red-200' : 'bg-blue-200'}`} />
+                  <Progress value={server.cpu} className={`h-2 ${server.cpu > 80 ? 'bg-red-200' : 'bg-slate-200'}`} />
                   <div className="flex justify-between text-sm pt-1">
-                    <span className="text-blue-700">Requests</span>
-                    <span className="font-medium text-blue-900">{server.requests}</span>
+                    <span className="text-slate-700">Requests</span>
+                    <span className="font-medium text-slate-800">{server.requests}</span>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-          <Button onClick={simulateRequest} disabled={!isRunning} className="w-full bg-blue-600 hover:bg-blue-700">Route Request</Button>
+          <Button onClick={simulateRequest} disabled={!isRunning} className="w-full bg-teal-600 hover:bg-teal-700">Route Request</Button>
         </div>
       </CardContent>
     </Card>

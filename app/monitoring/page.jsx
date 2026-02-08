@@ -112,26 +112,26 @@ export default function MonitoringPage() {
   const trendIcon = (trend) => {
     if (trend === 'up') return <TrendingUp className="w-4 h-4 text-emerald-500" />;
     if (trend === 'down') return <TrendingDown className="w-4 h-4 text-red-500" />;
-    return <Minus className="w-4 h-4 text-muted-foreground" />;
+    return <Minus className="w-4 h-4 text-slate-400" />;
   };
 
   const isStale =
     lastUpdate && Date.now() - lastUpdate.getTime() > refreshRate * 2;
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-slate-50">
       {/* Header */}
-      <header className="border-b sticky top-0 bg-background z-50">
+      <header className="border-b sticky top-0 bg-white z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <Link href="/">
-              <Button variant="outline" size="icon">
+              <Button variant="outline" size="icon" className="border-slate-200 text-slate-600 hover:bg-slate-50">
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
             <div>
-              <h1 className="text-xl font-semibold">System Monitoring</h1>
-              <p className="text-sm text-muted-foreground">
+              <h1 className="text-xl font-semibold text-slate-800">System Monitoring</h1>
+              <p className="text-sm text-slate-500">
                 Infrastructure and performance overview
               </p>
             </div>
@@ -141,7 +141,7 @@ export default function MonitoringPage() {
             <select
               value={timeRange}
               onChange={(e) => setTimeRange(e.target.value)}
-              className="border rounded-md px-2 py-1 text-sm bg-background"
+              className="border border-slate-200 rounded-md px-2 py-1 text-sm bg-white text-slate-700"
             >
               <option value="1m">Last 1 min</option>
               <option value="5m">Last 5 min</option>
@@ -151,7 +151,7 @@ export default function MonitoringPage() {
             <select
               value={refreshRate}
               onChange={(e) => setRefreshRate(Number(e.target.value))}
-              className="border rounded-md px-2 py-1 text-sm bg-background"
+              className="border border-slate-200 rounded-md px-2 py-1 text-sm bg-white text-slate-700"
             >
               <option value={1000}>1s</option>
               <option value={2000}>2s</option>
@@ -161,6 +161,7 @@ export default function MonitoringPage() {
             <Button
               variant={autoRefresh ? 'secondary' : 'outline'}
               onClick={() => setAutoRefresh(!autoRefresh)}
+              className={autoRefresh ? 'bg-slate-200 text-slate-700' : 'border-slate-200 text-slate-600'}
             >
               {autoRefresh ? (
                 <Pause className="w-4 h-4 mr-2" />
@@ -170,7 +171,7 @@ export default function MonitoringPage() {
               {autoRefresh ? 'Live' : 'Paused'}
             </Button>
 
-            <Button variant="outline" onClick={fetchStats}>
+            <Button variant="outline" onClick={fetchStats} className="border-slate-200 text-slate-600 hover:bg-slate-50">
               <RefreshCw className="w-4 h-4" />
             </Button>
           </div>
@@ -179,7 +180,7 @@ export default function MonitoringPage() {
 
       {/* Status Bar */}
       <div className="max-w-7xl mx-auto px-6 py-3 text-sm flex justify-between">
-        <span className="text-muted-foreground">
+        <span className="text-slate-500">
           {loading
             ? 'Connecting to monitoring service…'
             : error
@@ -198,12 +199,12 @@ export default function MonitoringPage() {
       {/* Alerts */}
       {alerts.length > 0 && (
         <div className="max-w-7xl mx-auto px-6 mb-6">
-          <Card className="p-4 border-amber-500/30 bg-background">
+          <Card className="p-4 border-amber-200 bg-amber-50">
             <div className="flex items-center gap-2 mb-2">
               <AlertTriangle className="w-4 h-4 text-amber-500" />
-              <h3 className="font-medium">System Warnings</h3>
+              <h3 className="font-medium text-slate-800">System Warnings</h3>
             </div>
-            <ul className="text-sm text-muted-foreground list-disc ml-5">
+            <ul className="text-sm text-slate-600 list-disc ml-5">
               {alerts.map((a, i) => (
                 <li key={i}>{a}</li>
               ))}
@@ -215,13 +216,13 @@ export default function MonitoringPage() {
       {/* Metrics */}
       <section className="max-w-7xl mx-auto px-6 grid grid-cols-2 lg:grid-cols-4 gap-4">
         {metrics.map((m, i) => (
-          <Card key={i} className="p-4">
+          <Card key={i} className="p-4 border-slate-200 bg-white shadow-sm">
             <div className="flex justify-between mb-2">
-              <span className="text-sm text-muted-foreground">{m.label}</span>
-              <m.icon className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm text-slate-500">{m.label}</span>
+              <m.icon className="w-4 h-4 text-slate-400" />
             </div>
             <div className="flex items-end gap-2">
-              <span className="text-2xl font-semibold">
+              <span className="text-2xl font-semibold text-slate-800">
                 {m.value}
                 {m.unit}
               </span>
@@ -234,10 +235,10 @@ export default function MonitoringPage() {
       {/* Tabs */}
       <section className="max-w-7xl mx-auto px-6 py-8">
         <Tabs defaultValue="cache">
-          <TabsList className="grid grid-cols-3">
-            <TabsTrigger value="cache">Cache</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="performance">Performance</TabsTrigger>
+          <TabsList className="bg-slate-100 border-slate-200">
+            <TabsTrigger value="cache" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white">Cache</TabsTrigger>
+            <TabsTrigger value="analytics" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white">Analytics</TabsTrigger>
+            <TabsTrigger value="performance" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white">Performance</TabsTrigger>
           </TabsList>
 
           <TabsContent value="cache">

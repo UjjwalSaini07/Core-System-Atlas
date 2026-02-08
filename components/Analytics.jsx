@@ -6,10 +6,10 @@ import { Button } from '@/components/ui/button'
 import { ResponsiveContainer, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, } from 'recharts'
 
 const COLORS = {
-  primary: '#38BDF8',
-  secondary: '#818CF8',
-  grid: 'rgba(148,163,184,0.12)',
-  text: '#94A3B8',
+  primary: '#0891B2',
+  secondary: '#6366F1',
+  grid: 'rgba(148, 163, 184, 0.2)',
+  text: '#64748B',
 }
 
 /* ---------------- Utils ---------------- */
@@ -82,11 +82,11 @@ export function Analytics({ stats }) {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <Card className="p-6">
+      <Card className="p-6 bg-white border-slate-200 shadow-sm">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <h3 className="text-lg font-semibold">Search Operations</h3>
-            <p className="text-sm text-muted-foreground">
+            <h3 className="text-lg font-semibold text-slate-800">Search Operations</h3>
+            <p className="text-sm text-slate-500">
               Query volume and latency trends
             </p>
           </div>
@@ -95,7 +95,7 @@ export function Analytics({ stats }) {
             <select
               value={range}
               onChange={(e) => setRange(e.target.value)}
-              className="text-sm bg-background border rounded px-2 py-1"
+              className="text-sm bg-slate-50 border border-slate-200 rounded px-2 py-1"
             >
               <option value="1m">1m</option>
               <option value="5m">5m</option>
@@ -121,7 +121,14 @@ export function Analytics({ stats }) {
                 <CartesianGrid stroke={COLORS.grid} />
                 <XAxis dataKey="t" stroke={COLORS.text} tickLine={false} />
                 <YAxis stroke={COLORS.text} allowDecimals={false} />
-                <Tooltip />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'white', 
+                    border: '1px solid #E2E8F0',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                  }}
+                />
                 {p95 > 0 && (
                   <ReferenceLine
                     y={p95}
@@ -143,8 +150,8 @@ export function Analytics({ stats }) {
       </Card>
 
       {/* ================= INDEX STATISTICS ================= */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Index Statistics</h3>
+      <Card className="p-6 bg-white border-slate-200 shadow-sm">
+        <h3 className="text-lg font-semibold text-slate-800 mb-4">Index Statistics</h3>
 
         <div className="grid grid-cols-3 gap-4 mb-4">
           <Metric label="Documents" value={stats?.index?.indexedDocuments || 0} />
@@ -159,7 +166,14 @@ export function Analytics({ stats }) {
                 <CartesianGrid stroke={COLORS.grid} />
                 <XAxis dataKey="t" stroke={COLORS.text} tickLine={false} />
                 <YAxis stroke={COLORS.text} />
-                <Tooltip />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'white', 
+                    border: '1px solid #E2E8F0',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                  }}
+                />
                 <Area
                   type="monotone"
                   dataKey="value"
@@ -176,8 +190,8 @@ export function Analytics({ stats }) {
       </Card>
 
       {/* ================= RECENT OPERATIONS ================= */}
-      <Card className="p-6 lg:col-span-2">
-        <h3 className="text-lg font-semibold mb-4">Recent System Operations</h3>
+      <Card className="p-6 bg-white border-slate-200 shadow-sm lg:col-span-2">
+        <h3 className="text-lg font-semibold text-slate-800 mb-4">Recent System Operations</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <CacheOperationList items={stats?.cache?.operations} />
@@ -196,15 +210,15 @@ export function Analytics({ stats }) {
 function Metric({ label, value }) {
   return (
     <div>
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="text-lg font-semibold">{value}</p>
+      <p className="text-xs text-slate-500">{label}</p>
+      <p className="text-lg font-semibold text-slate-700">{value}</p>
     </div>
   )
 }
 
 function EmptyState({ label }) {
   return (
-    <div className="h-full flex items-center justify-center text-sm text-muted-foreground">
+    <div className="h-full flex items-center justify-center text-sm text-slate-500">
       {label}
     </div>
   )
@@ -214,30 +228,30 @@ function EmptyState({ label }) {
 function CacheOperationList({ items = [] }) {
   return (
     <div>
-      <p className="text-sm font-medium mb-2">Cache</p>
+      <p className="text-sm font-medium text-slate-700 mb-2">Cache</p>
 
       {items.length === 0 ? (
-        <p className="text-xs text-muted-foreground">No cache activity</p>
+        <p className="text-xs text-slate-500">No cache activity</p>
       ) : (
         <div className="space-y-1 max-h-48 overflow-y-auto">
           {items.slice(-10).map((op, i) => (
             <div
               key={i}
-              className="flex items-center justify-between px-2 py-1 rounded bg-muted/40 text-xs"
+              className="flex items-center justify-between px-2 py-1 rounded bg-slate-50 text-xs"
             >
               <div className="flex items-center gap-2">
                 <span
                   className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${
                     op.type === 'hit'
-                      ? 'bg-emerald-500/20 text-emerald-400'
+                      ? 'bg-emerald-100 text-emerald-700'
                       : op.type === 'miss'
-                      ? 'bg-amber-500/20 text-amber-400'
-                      : 'bg-slate-500/20 text-slate-400'
+                      ? 'bg-amber-100 text-amber-700'
+                      : 'bg-slate-100 text-slate-600'
                   }`}
                 >
                   {op.type}
                 </span>
-                <span className="font-mono opacity-70 truncate max-w-[140px]">
+                <span className="font-mono text-slate-600 truncate max-w-[140px]">
                   {op.key}
                 </span>
               </div>
@@ -252,15 +266,15 @@ function CacheOperationList({ items = [] }) {
 function OperationList({ title, items = [], field }) {
   return (
     <div>
-      <p className="text-sm font-medium mb-2">{title}</p>
+      <p className="text-sm font-medium text-slate-700 mb-2">{title}</p>
       <div className="space-y-1 max-h-48 overflow-y-auto">
         {items?.slice(-10).map((op, i) => (
           <div
             key={i}
-            className="flex justify-between px-2 py-1 text-xs bg-muted/40 rounded"
+            className="flex justify-between px-2 py-1 text-xs bg-slate-50 rounded"
           >
-            <span>{op.type}</span>
-            <span className="font-mono opacity-70 truncate max-w-[140px]">
+            <span className="text-slate-600">{op.type}</span>
+            <span className="font-mono text-slate-600 truncate max-w-[140px]">
               {op[field]}
             </span>
           </div>

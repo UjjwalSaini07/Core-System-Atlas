@@ -44,8 +44,8 @@ export function SystemStats({ stats }) {
     {
       title: 'LRU Cache',
       icon: Zap,
-      iconColor: 'text-cyan-400',
-      iconBg: 'bg-cyan-500/10',
+      iconColor: 'text-teal-600',
+      iconBg: 'bg-teal-100',
       highlight: `${cache?.size || 0}/${cache?.capacity || 100}`,
       trend,
       progress: cacheUtilization,
@@ -58,8 +58,8 @@ export function SystemStats({ stats }) {
     {
       title: 'Search Index',
       icon: Database,
-      iconColor: 'text-green-400',
-      iconBg: 'bg-green-500/10',
+      iconColor: 'text-emerald-600',
+      iconBg: 'bg-emerald-100',
       highlight: index?.indexedDocuments || 0,
       progress: indexProgress,
       rows: [
@@ -74,8 +74,8 @@ export function SystemStats({ stats }) {
     {
       title: 'File Storage',
       icon: Grid3x3,
-      iconColor: 'text-purple-400',
-      iconBg: 'bg-purple-500/10',
+      iconColor: 'text-violet-600',
+      iconBg: 'bg-violet-100',
       highlight: storage?.totalFiles || 0,
       progress: storageProgress,
       rows: [
@@ -94,9 +94,9 @@ export function SystemStats({ stats }) {
       {cards.map((c, i) => (
         <Card
           key={c.title}
-          className="group relative overflow-hidden p-6 bg-gradient-to-br from-[var(--color-card)] to-[var(--color-muted)]/30 border-[var(--color-border)] hover-lift"
+          className="group relative overflow-hidden p-6 bg-white border-slate-200 shadow-sm hover-lift"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-teal-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-4">
@@ -104,19 +104,19 @@ export function SystemStats({ stats }) {
                 <c.icon className={`w-5 h-5 ${c.iconColor}`} />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">{c.title}</p>
+                <p className="text-sm text-slate-500">{c.title}</p>
                 <div className="flex items-center gap-2">
-                  <p className="text-2xl font-bold gradient-text">
+                  <p className="text-2xl font-bold text-slate-800">
                     {c.highlight}
                   </p>
                   {i === 0 && (
                     <TrendIcon
                       className={`w-4 h-4 ${
                         trend === 'up'
-                          ? 'text-green-400'
+                          ? 'text-emerald-500'
                           : trend === 'down'
-                          ? 'text-red-400'
-                          : 'text-muted-foreground'
+                          ? 'text-red-500'
+                          : 'text-slate-400'
                       }`}
                     />
                   )}
@@ -125,14 +125,14 @@ export function SystemStats({ stats }) {
             </div>
 
             <div className="mb-4">
-              <Progress value={c.progress} className="h-1.5" />
+              <Progress value={c.progress} className="h-1.5 bg-slate-100" />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               {c.rows.map((r) => (
                 <div key={r.label}>
-                  <p className="text-xs text-muted-foreground">{r.label}</p>
-                  <p className="text-sm font-medium">{r.value}</p>
+                  <p className="text-xs text-slate-500">{r.label}</p>
+                  <p className="text-sm font-medium text-slate-700">{r.value}</p>
                 </div>
               ))}
             </div>

@@ -110,32 +110,32 @@ export default function Page() {
   };
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-slate-50">
       <Toaster />
 
-      <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-40 border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/95 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-semibold tracking-tight">Search System</h1>
-            <p className="text-sm text-muted-foreground">
+            <h1 className="text-xl font-semibold tracking-tight text-slate-800">Search System</h1>
+            <p className="text-sm text-slate-500">
               File indexing, search, and caching
             </p>
           </div>
           <div className="flex items-center gap-3">
             <Link href="/visualize">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-800 hover:bg-slate-100">
                 <Network className="w-4 h-4 mr-2" />
                 Visualizer
               </Button>
             </Link>
             <Link href="/analytics">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-800 hover:bg-slate-100">
                 <BarChart2 className="w-4 h-4 mr-2" />
                 Analytics
               </Button>
             </Link>
             <Link href="/docs">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-800 hover:bg-slate-100">
                 <BookOpen className="w-4 h-4 mr-2" />
                 Docs
               </Button>
@@ -143,6 +143,7 @@ export default function Page() {
             <Button
               variant="outline"
               size="icon"
+              className="border-slate-200 text-slate-600 hover:bg-slate-50"
               onClick={() => {
                 fetchFiles();
                 fetchStats();
@@ -151,7 +152,7 @@ export default function Page() {
               <RefreshCw className="w-4 h-4" />
             </Button>
             <Link href="/monitoring">
-              <Button variant="outline">Monitoring</Button>
+              <Button variant="outline" className="border-slate-200 text-slate-600 hover:bg-slate-50">Monitoring</Button>
             </Link>
           </div>
         </div>
@@ -162,13 +163,13 @@ export default function Page() {
         {stats && <SystemStats stats={stats} />}
 
         {/* Info */}
-        <Card className="p-4 border-muted">
-          <div className="flex gap-3 text-sm text-muted-foreground">
-            <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
+        <Card className="p-4 border-slate-200 bg-white shadow-sm">
+          <div className="flex gap-3 text-sm text-slate-600">
+            <Info className="w-4 h-4 mt-0.5 flex-shrink-0 text-teal-600" />
             <div>
               Files are indexed automatically using an inverted index and cached
               with an LRU strategy for fast repeated searches.
-              <div className="mt-2 flex items-center gap-2 text-xs">
+              <div className="mt-2 flex items-center gap-2 text-xs text-slate-500">
                 <Keyboard className="w-3 h-3" />
                 Press Ctrl / Cmd + K to focus search
               </div>
@@ -178,9 +179,9 @@ export default function Page() {
 
         {/* Main Work Area */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-2 w-full">
-            <TabsTrigger value="search">Search</TabsTrigger>
-            <TabsTrigger value="files">Files</TabsTrigger>
+          <TabsList className="grid grid-cols-2 w-full bg-slate-100 border-slate-200">
+            <TabsTrigger value="search" className="data-[state=active]:bg-white data-[state=active]:text-teal-700 data-[state=active]:shadow-sm">Search</TabsTrigger>
+            <TabsTrigger value="files" className="data-[state=active]:bg-white data-[state=active]:text-teal-700 data-[state=active]:shadow-sm">Files</TabsTrigger>
           </TabsList>
 
           <TabsContent value="search" className="mt-6">
@@ -209,23 +210,24 @@ export default function Page() {
 
         {/* File Inspector */}
         {selectedFile && (
-          <Card className="p-6">
+          <Card className="p-6 border-slate-200 bg-white shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="font-medium">{selectedFile.filename}</h3>
-                <p className="text-xs text-muted-foreground">
+                <h3 className="font-medium text-slate-800">{selectedFile.filename}</h3>
+                <p className="text-xs text-slate-500">
                   Version {selectedFile.version} · {selectedFile.wordCount} words
                 </p>
               </div>
               <Button
                 size="icon"
                 variant="ghost"
+                className="text-slate-400 hover:text-slate-600"
                 onClick={() => setSelectedFile(null)}
               >
                 <X className="w-4 h-4" />
               </Button>
             </div>
-            <pre className="text-sm whitespace-pre-wrap font-mono text-muted-foreground">
+            <pre className="text-sm whitespace-pre-wrap font-mono text-slate-600 bg-slate-50 rounded-lg p-4">
               {selectedFile.content || selectedFile.preview}
             </pre>
           </Card>
@@ -233,13 +235,13 @@ export default function Page() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t py-4 mt-12 text-sm text-muted-foreground">
+      <footer className="border-t py-4 mt-12 text-sm text-slate-500 bg-white">
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <span>
               Backend: LRU Cache · Trie · Inverted Index
             </span>
-            <span className="text-xs px-2 py-1 rounded-full bg-muted">
+            <span className="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-600">
               Graph · Heap · Segment Tree · Union-Find · BIT
             </span>
           </div>

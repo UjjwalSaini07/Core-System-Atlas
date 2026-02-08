@@ -14,11 +14,11 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 
 const DSACATEGORIES = [
-  { id: 'graph', name: 'Graph', icon: Network, color: 'text-blue-600', bg: 'bg-blue-100' },
-  { id: 'heap', name: 'Heap', icon: Layers, color: 'text-blue-600', bg: 'bg-blue-100' },
-  { id: 'segment', name: 'Segment Tree', icon: Database, color: 'text-blue-600', bg: 'bg-blue-100' },
-  { id: 'unionfind', name: 'Union-Find', icon: GitBranch, color: 'text-blue-600', bg: 'bg-blue-100' },
-  { id: 'bit', name: 'Binary Indexed Tree', icon: Database, color: 'text-blue-600', bg: 'bg-blue-100' }
+  { id: 'graph', name: 'Graph', icon: Network, color: 'text-teal-600', bg: 'bg-teal-100' },
+  { id: 'heap', name: 'Heap', icon: Layers, color: 'text-teal-600', bg: 'bg-teal-100' },
+  { id: 'segment', name: 'Segment Tree', icon: Database, color: 'text-teal-600', bg: 'bg-teal-100' },
+  { id: 'unionfind', name: 'Union-Find', icon: GitBranch, color: 'text-teal-600', bg: 'bg-teal-100' },
+  { id: 'bit', name: 'Binary Indexed Tree', icon: Database, color: 'text-teal-600', bg: 'bg-teal-100' }
 ];
 
 const ALGORITHMS = {
@@ -98,26 +98,26 @@ export default function VisualizePage() {
   }, [isPlaying, speed]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <header className="sticky top-0 z-40 border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/95 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/">
-              <Button variant="ghost" size="icon">
-                <ArrowLeft className="w-4 h-4 text-blue-600" />
+              <Button variant="ghost" size="icon" className="text-slate-500 hover:text-slate-700">
+                <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
             <div>
-              <h1 className="text-xl font-semibold tracking-tight text-blue-900">Algorithm Visualizer</h1>
-              <p className="text-sm text-blue-600/70">
+              <h1 className="text-xl font-semibold tracking-tight text-slate-800">Algorithm Visualizer</h1>
+              <p className="text-sm text-slate-500">
                 Interactive DSA visualization
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-blue-200 bg-blue-50">
-              <span className="text-sm text-blue-600/70">Speed:</span>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-slate-200 bg-slate-50">
+              <span className="text-sm text-slate-600">Speed:</span>
               <input
                 type="range"
                 min="0.5"
@@ -125,15 +125,15 @@ export default function VisualizePage() {
                 step="0.5"
                 value={speed}
                 onChange={(e) => setSpeed(parseFloat(e.target.value))}
-                className="w-20 accent-blue-600"
+                className="w-20 accent-teal-600"
               />
-              <span className="text-sm w-8 text-blue-700">{speed}x</span>
+              <span className="text-sm w-8 text-slate-700">{speed}x</span>
             </div>
             <Button
               variant={isPlaying ? 'secondary' : 'default'}
               size="sm"
               onClick={() => setIsPlaying(!isPlaying)}
-              className={isPlaying ? '' : 'bg-blue-600 hover:bg-blue-700'}
+              className={isPlaying ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' : 'bg-teal-600 hover:bg-teal-700 text-white'}
             >
               {isPlaying ? (
                 <><Pause className="w-4 h-4 mr-2" /> Pause</>
@@ -141,12 +141,13 @@ export default function VisualizePage() {
                 <><Play className="w-4 h-4 mr-2" /> Play</>
               )}
             </Button>
-            <Button variant="outline" size="sm" onClick={generateData}>
+            <Button variant="outline" size="sm" className="border-slate-200 text-slate-600 hover:bg-slate-50" onClick={generateData}>
               <RotateCcw className="w-4 h-4 mr-2" /> Reset
             </Button>
             <Button 
               variant="ghost" 
               size="sm" 
+              className="text-slate-500 hover:text-slate-700"
               onClick={() => setShowDetails(!showDetails)}
             >
               {showDetails ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
@@ -158,67 +159,67 @@ export default function VisualizePage() {
       <div className="max-w-7xl mx-auto px-6 py-6">
         {/* Stats Bar */}
         <div className="grid grid-cols-5 gap-4 mb-6">
-          <Card className="border-blue-200 bg-white/80 backdrop-blur">
+          <Card className="border-slate-200 bg-white shadow-sm">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-blue-600/70 uppercase font-medium">Step</p>
-                  <p className="text-2xl font-bold text-blue-700">{step}</p>
+                  <p className="text-xs text-slate-500 uppercase font-medium">Step</p>
+                  <p className="text-2xl font-bold text-slate-800">{step}</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                  <BarChart2 className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center">
+                  <BarChart2 className="w-5 h-5 text-teal-600" />
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card className="border-blue-200 bg-white/80 backdrop-blur">
+          <Card className="border-slate-200 bg-white shadow-sm">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-blue-600/70 uppercase font-medium">Comparisons</p>
-                  <p className="text-2xl font-bold text-blue-700">{stats.comparisons}</p>
+                  <p className="text-xs text-slate-500 uppercase font-medium">Comparisons</p>
+                  <p className="text-2xl font-bold text-slate-800">{stats.comparisons}</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                  <Network className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center">
+                  <Network className="w-5 h-5 text-teal-600" />
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card className="border-blue-200 bg-white/80 backdrop-blur">
+          <Card className="border-slate-200 bg-white shadow-sm">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-blue-600/70 uppercase font-medium">Operations</p>
-                  <p className="text-2xl font-bold text-blue-700">{stats.operations}</p>
+                  <p className="text-xs text-slate-500 uppercase font-medium">Operations</p>
+                  <p className="text-2xl font-bold text-slate-800">{stats.operations}</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                  <Database className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center">
+                  <Database className="w-5 h-5 text-teal-600" />
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card className="border-blue-200 bg-white/80 backdrop-blur">
+          <Card className="border-slate-200 bg-white shadow-sm">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-blue-600/70 uppercase font-medium">Data Size</p>
-                  <p className="text-2xl font-bold text-blue-700">{data.length}</p>
+                  <p className="text-xs text-slate-500 uppercase font-medium">Data Size</p>
+                  <p className="text-2xl font-bold text-slate-800">{data.length}</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                  <Layers className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center">
+                  <Layers className="w-5 h-5 text-teal-600" />
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card className="border-blue-200 bg-white/80 backdrop-blur">
+          <Card className="border-slate-200 bg-white shadow-sm">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-blue-600/70 uppercase font-medium">Status</p>
-                  <p className="text-2xl font-bold text-blue-700">{isPlaying ? 'Running' : 'Idle'}</p>
+                  <p className="text-xs text-slate-500 uppercase font-medium">Status</p>
+                  <p className="text-2xl font-bold text-slate-800">{isPlaying ? 'Running' : 'Idle'}</p>
                 </div>
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isPlaying ? 'bg-green-100' : 'bg-gray-100'}`}>
-                  <div className={`w-3 h-3 rounded-full ${isPlaying ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`} />
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isPlaying ? 'bg-emerald-100' : 'bg-slate-100'}`}>
+                  <div className={`w-3 h-3 rounded-full ${isPlaying ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`} />
                 </div>
               </div>
             </CardContent>
@@ -228,9 +229,9 @@ export default function VisualizePage() {
         <div className="grid grid-cols-12 gap-6">
           {/* Sidebar */}
           <div className="col-span-3 space-y-4">
-            <Card className="border-blue-200 bg-white/80 backdrop-blur">
+            <Card className="border-slate-200 bg-white shadow-sm">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-blue-900">Data Structure</CardTitle>
+                <CardTitle className="text-sm font-medium text-slate-700">Data Structure</CardTitle>
               </CardHeader>
               <CardContent className="space-y-1">
                 {DSACATEGORIES.map((cat) => (
@@ -242,8 +243,8 @@ export default function VisualizePage() {
                     }}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
                       activeCategory === cat.id
-                        ? 'bg-blue-600 text-white shadow-md'
-                        : 'hover:bg-blue-50 text-blue-700'
+                        ? 'bg-teal-600 text-white shadow-md'
+                        : 'hover:bg-slate-100 text-slate-700'
                     }`}
                   >
                     <cat.icon className="w-4 h-4" />
@@ -253,9 +254,9 @@ export default function VisualizePage() {
               </CardContent>
             </Card>
 
-            <Card className="border-blue-200 bg-white/80 backdrop-blur">
+            <Card className="border-slate-200 bg-white shadow-sm">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-blue-900">Algorithms</CardTitle>
+                <CardTitle className="text-sm font-medium text-slate-700">Algorithms</CardTitle>
               </CardHeader>
               <CardContent className="space-y-1">
                 {currentAlgorithms.map((algo) => (
@@ -264,12 +265,12 @@ export default function VisualizePage() {
                     onClick={() => setSelectedAlgorithm(algo)}
                     className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all ${
                       selectedAlgorithm?.id === algo.id
-                        ? 'bg-blue-100 text-blue-700 border border-blue-300'
-                        : 'hover:bg-blue-50 text-blue-700'
+                        ? 'bg-teal-100 text-teal-700 border border-teal-300'
+                        : 'hover:bg-slate-100 text-slate-700'
                     }`}
                   >
                     <span className="font-medium">{algo.name}</span>
-                    <Badge variant="outline" className="text-xs border-blue-300 text-blue-600 bg-blue-50">
+                    <Badge variant="outline" className="text-xs border-slate-200 text-slate-600 bg-slate-50">
                       {algo.complexity}
                     </Badge>
                   </button>
@@ -280,24 +281,24 @@ export default function VisualizePage() {
 
           {/* Main Visualization */}
           <div className="col-span-9">
-            <Card className="border-blue-200 bg-white/80 backdrop-blur">
+            <Card className="border-slate-200 bg-white shadow-sm">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-blue-900 flex items-center gap-2">
+                    <CardTitle className="text-slate-800 flex items-center gap-2">
                       {selectedAlgorithm ? selectedAlgorithm.name : `${activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1)} Visualization`}
                     </CardTitle>
-                    <CardDescription className="text-blue-600/70">
+                    <CardDescription className="text-slate-500">
                       {selectedAlgorithm ? selectedAlgorithm.desc : 'Select an algorithm to visualize'}
                     </CardDescription>
                   </div>
                   {selectedAlgorithm && (
-                    <Badge className="bg-blue-100 text-blue-700 border-blue-300">{selectedAlgorithm.complexity}</Badge>
+                    <Badge className="bg-teal-100 text-teal-700 border-teal-300">{selectedAlgorithm.complexity}</Badge>
                   )}
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="min-h-[400px] flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                <div className="min-h-[400px] flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl border border-slate-200">
                   {activeCategory === 'graph' && (
                     <GraphVisualizer data={data} highlights={highlights} />
                   )}
@@ -316,19 +317,19 @@ export default function VisualizePage() {
                 </div>
 
                 {selectedAlgorithm && showDetails && (
-                  <div className="mt-6 p-4 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200">
+                  <div className="mt-6 p-4 rounded-xl bg-slate-50 border border-slate-200">
                     <div className="flex items-start gap-3">
-                      <Info className="w-5 h-5 text-blue-600 mt-0.5" />
+                      <Info className="w-5 h-5 text-teal-600 mt-0.5" />
                       <div>
-                        <h4 className="font-semibold text-blue-900 mb-1">{selectedAlgorithm.name}</h4>
+                        <h4 className="font-semibold text-slate-800 mb-1">{selectedAlgorithm.name}</h4>
                         <div className="grid grid-cols-2 gap-4 text-sm">
                           <div>
-                            <p className="text-blue-600/70">Time Complexity:</p>
-                            <p className="font-medium text-blue-800">{selectedAlgorithm.complexity}</p>
+                            <p className="text-slate-500">Time Complexity:</p>
+                            <p className="font-medium text-slate-700">{selectedAlgorithm.complexity}</p>
                           </div>
                           <div>
-                            <p className="text-blue-600/70">Description:</p>
-                            <p className="font-medium text-blue-800">{selectedAlgorithm.desc}</p>
+                            <p className="text-slate-500">Description:</p>
+                            <p className="font-medium text-slate-700">{selectedAlgorithm.desc}</p>
                           </div>
                         </div>
                       </div>
@@ -339,19 +340,19 @@ export default function VisualizePage() {
                 {/* Quick Reference */}
                 {showDetails && (
                   <div className="mt-6">
-                    <h4 className="font-semibold text-blue-900 mb-3">Quick Reference</h4>
+                    <h4 className="font-semibold text-slate-800 mb-3">Quick Reference</h4>
                     <div className="grid grid-cols-3 gap-4">
-                      <div className="p-3 rounded-lg bg-blue-50 border border-blue-200">
-                        <p className="text-xs text-blue-600/70 mb-1">Most Efficient</p>
-                        <p className="text-sm font-medium text-blue-800">O(1) - Constant</p>
+                      <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                        <p className="text-xs text-slate-500 mb-1">Most Efficient</p>
+                        <p className="text-sm font-medium text-slate-700">O(1) - Constant</p>
                       </div>
-                      <div className="p-3 rounded-lg bg-blue-50 border border-blue-200">
-                        <p className="text-xs text-blue-600/70 mb-1">Common</p>
-                        <p className="text-sm font-medium text-blue-800">O(log n) - Logarithmic</p>
+                      <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                        <p className="text-xs text-slate-500 mb-1">Common</p>
+                        <p className="text-sm font-medium text-slate-700">O(log n) - Logarithmic</p>
                       </div>
-                      <div className="p-3 rounded-lg bg-blue-50 border border-blue-200">
-                        <p className="text-xs text-blue-600/70 mb-1">Linear</p>
-                        <p className="text-sm font-medium text-blue-800">O(n) - Linear</p>
+                      <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                        <p className="text-xs text-slate-500 mb-1">Linear</p>
+                        <p className="text-sm font-medium text-slate-700">O(n) - Linear</p>
                       </div>
                     </div>
                   </div>
@@ -365,7 +366,7 @@ export default function VisualizePage() {
   );
 }
 
-// Blue-themed Graph Visualizer
+// Teal-themed Graph Visualizer
 function GraphVisualizer({ data, highlights }) {
   const nodes = data.map((val, i) => ({ id: i, value: val }));
   const centerX = 200, centerY = 150, radius = 100;
@@ -391,15 +392,15 @@ function GraphVisualizer({ data, highlights }) {
             <line
               x1={pos.x} y1={pos.y}
               x2={nextPos.x} y2={nextPos.y}
-              stroke={isHighlighted ? '#3b82f6' : '#93c5fd'}
+              stroke={isHighlighted ? '#0891B2' : '#CBD5E1'}
               strokeWidth={isHighlighted ? 2 : 1.5}
             />
             <circle
               cx={pos.x}
               cy={pos.y}
               r={isHighlighted ? 24 : 20}
-              fill={isHighlighted ? '#3b82f6' : '#dbeafe'}
-              stroke={isHighlighted ? '#1d4ed8' : '#3b82f6'}
+              fill={isHighlighted ? '#0891B2' : '#F0FDFA'}
+              stroke={isHighlighted ? '#0E7490' : '#0891B2'}
               strokeWidth={2}
             />
             <text
@@ -407,7 +408,7 @@ function GraphVisualizer({ data, highlights }) {
               y={pos.y}
               textAnchor="middle"
               dominantBaseline="central"
-              fill={isHighlighted ? 'white' : '#1e40af'}
+              fill={isHighlighted ? 'white' : '#0F766E'}
               fontSize="12"
               fontWeight="bold"
             >
@@ -420,7 +421,7 @@ function GraphVisualizer({ data, highlights }) {
   );
 }
 
-// Blue-themed Heap Visualizer
+// Teal-themed Heap Visualizer
 function HeapVisualizer({ data, highlights }) {
   const renderNode = (index, x, y, level) => {
     if (index >= data.length) return null;
@@ -433,7 +434,7 @@ function HeapVisualizer({ data, highlights }) {
           <line
             x1={x} y1={y}
             x2={x - offset} y2={y + 50}
-            stroke={highlights.includes(2 * index + 1) ? '#3b82f6' : '#93c5fd'}
+            stroke={highlights.includes(2 * index + 1) ? '#0891B2' : '#CBD5E1'}
             strokeWidth={highlights.includes(2 * index + 1) ? 2 : 1.5}
           />
         )}
@@ -441,7 +442,7 @@ function HeapVisualizer({ data, highlights }) {
           <line
             x1={x} y1={y}
             x2={x + offset} y2={y + 50}
-            stroke={highlights.includes(2 * index + 2) ? '#3b82f6' : '#93c5fd'}
+            stroke={highlights.includes(2 * index + 2) ? '#0891B2' : '#CBD5E1'}
             strokeWidth={highlights.includes(2 * index + 2) ? 2 : 1.5}
           />
         )}
@@ -449,8 +450,8 @@ function HeapVisualizer({ data, highlights }) {
           cx={x}
           cy={y}
           r={isHighlighted ? 22 : 18}
-          fill={isHighlighted ? '#3b82f6' : '#dbeafe'}
-          stroke={isHighlighted ? '#1d4ed8' : '#3b82f6'}
+          fill={isHighlighted ? '#0891B2' : '#F0FDFA'}
+          stroke={isHighlighted ? '#0E7490' : '#0891B2'}
           strokeWidth={2}
         />
         <text
@@ -458,7 +459,7 @@ function HeapVisualizer({ data, highlights }) {
           y={y}
           textAnchor="middle"
           dominantBaseline="central"
-          fill={isHighlighted ? 'white' : '#1e40af'}
+          fill={isHighlighted ? 'white' : '#0F766E'}
           fontSize="11"
           fontWeight="bold"
         >
@@ -468,7 +469,7 @@ function HeapVisualizer({ data, highlights }) {
           x={x}
           y={y + 30}
           textAnchor="middle"
-          fill="#3b82f6"
+          fill="#0891B2"
           fontSize="9"
         >
           [{index}]
@@ -492,103 +493,121 @@ function HeapVisualizer({ data, highlights }) {
   );
 }
 
-// Blue-themed Segment Visualizer
+// Teal-themed Segment Visualizer
 function SegmentVisualizer({ data, highlights }) {
   const segmentSize = Math.ceil(data.length / 4);
   const segmentSums = [];
   for (let i = 0; i < Math.ceil(data.length / segmentSize); i++) {
     const start = i * segmentSize;
     const end = Math.min((i + 1) * segmentSize, data.length);
-    segmentSums.push(data.slice(start, end).reduce((a, b) => a + b, 0));
+    const sum = data.slice(start, end).reduce((a, b) => a + b, 0);
+    segmentSums.push({ start, end, sum });
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex gap-2 justify-center flex-wrap">
-        {data.map((val, i) => (
+    <div className="flex flex-wrap gap-2 justify-center">
+      {data.map((val, i) => {
+        const segIndex = Math.floor(i / segmentSize);
+        const isHighlighted = highlights.includes(i);
+        return (
           <div
             key={i}
-            className={`w-10 h-10 flex items-center justify-center rounded-lg border-2 font-bold text-sm ${
-              highlights.includes(i)
-                ? 'bg-blue-600 text-white border-blue-700'
-                : 'bg-blue-50 text-blue-700 border-blue-300'
-            }`}
+            className={`flex flex-col items-center`}
           >
-            {val}
+            <div
+              className={`w-8 flex items-center justify-center rounded-t border-x border-t ${
+                isHighlighted 
+                  ? 'bg-teal-600 text-white border-teal-700' 
+                  : 'bg-teal-100 text-teal-700 border-teal-200'
+              }`}
+              style={{ height: `${val * 2}px` }}
+            >
+              <span className="text-xs font-bold">{val}</span>
+            </div>
+            <span className="text-xs text-slate-500 mt-1">{i}</span>
           </div>
-        ))}
-      </div>
-      <div className="flex justify-center gap-4">
-        {segmentSums.map((sum, i) => (
+        );
+      })}
+      <div className="w-full mt-4 flex gap-2 justify-center">
+        {segmentSums.map((seg, i) => (
           <div
             key={i}
-            className="px-4 py-2 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-bold"
+            className="px-3 py-1 bg-teal-50 border border-teal-200 rounded text-xs text-teal-700"
           >
-            Sum: {sum}
+            [{seg.start}-{seg.end}]: {seg.sum}
           </div>
         ))}
-      </div>
-      <div className="text-center text-sm text-blue-600/70">
-        <p>Segment Tree: Breaks array into segments for efficient range queries</p>
       </div>
     </div>
   );
 }
 
-// Blue-themed Union-Find Visualizer
+// Teal-themed UnionFind Visualizer
 function UnionFindVisualizer({ data, highlights }) {
+  const n = data.length || 8;
+  const parent = Array.from({ length: n }, (_, i) => i);
+  
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap gap-3 justify-center max-w-lg">
-        {data.map((val, i) => (
+    <div className="flex flex-wrap gap-4 justify-center">
+      {Array.from({ length: n }).map((_, i) => {
+        const isHighlighted = highlights.includes(i);
+        return (
           <div
             key={i}
-            className={`w-14 h-14 flex flex-col items-center justify-center rounded-xl border-2 ${
-              highlights.includes(i)
-                ? 'bg-blue-600 text-white border-blue-700'
-                : 'bg-blue-50 text-blue-700 border-blue-300'
+            className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm ${
+              isHighlighted
+                ? 'bg-teal-600 text-white shadow-lg'
+                : 'bg-teal-100 text-teal-700 border border-teal-300'
             }`}
           >
-            <span className="text-lg font-bold">{i}</span>
-            <span className="text-xs opacity-75">→ {val}</span>
+            {parent[i]}
           </div>
-        ))}
-      </div>
-      <div className="text-center text-sm text-blue-600/70">
-        <p>Each element points to its parent in the Union-Find structure</p>
-        <p className="mt-1">Connected components: {new Set(data).size}</p>
-      </div>
+        );
+      })}
     </div>
   );
 }
 
-// Blue-themed BIT Visualizer
+// Teal-themed BIT Visualizer
 function BITVisualizer({ data, highlights }) {
+  const n = data.length || 16;
+  const tree = Array(n + 1).fill(0);
+  
+  for (let i = 1; i <= n; i++) {
+    tree[i] = data[i - 1] || 0;
+  }
+  
+  for (let i = 1; i <= n; i++) {
+    const parent = i + (i & -i);
+    if (parent <= n) {
+      tree[parent] += tree[i];
+    }
+  }
+
   return (
-    <div className="space-y-6">
-      <div className="flex gap-1 justify-center">
-        {data.map((val, i) => (
-          <div
-            key={i}
-            className={`w-10 h-10 flex items-center justify-center rounded font-bold text-sm ${
-              highlights.includes(i)
-                ? 'bg-blue-600 text-white'
-                : 'bg-blue-50 text-blue-700 border border-blue-300'
-            }`}
-          >
-            {val}
-          </div>
+    <div className="flex flex-col gap-2 items-center">
+      <div className="text-xs text-slate-500 mb-2">Binary Indexed Tree Structure</div>
+      <div className="flex gap-2 flex-wrap justify-center">
+        {tree.slice(1).map((val, i) => {
+          const isHighlighted = highlights.includes(i);
+          return (
+            <div
+              key={i}
+              className={`w-10 h-10 flex items-center justify-center rounded font-bold text-sm ${
+                isHighlighted
+                  ? 'bg-teal-600 text-white'
+                  : 'bg-teal-100 text-teal-700 border border-teal-200'
+              }`}
+            >
+              {val}
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex gap-1 mt-2">
+        {Array.from({ length: n }).map((_, i) => (
+          <div key={i} className="w-10 text-center text-xs text-slate-400">{i + 1}</div>
         ))}
-      </div>
-      <div className="flex justify-center">
-        <div className="flex flex-col items-center">
-          <div className="px-6 py-3 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-bold">
-            Total: {data.reduce((a, b) => a + b, 0)}
-          </div>
-        </div>
-      </div>
-      <div className="text-center text-sm text-blue-600/70">
-        <p>Binary Indexed Tree stores partial sums for O(log n) queries</p>
       </div>
     </div>
   );

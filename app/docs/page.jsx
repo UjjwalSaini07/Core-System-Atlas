@@ -159,19 +159,19 @@ export default function DocsPage() {
   const section = DOCSECTIONS.find(s => s.id === activeSection);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-40 border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/95 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/">
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="text-slate-500 hover:text-slate-700">
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
             <div>
-              <h1 className="text-xl font-semibold tracking-tight">Documentation</h1>
-              <p className="text-sm text-muted-foreground">
+              <h1 className="text-xl font-semibold tracking-tight text-slate-800">Documentation</h1>
+              <p className="text-sm text-slate-500">
                 API reference & code examples
               </p>
             </div>
@@ -183,9 +183,9 @@ export default function DocsPage() {
         <div className="grid grid-cols-12 gap-6">
           {/* Sidebar */}
           <div className="col-span-3">
-            <Card className="sticky top-24">
+            <Card className="sticky top-24 border-slate-200 bg-white shadow-sm">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">Sections</CardTitle>
+                <CardTitle className="text-sm font-medium text-slate-700">Sections</CardTitle>
               </CardHeader>
               <CardContent className="space-y-1">
                 {DOCSECTIONS.map((sec) => (
@@ -194,8 +194,8 @@ export default function DocsPage() {
                     onClick={() => setActiveSection(sec.id)}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
                       activeSection === sec.id
-                        ? 'bg-primary text-primary-foreground'
-                        : 'hover:bg-muted'
+                        ? 'bg-teal-600 text-white'
+                        : 'hover:bg-slate-100 text-slate-700'
                     }`}
                   >
                     <Code className="w-4 h-4" />
@@ -208,37 +208,37 @@ export default function DocsPage() {
 
           {/* Content */}
           <div className="col-span-9">
-            <Card>
+            <Card className="border-slate-200 bg-white shadow-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3">
-                  <BookOpen className="w-5 h-5" />
+                <CardTitle className="flex items-center gap-3 text-slate-800">
+                  <BookOpen className="w-5 h-5 text-teal-600" />
                   {section?.name} Documentation
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-slate-500">
                   API reference and usage examples
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Tabs defaultValue="overview">
-                  <TabsList>
-                    <TabsTrigger value="overview">Overview</TabsTrigger>
-                    <TabsTrigger value="api">API</TabsTrigger>
-                    <TabsTrigger value="example">Example</TabsTrigger>
+                  <TabsList className="bg-slate-100">
+                    <TabsTrigger value="overview" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white">Overview</TabsTrigger>
+                    <TabsTrigger value="api" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white">API</TabsTrigger>
+                    <TabsTrigger value="example" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white">Example</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="overview" className="mt-4">
                     <div className="prose prose-sm max-w-none">
-                      <h3 className="text-lg font-semibold mb-2">{section?.name}</h3>
-                      <p className="text-muted-foreground">
+                      <h3 className="text-lg font-semibold mb-2 text-slate-800">{section?.name}</h3>
+                      <p className="text-slate-600">
                         {getSectionOverview(activeSection)}
                       </p>
                     </div>
                   </TabsContent>
 
                   <TabsContent value="api" className="mt-4">
-                    <Card>
+                    <Card className="border-slate-200">
                       <CardHeader className="pb-3">
-                        <CardTitle className="text-sm">Methods</CardTitle>
+                        <CardTitle className="text-sm text-slate-700">Methods</CardTitle>
                       </CardHeader>
                       <CardContent>
                         {getAPIMethods(activeSection)}
@@ -255,15 +255,15 @@ export default function DocsPage() {
                           onClick={() => copyCode(CODEEXAMPLES[activeSection] || CODEEXAMPLES.graph)}
                         >
                           {copied === 'code' ? (
-                            <Check className="w-4 h-4 text-green-600" />
+                            <Check className="w-4 h-4 text-emerald-600" />
                           ) : (
-                            <Copy className="w-4 h-4" />
+                            <Copy className="w-4 h-4 text-slate-500" />
                           )}
                         </Button>
                       </div>
                       <ScrollArea className="h-80">
-                        <pre className="text-sm p-4 rounded-lg bg-muted overflow-x-auto">
-                          <code className="text-sm">
+                        <pre className="text-sm p-4 rounded-lg bg-slate-900 overflow-x-auto">
+                          <code className="text-sm text-slate-100">
                             {CODEEXAMPLES[activeSection] || CODEEXAMPLES.graph}
                           </code>
                         </pre>
@@ -326,9 +326,9 @@ function getAPIMethods(id) {
   return (
     <div className="space-y-2">
       {list.map((method, i) => (
-        <div key={i} className="p-3 rounded-lg bg-muted">
-          <code className="text-sm text-primary">{method.name}</code>
-          <p className="text-sm text-muted-foreground mt-1">{method.desc}</p>
+        <div key={i} className="p-3 rounded-lg bg-slate-50 border border-slate-200">
+          <code className="text-sm text-teal-700">{method.name}</code>
+          <p className="text-sm text-slate-500 mt-1">{method.desc}</p>
         </div>
       ))}
     </div>
