@@ -1,5 +1,12 @@
 // Circuit Breaker Implementation
-const { v4: uuidv4 } = require('crypto');
+// Simple UUID generator (no external dependency)
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
 
 // Circuit Breaker States
 const STATE = {
@@ -20,7 +27,7 @@ const EVENT = {
 
 class CircuitBreaker {
   constructor(options = {}) {
-    this.name = options.name || uuidv4();
+    this.name = options.name || generateUUID();
     this.failureThreshold = options.failureThreshold || 5; // Open after N failures
     this.successThreshold = options.successThreshold || 2; // Close after N successes (half-open)
     this.timeout = options.timeout || 30000; // Time before half-open (ms)
