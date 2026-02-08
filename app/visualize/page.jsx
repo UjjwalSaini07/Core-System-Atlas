@@ -100,23 +100,23 @@ export default function VisualizePage() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/95 shadow-sm">
+      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/95 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/">
-              <Button variant="ghost" size="icon" className="text-slate-500 hover:text-slate-700">
+              <Button variant="ghost" size="icon" className="text-slate-500 hover:text-slate-700 hover:bg-slate-100">
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
             <div>
-              <h1 className="text-xl font-semibold tracking-tight text-slate-800">Algorithm Visualizer</h1>
+              <h1 className="text-xl font-semibold tracking-tight text-slate-900">Algorithm Visualizer</h1>
               <p className="text-sm text-slate-500">
                 Interactive DSA visualization
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-slate-200 bg-slate-50">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-slate-200 bg-white">
               <span className="text-sm text-slate-600">Speed:</span>
               <input
                 type="range"
@@ -127,13 +127,13 @@ export default function VisualizePage() {
                 onChange={(e) => setSpeed(parseFloat(e.target.value))}
                 className="w-20 accent-teal-600"
               />
-              <span className="text-sm w-8 text-slate-700">{speed}x</span>
+              <span className="text-sm w-8 text-slate-700 font-medium">{speed}x</span>
             </div>
             <Button
               variant={isPlaying ? 'secondary' : 'default'}
               size="sm"
               onClick={() => setIsPlaying(!isPlaying)}
-              className={isPlaying ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' : 'bg-teal-600 hover:bg-teal-700 text-white'}
+              className={isPlaying ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' : 'bg-teal-600 hover:bg-teal-700 text-white shadow-sm'}
             >
               {isPlaying ? (
                 <><Pause className="w-4 h-4 mr-2" /> Pause</>
@@ -141,13 +141,13 @@ export default function VisualizePage() {
                 <><Play className="w-4 h-4 mr-2" /> Play</>
               )}
             </Button>
-            <Button variant="outline" size="sm" className="border-slate-200 text-slate-600 hover:bg-slate-50" onClick={generateData}>
+            <Button variant="outline" size="sm" className="border-slate-300 text-slate-600 hover:bg-slate-50 hover:border-slate-400" onClick={generateData}>
               <RotateCcw className="w-4 h-4 mr-2" /> Reset
             </Button>
             <Button 
               variant="ghost" 
               size="sm" 
-              className="text-slate-500 hover:text-slate-700"
+              className="text-slate-500 hover:text-slate-700 hover:bg-slate-100"
               onClick={() => setShowDetails(!showDetails)}
             >
               {showDetails ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
@@ -163,10 +163,10 @@ export default function VisualizePage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-slate-500 uppercase font-medium">Step</p>
-                  <p className="text-2xl font-bold text-slate-800">{step}</p>
+                  <p className="text-xs font-medium text-slate-500 uppercase">Step</p>
+                  <p className="text-2xl font-semibold text-slate-900 mt-1">{step}</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center">
                   <BarChart2 className="w-5 h-5 text-teal-600" />
                 </div>
               </div>
@@ -176,10 +176,10 @@ export default function VisualizePage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-slate-500 uppercase font-medium">Comparisons</p>
-                  <p className="text-2xl font-bold text-slate-800">{stats.comparisons}</p>
+                  <p className="text-xs font-medium text-slate-500 uppercase">Comparisons</p>
+                  <p className="text-2xl font-semibold text-slate-900 mt-1">{stats.comparisons}</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center">
                   <Network className="w-5 h-5 text-teal-600" />
                 </div>
               </div>
@@ -189,10 +189,10 @@ export default function VisualizePage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-slate-500 uppercase font-medium">Operations</p>
-                  <p className="text-2xl font-bold text-slate-800">{stats.operations}</p>
+                  <p className="text-xs font-medium text-slate-500 uppercase">Operations</p>
+                  <p className="text-2xl font-semibold text-slate-900 mt-1">{stats.operations}</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center">
                   <Database className="w-5 h-5 text-teal-600" />
                 </div>
               </div>
@@ -202,10 +202,10 @@ export default function VisualizePage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-slate-500 uppercase font-medium">Data Size</p>
-                  <p className="text-2xl font-bold text-slate-800">{data.length}</p>
+                  <p className="text-xs font-medium text-slate-500 uppercase">Data Size</p>
+                  <p className="text-2xl font-semibold text-slate-900 mt-1">{data.length}</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center">
                   <Layers className="w-5 h-5 text-teal-600" />
                 </div>
               </div>
@@ -215,10 +215,10 @@ export default function VisualizePage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-slate-500 uppercase font-medium">Status</p>
-                  <p className="text-2xl font-bold text-slate-800">{isPlaying ? 'Running' : 'Idle'}</p>
+                  <p className="text-xs font-medium text-slate-500 uppercase">Status</p>
+                  <p className="text-2xl font-semibold text-slate-900 mt-1">{isPlaying ? 'Running' : 'Idle'}</p>
                 </div>
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isPlaying ? 'bg-emerald-100' : 'bg-slate-100'}`}>
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isPlaying ? 'bg-emerald-50' : 'bg-slate-50'}`}>
                   <div className={`w-3 h-3 rounded-full ${isPlaying ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`} />
                 </div>
               </div>
@@ -265,12 +265,12 @@ export default function VisualizePage() {
                     onClick={() => setSelectedAlgorithm(algo)}
                     className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all ${
                       selectedAlgorithm?.id === algo.id
-                        ? 'bg-teal-100 text-teal-700 border border-teal-300'
+                        ? 'bg-teal-50 text-teal-700 border border-teal-200'
                         : 'hover:bg-slate-100 text-slate-700'
                     }`}
                   >
                     <span className="font-medium">{algo.name}</span>
-                    <Badge variant="outline" className="text-xs border-slate-200 text-slate-600 bg-slate-50">
+                    <Badge variant="outline" className="text-xs border-slate-300 text-slate-500 bg-white">
                       {algo.complexity}
                     </Badge>
                   </button>
@@ -285,7 +285,7 @@ export default function VisualizePage() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-slate-800 flex items-center gap-2">
+                    <CardTitle className="text-slate-900 flex items-center gap-2">
                       {selectedAlgorithm ? selectedAlgorithm.name : `${activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1)} Visualization`}
                     </CardTitle>
                     <CardDescription className="text-slate-500">
@@ -293,12 +293,12 @@ export default function VisualizePage() {
                     </CardDescription>
                   </div>
                   {selectedAlgorithm && (
-                    <Badge className="bg-teal-100 text-teal-700 border-teal-300">{selectedAlgorithm.complexity}</Badge>
+                    <Badge className="bg-teal-50 text-teal-700 border-teal-200">{selectedAlgorithm.complexity}</Badge>
                   )}
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="min-h-[400px] flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl border border-slate-200">
+                <div className="min-h-[400px] flex items-center justify-center bg-slate-50 rounded-xl border border-slate-200">
                   {activeCategory === 'graph' && (
                     <GraphVisualizer data={data} highlights={highlights} />
                   )}
@@ -512,7 +512,7 @@ function SegmentVisualizer({ data, highlights }) {
         return (
           <div
             key={i}
-            className={`flex flex-col items-center`}
+            className="flex flex-col items-center"
           >
             <div
               className={`w-8 flex items-center justify-center rounded-t border-x border-t ${
