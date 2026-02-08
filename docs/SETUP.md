@@ -199,8 +199,7 @@ docker build -t core-system-atlas .
 ```bash
 # Development
 docker run -p 3000:3000 core-system-atlas
-```
-```bash
+
 # Production
 docker run -p 3000:3000 \
   -e NODE_ENV=production \
@@ -209,11 +208,106 @@ docker run -p 3000:3000 \
 
 ### 3. Docker Compose
 
-Run Using `docker-compose.yml`:
+The project includes `docker-compose.yml` with:
+- Main application container
+- Redis for caching (optional)
 
+**Start Services:**
 ```bash
 docker-compose up -d
 ```
+
+**View Logs:**
+```bash
+docker-compose logs -f app
+```
+
+**Stop Services:**
+```bash
+docker-compose down
+```
+
+**Stop with Volumes:**
+```bash
+docker-compose down -v
+```
+
+### 4. Docker Commands Reference
+
+| Command | Description |
+|---------|-------------|
+| `docker build -t <name> .` | Build image |
+| `docker run -p 3000:3000 <name>` | Run container |
+| `docker-compose up -d` | Start services |
+| `docker-compose down` | Stop services |
+| `docker-compose logs -f` | View logs |
+| `docker exec -it <container> sh` | Shell into container |
+| `docker ps` | List running containers |
+| `docker stop <container>` | Stop container |
+| `docker rm <container>` | Remove container |
+
+### 5. Multi-stage Build
+
+The Dockerfile uses multi-stage builds:
+
+1. **deps** - Install dependencies
+2. **builder** - Build the Next.js application
+3. **runner** - Production-ready image
+
+Benefits:
+- Smaller final image
+- Better caching
+- Security (no build tools in prod)
+
+### 6. Environment Variables
+
+```yaml
+services:
+  app:
+    build: .
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - NEXT_TELEMETRY_DISABLED=1
+    env_file:
+      - .env.production
+```
+
+### 7. Health Checks
+
+```yaml
+healthcheck:
+  test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000"]
+  interval: 30s
+  timeout: 10s
+  retries: 3
+```
+
+### 8. Production Deployment
+
+```bash
+# Build production image
+docker build -t core-system-atlas:prod .
+
+# Tag for registry
+docker tag core-system-atlas:prod registry.example.com/core-system-atlas:latest
+
+# Push to registry
+docker push registry.example.com/core-system-atlas:latest
+
+# Pull and run on server
+docker pull registry.example.com/core-system-atlas:latest
+docker run -d -p 3000:3000 --name atlas registry.example.com/core-system-atlas:latest
+```
+
+### 9. Docker Best Practices
+
+- Use `.dockerignore` to exclude unnecessary files
+- Use specific Node.js version (not `latest`)
+- Don't run as root (created `nextjs` user)
+- Use multi-stage builds
+- Add health checks
+- Use named volumes for persistence
 
 
 ## IDE Setup
