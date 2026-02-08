@@ -5,6 +5,22 @@ const bodyParser = require('body-parser');
 const FileStorage = require('./backend/services/FileStorage');
 const SearchEngine = require('./backend/services/SearchEngine');
 
+// DSA Imports
+const { Graph } = require('./backend/dsa/Graph');
+const { MinHeap, MaxHeap, MedianHeap } = require('./backend/dsa/Heap');
+const { SegmentTree, SparseSegmentTree } = require('./backend/dsa/SegmentTree');
+const { UnionFind, WeightedUnionFind, RollbackUnionFind } = require('./backend/dsa/UnionFind');
+const { BinaryIndexedTree, BIT2D } = require('./backend/dsa/BinaryIndexedTree');
+
+// System Service Imports
+const { 
+  TokenBucket, LeakyBucket, SlidingWindow, FixedWindow, DistributedRateLimiter 
+} = require('./backend/services/RateLimiter');
+const { 
+  CircuitBreaker, BulkheadCircuitBreaker, CircuitBreakerRegistry, STATE 
+} = require('./backend/services/CircuitBreaker');
+const { DistributedLock, Redlock, LeaderElection } = require('./backend/services/DistributedLock');
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -16,6 +32,21 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // Initialize systems
 const fileStorage = new FileStorage();
 const searchEngine = new SearchEngine(150);
+
+// DSA Instances
+const graph = new Graph(false, true);
+const minHeap = new MinHeap();
+const segmentTree = new SegmentTree([1, 3, 5, 7, 9, 11], 'sum');
+const unionFind = new UnionFind(10);
+const bit = new BinaryIndexedTree([1, 3, 5, 7, 9]);
+
+// System Service Instances
+const tokenBucket = new TokenBucket({ capacity: 10, refillRate: 2 });
+const slidingWindow = new SlidingWindow({ windowSize: 60000, maxRequests: 100 });
+const circuitBreaker = new CircuitBreaker({ failureThreshold: 5, timeout: 30000 });
+const distributedLock = new DistributedLock({ ttl: 30000 });
+
+// ==================== FILE & SEARCH ENDPOINTS ====================
 
 // Upload file
 app.post('/api/files/upload', (req, res) => {
@@ -32,7 +63,6 @@ app.post('/api/files/upload', (req, res) => {
     const result = fileStorage.uploadFile(filename, content, mimeType);
     
     if (result.success) {
-      // Auto-index the file
       searchEngine.indexFile(result.fileId, filename, content);
     }
 
@@ -45,19 +75,13 @@ app.post('/api/files/upload', (req, res) => {
   }
 });
 
-// Get all files metadata
+// Get all files
 app.get('/api/files', (req, res) => {
   try {
     const files = fileStorage.getAllFiles();
-    res.json({
-      success: true,
-      files
-    });
+    res.json({ success: true, files });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
@@ -68,40 +92,12 @@ app.get('/api/files/:fileId', (req, res) => {
     const file = fileStorage.getFile(fileId);
 
     if (!file) {
-      return res.status(404).json({
-        success: false,
-        message: 'File not found'
-      });
+      return res.status(404).json({ success: false, message: 'File not found' });
     }
 
-    res.json({
-      success: true,
-      file
-    });
+    res.json({ success: true, file });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
-});
-
-// Get file version history
-app.get('/api/files/:filename/versions', (req, res) => {
-  try {
-    const { filename } = req.params;
-    const history = fileStorage.getVersionHistory(filename);
-
-    res.json({
-      success: true,
-      filename,
-      versions: history
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
@@ -111,15 +107,9 @@ app.delete('/api/files/:fileId', (req, res) => {
     const { fileId } = req.params;
     const deleted = fileStorage.deleteFile(fileId);
 
-    res.json({
-      success: deleted,
-      message: deleted ? 'File deleted' : 'File not found'
-    });
+    res.json({ success: deleted, message: deleted ? 'File deleted' : 'File not found' });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
@@ -129,85 +119,33 @@ app.get('/api/search', (req, res) => {
     const { q, limit = 20 } = req.query;
 
     if (!q) {
-      return res.status(400).json({
-        success: false,
-        message: 'Missing search query'
-      });
+      return res.status(400).json({ success: false, message: 'Missing search query' });
     }
 
     const searchResult = searchEngine.search(q, parseInt(limit));
-
-    res.json({
-      success: true,
-      query: q,
-      ...searchResult
-    });
+    res.json({ success: true, query: q, ...searchResult });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
 // Autocomplete
-// GET /api/autocomplete?prefix=test&limit=10
 app.get('/api/autocomplete', (req, res) => {
   try {
     const { prefix, limit = 10 } = req.query;
 
     if (!prefix) {
-      return res.status(400).json({
-        success: false,
-        message: 'Missing prefix'
-      });
+      return res.status(400).json({ success: false, message: 'Missing prefix' });
     }
 
     const result = searchEngine.autocomplete(prefix, parseInt(limit));
-
-    res.json({
-      success: true,
-      prefix,
-      ...result
-    });
+    res.json({ success: true, prefix, ...result });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// Boolean search
-// GET /api/search/boolean?q=word1+AND+word2
-app.get('/api/search/boolean', (req, res) => {
-  try {
-    const { q } = req.query;
-
-    if (!q) {
-      return res.status(400).json({
-        success: false,
-        message: 'Missing query'
-      });
-    }
-
-    const result = searchEngine.booleanSearch(q);
-
-    res.json({
-      success: true,
-      query: q,
-      ...result
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
-});
-
-// Get complete system state
-// GET /api/stats
+// Stats
 app.get('/api/stats', (req, res) => {
   try {
     const systemState = searchEngine.getSystemState();
@@ -220,10 +158,7 @@ app.get('/api/stats', (req, res) => {
       timestamp: Date.now()
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
@@ -236,37 +171,454 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Reset all systems (for offline)
+// ==================== GRAPH ENDPOINTS ====================
+
+app.post('/api/ds/graph/node', (req, res) => {
+  try {
+    const { value, metadata } = req.body;
+    graph.addNode(value, metadata || {});
+    res.json({ success: true, message: 'Node added', nodeCount: graph.nodes.size });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.post('/api/ds/graph/edge', (req, res) => {
+  try {
+    const { source, target, weight } = req.body;
+    graph.addEdge(source, target, weight || 1);
+    res.json({ success: true, message: 'Edge added', edgeCount: graph.edgeCount });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/api/ds/graph/bfs', (req, res) => {
+  try {
+    const { start, target } = req.query;
+    const result = graph.bfs(start, target || null);
+    res.json({ success: true, ...result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/api/ds/graph/dijkstra', (req, res) => {
+  try {
+    const { start, target } = req.query;
+    const result = graph.dijkstra(start, target);
+    res.json({ success: true, ...result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/api/ds/graph/cycles', (req, res) => {
+  try {
+    const result = graph.detectCycles();
+    res.json({ success: true, ...result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/api/ds/graph/topological', (req, res) => {
+  try {
+    const result = graph.topologicalSort();
+    res.json({ success: true, result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/api/ds/graph/components', (req, res) => {
+  try {
+    const result = graph.getConnectedComponents();
+    res.json({ success: true, components: result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/api/ds/graph/pagerank', (req, res) => {
+  try {
+    const result = graph.pageRank();
+    res.json({ success: true, rankings: result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/api/ds/graph/stats', (req, res) => {
+  res.json({ success: true, ...graph.getStats() });
+});
+
+// ==================== HEAP ENDPOINTS ====================
+
+app.post('/api/ds/heap/insert', (req, res) => {
+  try {
+    const { value } = req.body;
+    minHeap.insert(value);
+    res.json({ success: true, size: minHeap.heap.length });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.post('/api/ds/heap/extract', (req, res) => {
+  try {
+    const value = minHeap.extractMin();
+    res.json({ success: true, value, size: minHeap.heap.length });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.post('/api/ds/heap/heapify', (req, res) => {
+  try {
+    const { array } = req.body;
+    minHeap.heapify(array);
+    res.json({ success: true, size: minHeap.heap.length });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/api/ds/heap/peek', (req, res) => {
+  res.json({ success: true, value: minHeap.peek() });
+});
+
+app.get('/api/ds/heap/stats', (req, res) => {
+  res.json({ success: true, ...minHeap.getStats() });
+});
+
+// ==================== SEGMENT TREE ENDPOINTS ====================
+
+app.post('/api/ds/segmenttree', (req, res) => {
+  try {
+    const { array, operation } = req.body;
+    const st = new SegmentTree(array, operation || 'sum');
+    res.json({ success: true, size: st.n, treeSize: st.tree.length });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/api/ds/segmenttree/query', (req, res) => {
+  try {
+    const { l, r } = req.query;
+    const result = segmentTree.query(parseInt(l), parseInt(r));
+    res.json({ success: true, range: [l, r], result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.post('/api/ds/segmenttree/update', (req, res) => {
+  try {
+    const { index, value } = req.body;
+    segmentTree.update(index, value);
+    res.json({ success: true, message: 'Updated' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/api/ds/segmenttree/stats', (req, res) => {
+  res.json({ success: true, ...segmentTree.getStats() });
+});
+
+// ==================== UNION-FIND ENDPOINTS ====================
+
+app.post('/api/ds/unionfind/union', (req, res) => {
+  try {
+    const { x, y } = req.body;
+    const result = unionFind.union(x, y);
+    res.json({ success: true, merged: result, sets: unionFind.countSets() });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/api/ds/unionfind/find', (req, res) => {
+  try {
+    const { x } = req.query;
+    const result = unionFind.find(x);
+    res.json({ success: true, element: x, root: result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/api/ds/unionfind/connected', (req, res) => {
+  try {
+    const { x, y } = req.query;
+    const result = unionFind.connected(x, y);
+    res.json({ success: true, x, y, connected: result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/api/ds/unionfind/sets', (req, res) => {
+  res.json({ success: true, sets: unionFind.getSets() });
+});
+
+app.get('/api/ds/unionfind/stats', (req, res) => {
+  res.json({ success: true, ...unionFind.getStats() });
+});
+
+// ==================== BIT ENDPOINTS ====================
+
+app.post('/api/ds/bit', (req, res) => {
+  try {
+    const { array } = req.body;
+    const bit = new BinaryIndexedTree(array);
+    res.json({ success: true, size: bit.n });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/api/ds/bit/prefix', (req, res) => {
+  try {
+    const { index } = req.query;
+    const result = bit.prefixSum(parseInt(index));
+    res.json({ success: true, index, prefixSum: result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/api/ds/bit/range', (req, res) => {
+  try {
+    const { l, r } = req.query;
+    const result = bit.rangeSum(parseInt(l), parseInt(r));
+    res.json({ success: true, range: [l, r], sum: result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/api/ds/bit/stats', (req, res) => {
+  res.json({ success: true, ...bit.getStats() });
+});
+
+// ==================== RATE LIMITER ENDPOINTS ====================
+
+app.post('/api/system/ratelimiter/consume', (req, res) => {
+  try {
+    const { tokens } = req.body;
+    const allowed = tokenBucket.tryConsume(tokens || 1);
+    res.json({ success: true, allowed, state: tokenBucket.getState() });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/api/system/ratelimiter/state', (req, res) => {
+  res.json({ success: true, ...tokenBucket.getState() });
+});
+
+app.post('/api/system/ratelimiter/reset', (req, res) => {
+  tokenBucket.reset();
+  res.json({ success: true, message: 'Rate limiter reset' });
+});
+
+// Sliding Window
+app.post('/api/system/slidingwindow/request', (req, res) => {
+  try {
+    const allowed = slidingWindow.tryRequest();
+    res.json({ success: true, allowed, remaining: slidingWindow.getRemaining() });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/api/system/slidingwindow/state', (req, res) => {
+  res.json({ success: true, ...slidingWindow.getState() });
+});
+
+// ==================== CIRCUIT BREAKER ENDPOINTS ====================
+
+app.post('/api/system/circuitbreaker/execute', async (req, res) => {
+  try {
+    const { fn } = req.body;
+    const result = await circuitBreaker.execute(async () => {
+      // Simulate async operation
+      await new Promise(resolve => setTimeout(resolve, 100));
+      if (Math.random() < 0.3) throw new Error('Simulated failure');
+      return { success: true, data: 'Operation result' };
+    });
+    res.json({ success: true, result, state: circuitBreaker.getState() });
+  } catch (error) {
+    res.json({ success: false, error: error.message, state: circuitBreaker.getState() });
+  }
+});
+
+app.get('/api/system/circuitbreaker/state', (req, res) => {
+  res.json({ success: true, ...circuitBreaker.getState() });
+});
+
+app.post('/api/system/circuitbreaker/open', (req, res) => {
+  circuitBreaker.open();
+  res.json({ success: true, message: 'Circuit breaker opened' });
+});
+
+app.post('/api/system/circuitbreaker/close', (req, res) => {
+  circuitBreaker.close();
+  res.json({ success: true, message: 'Circuit breaker closed' });
+});
+
+// ==================== DISTRIBUTED LOCK ENDPOINTS ====================
+
+app.post('/api/system/distributedlock/acquire', async (req, res) => {
+  try {
+    const { lockName, ttl } = req.body;
+    const result = await distributedLock.acquire(lockName || 'default', ttl);
+    res.json({ success: true, ...result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.post('/api/system/distributedlock/release', async (req, res) => {
+  try {
+    const { lockName, token } = req.body;
+    const result = await distributedLock.release(lockName, token);
+    res.json({ success: true, ...result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.post('/api/system/distributedlock/extend', async (req, res) => {
+  try {
+    const { lockName, token, ttl } = req.body;
+    const result = await distributedLock.extend(lockName, token, ttl);
+    res.json({ success: true, ...result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get('/api/system/distributedlock/locks', (req, res) => {
+  res.json({ success: true, locks: distributedLock.getAllLocks() });
+});
+
+app.get('/api/system/distributedlock/stats', (req, res) => {
+  res.json({ success: true, ...distributedLock.getStats() });
+});
+
+// ==================== ALL DSA STATS ====================
+
+app.get('/api/ds/stats', (req, res) => {
+  res.json({
+    success: true,
+    dataStructures: {
+      graph: graph.getStats(),
+      heap: minHeap.getStats(),
+      segmentTree: segmentTree.getStats(),
+      unionFind: unionFind.getStats(),
+      bit: bit.getStats()
+    },
+    timestamp: Date.now()
+  });
+});
+
+app.get('/api/system/stats', (req, res) => {
+  res.json({
+    success: true,
+    services: {
+      rateLimiter: tokenBucket.getState(),
+      slidingWindow: slidingWindow.getState(),
+      circuitBreaker: circuitBreaker.getState(),
+      distributedLock: distributedLock.getStats()
+    },
+    timestamp: Date.now()
+  });
+});
+
+// Reset all
 app.post('/api/reset', (req, res) => {
   try {
     fileStorage.clear();
     searchEngine.clear();
+    graph.clear();
+    minHeap.clear();
+    segmentTree.clear();
+    unionFind.clear();
+    bit.clear();
+    tokenBucket.reset();
+    slidingWindow.reset();
+    circuitBreaker.reset();
+    distributedLock.reset();
 
-    res.json({
-      success: true,
-      message: 'All systems reset'
-    });
+    res.json({ success: true, message: 'All systems reset' });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Scalable Systems Simulator running on http://localhost:${PORT}`);
-  console.log('Available endpoints:');
-  console.log('  POST   /api/files/upload');
-  console.log('  GET    /api/files');
-  console.log('  GET    /api/files/:fileId');
-  console.log('  DELETE /api/files/:fileId');
-  console.log('  GET    /api/search?q=query');
-  console.log('  GET    /api/autocomplete?prefix=test');
-  console.log('  GET    /api/search/boolean?q=word1+AND+word2');
-  console.log('  GET    /api/stats');
-  console.log('  POST   /api/reset');
+  console.log(`\n🚀 DSA Atlas API Server running on http://localhost:${PORT}`);
+  console.log('='.repeat(60));
+  console.log('\n📁 File & Search Endpoints:');
+  console.log('   POST   /api/files/upload');
+  console.log('   GET    /api/files');
+  console.log('   GET    /api/search?q=query');
+  console.log('   GET    /api/stats');
+  
+  console.log('\n📊 Graph Algorithms:');
+  console.log('   POST   /api/ds/graph/node');
+  console.log('   POST   /api/ds/graph/edge');
+  console.log('   GET    /api/ds/graph/bfs?start=A&target=B');
+  console.log('   GET    /api/ds/graph/dijkstra?start=A&target=B');
+  console.log('   GET    /api/ds/graph/cycles');
+  console.log('   GET    /api/ds/graph/pagerank');
+  console.log('   GET    /api/ds/graph/stats');
+
+  console.log('\n🌳 Heap:');
+  console.log('   POST   /api/ds/heap/insert');
+  console.log('   POST   /api/ds/heap/extract');
+  console.log('   GET    /api/ds/heap/peek');
+  console.log('   GET    /api/ds/heap/stats');
+
+  console.log('\n📈 Segment Tree:');
+  console.log('   POST   /api/ds/segmenttree');
+  console.log('   GET    /api/ds/segmenttree/query?l=0&r=5');
+  console.log('   POST   /api/ds/segmenttree/update');
+  console.log('   GET    /api/ds/segmenttree/stats');
+
+  console.log('\n🔗 Union-Find:');
+  console.log('   POST   /api/ds/unionfind/union');
+  console.log('   GET    /api/ds/unionfind/find?x=5');
+  console.log('   GET    /api/ds/unionfind/connected?x=3&y=7');
+  console.log('   GET    /api/ds/unionfind/sets');
+  console.log('   GET    /api/ds/unionfind/stats');
+
+  console.log('\n📊 Binary Indexed Tree:');
+  console.log('   POST   /api/ds/bit');
+  console.log('   GET    /api/ds/bit/prefix?index=5');
+  console.log('   GET    /api/ds/bit/range?l=2&r=7');
+  console.log('   GET    /api/ds/bit/stats');
+
+  console.log('\n⚡ System Services:');
+  console.log('   POST   /api/system/ratelimiter/consume');
+  console.log('   GET    /api/system/ratelimiter/state');
+  console.log('   POST   /api/system/circuitbreaker/execute');
+  console.log('   GET    /api/system/circuitbreaker/state');
+  console.log('   POST   /api/system/distributedlock/acquire');
+  console.log('   POST   /api/system/distributedlock/release');
+  console.log('   GET    /api/system/distributedlock/locks');
+
+  console.log('\n📈 Combined Stats:');
+  console.log('   GET    /api/ds/stats');
+  console.log('   GET    /api/system/stats');
+  console.log('   POST   /api/reset');
+  
+  console.log('\n' + '='.repeat(60));
 });
 
 module.exports = app;
