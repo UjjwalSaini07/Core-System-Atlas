@@ -535,3 +535,22 @@ class CircuitBreaker {
 | State | `CircuitBreaker.js` | State machine for breaker |
 | Decorator | `Monitor.js` | Add metrics to operations |
 | Proxy | `LRUCache.js` | Cache access control |
+
+## 👨‍💻 Author
+
+Designed and developed with a focus on clean architecture, performance, and developer experience.
+
+<div align="center">
+
+**Ujjwal Saini**  
+_Full-Stack Developer_
+
+🌐 [ujjwalsaini.dev](https://www.ujjwalsaini.dev/) · 🐙 [GitHub](https://github.com/UjjwalSaini07)
+
+</div>
+
+<div align="center">
+    <a href="#top">
+        <img src="https://img.shields.io/badge/Back%20to%20Top-000000?style=for-the-badge&logo=github&logoColor=white" alt="Back to Top">
+    </a>
+</div>

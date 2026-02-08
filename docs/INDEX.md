@@ -163,9 +163,9 @@ Core-System-Atlas/
 
 ## 🔗 Related Resources
 
-- [GitHub Repository](https://github.com/username/Core-System-Atlas)
-- [Issue Tracker](https://github.com/username/Core-System-Atlas/issues)
-- [Discussions](https://github.com/username/Core-System-Atlas/discussions)
+- [GitHub Repository](https://github.com/UjjwalSaini07/Core-System-Atlas)
+- [Issue Tracker](https://github.com/UjjwalSaini07/Core-System-Atlas/issues)
+
 
 ## 📄 License
 
@@ -174,9 +174,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🤝 Support
 
-- Check existing [Issues](https://github.com/username/Core-System-Atlas/issues)
-- Create a [New Issue](https://github.com/username/Core-System-Atlas/issues/new)
-- Read [Contributing Guide](CONTRIBUTING.md)
+- Check existing [Issues](https://github.com/UjjwalSaini07/Core-System-Atlas/issues)
+- Create a [New Issue](https://github.com/UjjwalSaini07/Core-System-Atlas/issues/new)
 
 
 ## 👨‍💻 Author
