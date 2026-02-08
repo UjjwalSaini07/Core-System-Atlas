@@ -5,34 +5,44 @@
 
 class BinaryIndexedTree {
   constructor(sizeOrArray = 0) {
+    this.stats = {
+      updates: 0,
+      queries: 0,
+      operations: []
+    };
+    
     if (typeof sizeOrArray === 'number') {
       this.n = sizeOrArray;
       this.tree = new Array(sizeOrArray + 1).fill(0);
     } else {
       this.n = sizeOrArray.length;
       this.tree = new Array(this.n + 1).fill(0);
+      this.original = [...sizeOrArray];
       for (let i = 0; i < this.n; i++) {
-        this.update(i, sizeOrArray[i]);
+        this._updateNoStats(i, sizeOrArray[i]);
       }
     }
-    this.original = sizeOrArray instanceof Array ? [...sizeOrArray] : [];
-    this.stats = {
-      updates: 0,
-      queries: 0,
-      operations: []
-    };
+    if (!this.original) {
+      this.original = sizeOrArray instanceof Array ? [...sizeOrArray] : [];
+    }
+  }
+
+  // Update without stats logging (for constructor use)
+  _updateNoStats(index, delta) {
+    let i = index + 1;
+    while (i <= this.n) {
+      this.tree[i] += delta;
+      i += i & -i;
+    }
   }
 
   // Update index i by adding delta
   update(index, delta) {
-    // Convert 0-indexed to 1-indexed
-    const i = index + 1;
-
+    let i = index + 1;
     while (i <= this.n) {
       this.tree[i] += delta;
-      i += i & -i; // Add lowest set bit
+      i += i & -i;
     }
-
     this.stats.updates++;
     this._logOperation('update', { index, delta, newValue: this.prefixSum(index) });
   }
@@ -41,12 +51,10 @@ class BinaryIndexedTree {
   prefixSum(index) {
     let sum = 0;
     let i = index + 1;
-
     while (i > 0) {
       sum += this.tree[i];
-      i -= i & -i; // Subtract lowest set bit
+      i -= i & -i;
     }
-
     this.stats.queries++;
     return sum;
   }
@@ -92,7 +100,7 @@ class BinaryIndexedTree {
       bitMask >>= 1;
     }
 
-    return idx; // 0-indexed
+    return idx;
   }
 
   // Find k-th smallest element
@@ -134,7 +142,6 @@ class BinaryIndexedTree {
   static rangeQueryPointUpdate(array) {
     const bit = new BinaryIndexedTree(array.length);
     
-    // Build structure for range updates
     for (let i = 0; i < array.length; i++) {
       const diff = array[i] - (i > 0 ? array[i - 1] : 0);
       const nextDiff = (i < array.length - 1 ? array[i + 1] : 0) - array[i];
@@ -156,15 +163,13 @@ class BinaryIndexedTree {
   // Visualization data
   getTreeStructure() {
     const structure = [];
-    let maxLevel = Math.floor(Math.log2(this.n)) + 1;
-
     for (let i = 1; i <= this.n; i++) {
       const level = Math.floor(Math.log2(i));
       const rangeStart = i - (i & -i) + 1;
       const rangeEnd = i;
 
       structure.push({
-        index: i - 1, // 0-indexed
+        index: i - 1,
         value: this.tree[i],
         level,
         range: [rangeStart - 1, rangeEnd - 1],
