@@ -379,7 +379,7 @@ Local Machine
 7. **Monitoring** - External monitoring integration (Datadog, Prometheus)
 
 
-### 👨‍💻 Author
+## 👨‍💻 Author
 
 <div align="center">
 
