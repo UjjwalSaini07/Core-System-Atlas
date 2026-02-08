@@ -24,27 +24,27 @@ body {
   --color-background: hsl(220 20% 98%);
   
   /* Foreground - Dark Slate */
-  --color-foreground: hsl(220 30% 15%);
+  --color-foreground: hsl(220 30% 12%);
   
   /* Card - Pure White */
   --color-card: hsl(0 0% 100%);
-  --color-card-foreground: hsl(220 30% 15%);
+  --color-card-foreground: hsl(220 30% 12%);
   
   /* Popover */
   --color-popover: hsl(0 0% 100%);
-  --color-popover-foreground: hsl(220 30% 15%);
+  --color-popover-foreground: hsl(220 30% 12%);
   
   /* Muted Colors */
-  --color-muted: hsl(220 10% 96%);
-  --color-muted-foreground: hsl(220 10% 45%);
+  --color-muted: hsl(220 10% 94%);
+  --color-muted-foreground: hsl(220 10% 42%);
   
   /* Destructive */
   --color-destructive: hsl(0 84% 60%);
   --color-destructive-foreground: hsl(0 0% 100%);
   
   /* Border & Input */
-  --color-border: hsl(220 15% 92%);
-  --color-input: hsl(220 15% 92%);
+  --color-border: hsl(220 12% 88%);
+  --color-input: hsl(220 12% 88%);
   --color-ring: hsl(174 82% 36%);
   
   /* Chart Colors - Professional Vibrant */
@@ -58,13 +58,13 @@ body {
   --radius-radius: 0.75rem;
   
   /* Sidebar Colors */
-  --color-sidebar-background: hsl(220 15% 96%);
-  --color-sidebar-foreground: hsl(220 30% 15%);
+  --color-sidebar-background: hsl(220 10% 94%);
+  --color-sidebar-foreground: hsl(220 30% 12%);
   --color-sidebar-primary: hsl(174 82% 36%);
   --color-sidebar-primary-foreground: hsl(0 0% 100%);
-  --color-sidebar-accent: hsl(220 10% 92%);
-  --color-sidebar-accent-foreground: hsl(220 30% 15%);
-  --color-sidebar-border: hsl(220 15% 92%);
+  --color-sidebar-accent: hsl(220 10% 90%);
+  --color-sidebar-accent-foreground: hsl(220 30% 12%);
+  --color-sidebar-border: hsl(220 12% 88%);
   --color-sidebar-ring: hsl(174 82% 36%);
 }
 
@@ -89,7 +89,7 @@ body {
   overflow: hidden;
   z-index: -1;
   pointer-events: none;
-  background: linear-gradient(135deg, hsl(220 20% 98%) 0%, hsl(200 20% 96%) 50%, hsl(220 20% 98%) 100%);
+  background: linear-gradient(135deg, hsl(220 20% 98%) 0%, hsl(210 15% 96%) 50%, hsl(220 20% 98%) 100%);
 }
 
 .animated-bg::before {
@@ -99,9 +99,9 @@ body {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at 20% 80%, hsl(174 82% 36% / 0.08) 0%, transparent 50%),
-              radial-gradient(circle at 80% 20%, hsl(24 95% 58% / 0.08) 0%, transparent 50%),
-              radial-gradient(circle at 40% 40%, hsl(199 89% 48% / 0.06) 0%, transparent 50%);
+  background: radial-gradient(circle at 20% 80%, hsl(174 82% 36% / 0.06) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, hsl(24 95% 58% / 0.06) 0%, transparent 50%),
+              radial-gradient(circle at 40% 40%, hsl(199 89% 48% / 0.04) 0%, transparent 50%);
   animation: bg-pulse 15s ease-in-out infinite;
 }
 
@@ -113,7 +113,7 @@ body {
   width: 100%;
   height: 100%;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.02;
+  opacity: 0.015;
   pointer-events: none;
 }
 
@@ -122,23 +122,23 @@ body {
     transform: scale(1) rotate(0deg);
   }
   50% {
-    transform: scale(1.05) rotate(3deg);
+    transform: scale(1.03) rotate(2deg);
   }
 }
 
 /* Glass morphism - Light Theme */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 0.75rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
 }
 
 /* Gradient text */
@@ -156,7 +156,7 @@ body {
 
 .hover-lift:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 /* Shimmer effect */
@@ -172,7 +172,7 @@ body {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
   animation: shimmer 2s infinite;
 }
 
@@ -215,7 +215,7 @@ body {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-8px);
+    transform: translateY(-6px);
   }
 }
 
@@ -226,10 +226,10 @@ body {
 /* Pulse glow animation */
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(8, 145, 178, 0.2);
+    box-shadow: 0 0 16px rgba(8, 145, 178, 0.15);
   }
   50% {
-    box-shadow: 0 0 40px rgba(8, 145, 178, 0.4);
+    box-shadow: 0 0 32px rgba(8, 145, 178, 0.25);
   }
 }
 
@@ -308,23 +308,23 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(220 10% 96%);
+  background: hsl(220 10% 94%);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(220 15% 75%);
+  background: hsl(220 12% 70%);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(220 15% 65%);
+  background: hsl(220 12% 60%);
 }
 
 /* Selection */
 ::selection {
-  background: hsl(174 82% 36% / 0.2);
-  color: hsl(220 30% 15%);
+  background: hsl(174 82% 36% / 0.15);
+  color: hsl(220 30% 12%);
 }
 
 /* Focus styles */

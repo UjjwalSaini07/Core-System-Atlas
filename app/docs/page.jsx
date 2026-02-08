@@ -161,16 +161,16 @@ export default function DocsPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/95 shadow-sm">
+      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/95 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/">
-              <Button variant="ghost" size="icon" className="text-slate-500 hover:text-slate-700">
+              <Button variant="ghost" size="icon" className="text-slate-500 hover:text-slate-700 hover:bg-slate-100">
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
             <div>
-              <h1 className="text-xl font-semibold tracking-tight text-slate-800">Documentation</h1>
+              <h1 className="text-xl font-semibold tracking-tight text-slate-900">Documentation</h1>
               <p className="text-sm text-slate-500">
                 API reference & code examples
               </p>
@@ -210,7 +210,7 @@ export default function DocsPage() {
           <div className="col-span-9">
             <Card className="border-slate-200 bg-white shadow-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-3 text-slate-800">
+                <CardTitle className="flex items-center gap-3 text-slate-900">
                   <BookOpen className="w-5 h-5 text-teal-600" />
                   {section?.name} Documentation
                 </CardTitle>
@@ -220,10 +220,10 @@ export default function DocsPage() {
               </CardHeader>
               <CardContent>
                 <Tabs defaultValue="overview">
-                  <TabsList className="bg-slate-100">
-                    <TabsTrigger value="overview" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white">Overview</TabsTrigger>
-                    <TabsTrigger value="api" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white">API</TabsTrigger>
-                    <TabsTrigger value="example" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white">Example</TabsTrigger>
+                  <TabsList className="bg-slate-100 border border-slate-200">
+                    <TabsTrigger value="overview" className="data-[state=active]:bg-white data-[state=active]:text-teal-700 data-[state=active]:shadow-sm">Overview</TabsTrigger>
+                    <TabsTrigger value="api" className="data-[state=active]:bg-white data-[state=active]:text-teal-700 data-[state=active]:shadow-sm">API</TabsTrigger>
+                    <TabsTrigger value="example" className="data-[state=active]:bg-white data-[state=active]:text-teal-700 data-[state=active]:shadow-sm">Example</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="overview" className="mt-4">

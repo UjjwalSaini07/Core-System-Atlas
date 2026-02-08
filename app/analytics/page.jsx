@@ -78,16 +78,16 @@ export default function AnalyticsPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/95 shadow-sm">
+      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/95 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/">
-              <Button variant="ghost" size="icon" className="text-slate-500 hover:text-slate-700">
+              <Button variant="ghost" size="icon" className="text-slate-500 hover:text-slate-700 hover:bg-slate-100">
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
             <div>
-              <h1 className="text-xl font-semibold tracking-tight text-slate-800">Performance Analytics</h1>
+              <h1 className="text-xl font-semibold tracking-tight text-slate-900">Performance Analytics</h1>
               <p className="text-sm text-slate-500">
                 Algorithm complexity & benchmarking
               </p>
@@ -96,7 +96,7 @@ export default function AnalyticsPage() {
           <Button 
             onClick={runBenchmarks} 
             disabled={isRunning} 
-            className="bg-teal-600 hover:bg-teal-700 text-white"
+            className="bg-teal-600 hover:bg-teal-700 text-white shadow-sm"
           >
             <Play className="w-4 h-4 mr-2" />
             {isRunning ? 'Running...' : 'Run Benchmark'}
@@ -111,13 +111,13 @@ export default function AnalyticsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-slate-500 uppercase font-medium">Operations/sec</p>
-                  <p className="text-2xl font-bold text-slate-800">
+                  <p className="text-xs font-medium text-slate-500 uppercase">Operations/sec</p>
+                  <p className="text-2xl font-semibold text-slate-900 mt-1">
                     {benchmarkResults.length > 0 ? benchmarkResults[benchmarkResults.length - 1]?.ops : '1.2M'}
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center">
-                  <Activity className="w-6 h-6 text-teal-600" />
+                <div className="w-12 h-12 rounded-full bg-teal-50 flex items-center justify-center">
+                  <Activity className="w-5 h-5 text-teal-600" />
                 </div>
               </div>
             </CardContent>
@@ -126,15 +126,15 @@ export default function AnalyticsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-slate-500 uppercase font-medium">Avg Time</p>
-                  <p className="text-2xl font-bold text-slate-800">
+                  <p className="text-xs font-medium text-slate-500 uppercase">Avg Time</p>
+                  <p className="text-2xl font-semibold text-slate-900 mt-1">
                     {benchmarkResults.length > 0 
                       ? (benchmarkResults.reduce((a, b) => a + parseFloat(b.time), 0) / benchmarkResults.length).toFixed(2)
                       : '0.5'} ms
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-teal-600" />
+                <div className="w-12 h-12 rounded-full bg-teal-50 flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-teal-600" />
                 </div>
               </div>
             </CardContent>
@@ -143,13 +143,13 @@ export default function AnalyticsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-slate-500 uppercase font-medium">Data Size</p>
-                  <p className="text-2xl font-bold text-slate-800">
+                  <p className="text-xs font-medium text-slate-500 uppercase">Data Size</p>
+                  <p className="text-2xl font-semibold text-slate-900 mt-1">
                     {benchmarkResults.length > 0 ? benchmarkResults[benchmarkResults.length - 1]?.size : '100K'}
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center">
-                  <BarChart2 className="w-6 h-6 text-teal-600" />
+                <div className="w-12 h-12 rounded-full bg-teal-50 flex items-center justify-center">
+                  <BarChart2 className="w-5 h-5 text-teal-600" />
                 </div>
               </div>
             </CardContent>
@@ -158,11 +158,11 @@ export default function AnalyticsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-slate-500 uppercase font-medium">Efficiency</p>
-                  <p className="text-2xl font-bold text-slate-800">96%</p>
+                  <p className="text-xs font-medium text-slate-500 uppercase">Efficiency</p>
+                  <p className="text-2xl font-semibold text-slate-900 mt-1">96%</p>
                 </div>
-                <div className="w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-teal-600" />
+                <div className="w-12 h-12 rounded-full bg-teal-50 flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-teal-600" />
                 </div>
               </div>
             </CardContent>
@@ -171,20 +171,20 @@ export default function AnalyticsPage() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-slate-100 border-slate-200">
-            <TabsTrigger value="complexity" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white">
+          <TabsList className="bg-slate-100 border border-slate-200">
+            <TabsTrigger value="complexity" className="data-[state=active]:bg-white data-[state=active]:text-teal-700 data-[state=active]:shadow-sm">
               <TrendingUp className="w-4 h-4 mr-2" />
               Complexity
             </TabsTrigger>
-            <TabsTrigger value="algorithms" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white">
+            <TabsTrigger value="algorithms" className="data-[state=active]:bg-white data-[state=active]:text-teal-700 data-[state=active]:shadow-sm">
               <BarChart2 className="w-4 h-4 mr-2" />
               Algorithms
             </TabsTrigger>
-            <TabsTrigger value="operations" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white">
+            <TabsTrigger value="operations" className="data-[state=active]:bg-white data-[state=active]:text-teal-700 data-[state=active]:shadow-sm">
               <Activity className="w-4 h-4 mr-2" />
               Operation Costs
             </TabsTrigger>
-            <TabsTrigger value="benchmark" className="data-[state=active]:bg-teal-600 data-[state=active]:text-white">
+            <TabsTrigger value="benchmark" className="data-[state=active]:bg-white data-[state=active]:text-teal-700 data-[state=active]:shadow-sm">
               <Play className="w-4 h-4 mr-2" />
               Benchmark
             </TabsTrigger>
@@ -193,7 +193,7 @@ export default function AnalyticsPage() {
           <TabsContent value="complexity" className="mt-6">
             <Card className="border-slate-200 bg-white shadow-sm">
               <CardHeader>
-                <CardTitle className="text-slate-800">Big O Complexity Chart</CardTitle>
+                <CardTitle className="text-slate-900">Big O Complexity Chart</CardTitle>
                 <CardDescription className="text-slate-500">
                   Compare how different complexity classes grow as input size increases
                 </CardDescription>
@@ -210,15 +210,15 @@ export default function AnalyticsPage() {
                           backgroundColor: 'white', 
                           border: '1px solid #E2E8F0',
                           borderRadius: '8px',
-                          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
                         }}
                         formatter={(value) => [`${value.toExponential(0)}`, 'Operations']}
                       />
                       <Legend />
-                      <Line type="monotone" dataKey="log" stroke="#8B5CF6" strokeWidth={3} dot={{ fill: '#8B5CF6', r: 4 }} name="O(log n)" />
-                      <Line type="monotone" dataKey="linear" stroke="#0891B2" strokeWidth={3} dot={{ fill: '#0891B2', r: 4 }} name="O(n)" />
-                      <Line type="monotone" dataKey="nlogn" stroke="#6366F1" strokeWidth={3} dot={{ fill: '#6366F1', r: 4 }} name="O(n log n)" />
-                      <Line type="monotone" dataKey="quadratic" stroke="#F59E0B" strokeWidth={3} dot={{ fill: '#F59E0B', r: 4 }} name="O(n²)" />
+                      <Line type="monotone" dataKey="log" stroke="#8B5CF6" strokeWidth={2.5} dot={{ fill: '#8B5CF6', r: 4 }} name="O(log n)" />
+                      <Line type="monotone" dataKey="linear" stroke="#0891B2" strokeWidth={2.5} dot={{ fill: '#0891B2', r: 4 }} name="O(n)" />
+                      <Line type="monotone" dataKey="nlogn" stroke="#6366F1" strokeWidth={2.5} dot={{ fill: '#6366F1', r: 4 }} name="O(n log n)" />
+                      <Line type="monotone" dataKey="quadratic" stroke="#F59E0B" strokeWidth={2.5} dot={{ fill: '#F59E0B', r: 4 }} name="O(n²)" />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
@@ -232,7 +232,7 @@ export default function AnalyticsPage() {
                   ].map((item) => (
                     <div key={item.name} className="p-4 rounded-xl bg-slate-50 border border-slate-200">
                       <div className="flex items-center gap-2 mb-2">
-                        <div className="w-4 h-4 rounded-full" style={{ backgroundColor: item.color }} />
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
                         <span className="font-semibold text-slate-800">{item.name}</span>
                       </div>
                       <p className="text-sm text-slate-500">{item.desc}</p>
@@ -246,27 +246,27 @@ export default function AnalyticsPage() {
                   <div className="grid grid-cols-3 gap-4 text-sm">
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full bg-teal-500" />
-                      <span className="text-slate-700">O(1) - Constant</span>
+                      <span className="text-slate-600">O(1) - Constant</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full bg-indigo-500" />
-                      <span className="text-slate-700">O(n²) - Quadratic</span>
+                      <span className="text-slate-600">O(n²) - Quadratic</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full bg-purple-500" />
-                      <span className="text-slate-700">O(2ⁿ) - Exponential</span>
+                      <span className="text-slate-600">O(2ⁿ) - Exponential</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full bg-cyan-500" />
-                      <span className="text-slate-700">O(n!) - Factorial</span>
+                      <span className="text-slate-600">O(n!) - Factorial</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full bg-sky-500" />
-                      <span className="text-slate-700">O(√n) - Square Root</span>
+                      <span className="text-slate-600">O(√n) - Square Root</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full bg-violet-500" />
-                      <span className="text-slate-700">O(n² log n)</span>
+                      <span className="text-slate-600">O(n² log n)</span>
                     </div>
                   </div>
                 </div>
@@ -279,7 +279,7 @@ export default function AnalyticsPage() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-slate-800">Sorting Algorithm Comparison</CardTitle>
+                    <CardTitle className="text-slate-900">Sorting Algorithm Comparison</CardTitle>
                     <CardDescription className="text-slate-500">
                       Compare time and space complexity across different sorting algorithms
                     </CardDescription>
@@ -304,13 +304,13 @@ export default function AnalyticsPage() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-slate-200">
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-slate-800">Algorithm</th>
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-slate-800">Best</th>
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-slate-800">Average</th>
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-slate-800">Worst</th>
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-slate-800">Space</th>
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-slate-800">Stable</th>
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-slate-800">Use Case</th>
+                        <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Algorithm</th>
+                        <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Best</th>
+                        <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Average</th>
+                        <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Worst</th>
+                        <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Space</th>
+                        <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Stable</th>
+                        <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Use Case</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -318,17 +318,17 @@ export default function AnalyticsPage() {
                         <tr key={algo.name} className="border-b border-slate-100 hover:bg-slate-50">
                           <td className="py-3 px-4 text-sm font-medium text-slate-800">{algo.name}</td>
                           <td className="py-3 px-4">
-                            <Badge variant="outline" className="border-slate-300 text-slate-700 bg-slate-50">{algo.best}</Badge>
+                            <Badge variant="outline" className="border-slate-300 text-slate-600 bg-slate-50">{algo.best}</Badge>
                           </td>
                           <td className="py-3 px-4">
-                            <Badge variant="outline" className="border-slate-300 text-slate-700 bg-slate-50">{algo.avg}</Badge>
+                            <Badge variant="outline" className="border-slate-300 text-slate-600 bg-slate-50">{algo.avg}</Badge>
                           </td>
                           <td className="py-3 px-4">
-                            <Badge variant="outline" className={algo.worst === 'O(n²)' ? 'border-amber-300 text-amber-700 bg-amber-50' : 'border-slate-300 text-slate-700 bg-slate-50'}>
+                            <Badge variant="outline" className={algo.worst === 'O(n²)' ? 'border-amber-300 text-amber-600 bg-amber-50' : 'border-slate-300 text-slate-600 bg-slate-50'}>
                               {algo.worst}
                             </Badge>
                           </td>
-                          <td className="py-3 px-4 text-sm text-slate-700">{algo.space}</td>
+                          <td className="py-3 px-4 text-sm text-slate-600">{algo.space}</td>
                           <td className="py-3 px-4">
                             {algo.stable ? (
                               <span className="text-emerald-600 font-medium">✓ Yes</span>
@@ -347,14 +347,14 @@ export default function AnalyticsPage() {
                 <div className="mt-6 grid grid-cols-2 gap-4">
                   <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
                     <h4 className="font-semibold text-slate-800 mb-2">✓ Best for Small Data</h4>
-                    <ul className="text-sm text-slate-700 space-y-1">
+                    <ul className="text-sm text-slate-600 space-y-1">
                       <li>• Insertion Sort - Nearly sorted data</li>
                       <li>• Bubble Sort - Educational purposes</li>
                     </ul>
                   </div>
                   <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
                     <h4 className="font-semibold text-slate-800 mb-2">✓ Best for Large Data</h4>
-                    <ul className="text-sm text-slate-700 space-y-1">
+                    <ul className="text-sm text-slate-600 space-y-1">
                       <li>• Merge Sort - Stable, guaranteed O(n log n)</li>
                       <li>• Quick Sort - Best average performance</li>
                     </ul>
@@ -367,7 +367,7 @@ export default function AnalyticsPage() {
           <TabsContent value="operations" className="mt-6">
             <Card className="border-slate-200 bg-white shadow-sm">
               <CardHeader>
-                <CardTitle className="text-slate-800">Relative Operation Costs</CardTitle>
+                <CardTitle className="text-slate-900">Relative Operation Costs</CardTitle>
                 <CardDescription className="text-slate-500">
                   Approximate time costs of various computer operations (modern hardware)
                 </CardDescription>
@@ -384,7 +384,7 @@ export default function AnalyticsPage() {
                           backgroundColor: 'white', 
                           border: '1px solid #E2E8F0',
                           borderRadius: '8px',
-                          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
                         }}
                         formatter={(value) => [`${value} ns`, 'Cost']}
                       />
@@ -434,7 +434,7 @@ export default function AnalyticsPage() {
           <TabsContent value="benchmark" className="mt-6">
             <Card className="border-slate-200 bg-white shadow-sm">
               <CardHeader>
-                <CardTitle className="text-slate-800">Live Benchmark Results</CardTitle>
+                <CardTitle className="text-slate-900">Live Benchmark Results</CardTitle>
                 <CardDescription className="text-slate-500">
                   Real-time performance metrics for array operations
                 </CardDescription>
@@ -453,7 +453,7 @@ export default function AnalyticsPage() {
                               backgroundColor: 'white', 
                               border: '1px solid #E2E8F0',
                               borderRadius: '8px',
-                              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
                             }}
                             formatter={(value) => [`${value}ms`, 'Time']}
                           />
@@ -466,7 +466,7 @@ export default function AnalyticsPage() {
                       {benchmarkResults.map((result) => (
                         <div key={result.size} className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">
                           <p className="text-xs text-slate-500 mb-1">Size: {result.size.toLocaleString()}</p>
-                          <p className="text-xl font-bold text-slate-800">{result.time}ms</p>
+                          <p className="text-xl font-semibold text-slate-900">{result.time}ms</p>
                           <p className="text-xs text-slate-500">{result.ops} ops/s</p>
                         </div>
                       ))}
@@ -480,7 +480,7 @@ export default function AnalyticsPage() {
                     <p className="text-slate-500 mb-4">
                       Click "Run Benchmark" to start performance testing
                     </p>
-                    <Button onClick={runBenchmarks} className="bg-teal-600 hover:bg-teal-700">
+                    <Button onClick={runBenchmarks} className="bg-teal-600 hover:bg-teal-700 text-white shadow-sm">
                       <Play className="w-4 h-4 mr-2" />
                       Start Benchmark
                     </Button>
@@ -489,7 +489,7 @@ export default function AnalyticsPage() {
 
                 {/* DSA Performance Overview */}
                 <div className="mt-8">
-                  <h4 className="font-semibold text-slate-800 mb-4">DSA Operation Performance</h4>
+                  <h4 className="font-semibold text-slate-900 mb-4">DSA Operation Performance</h4>
                   <div className="grid grid-cols-3 gap-4">
                     {DSA_CATEGORIES.map((cat) => (
                       <div key={cat.name} className="p-4 rounded-xl bg-slate-50 border border-slate-200">
