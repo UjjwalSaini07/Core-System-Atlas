@@ -1,7 +1,6 @@
 # Core System Atlas
 
-**A comprehensive full-stack application demonstrating core system design patterns, data structures, algorithms, and distributed system concepts through interactive visualizations and real-time monitoring.**
-
+**Core System Atlas is a comprehensive full-stack application built to explore modern system design principles, core data structures, and algorithms. It features interactive visualizations, real-time monitoring, and production-inspired services such as rate limiting and circuit breakers. Designed for learning and demonstration, it bridges theoretical computer science with practical, scalable system architecture.**
 
 ## 📋 Table of Contents
 
