@@ -9,9 +9,10 @@ import { SystemStats } from '@/components/SystemStats';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { RefreshCw, Info, Keyboard, X } from 'lucide-react';
+import { RefreshCw, Info, Keyboard, X, BarChart2, BookOpen, Network } from 'lucide-react';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
+import Link from 'next/link';
 
 export default function Page() {
   const [files, setFiles] = useState([]);
@@ -112,15 +113,33 @@ export default function Page() {
     <main className="min-h-screen bg-background">
       <Toaster />
 
-      <header className="sticky top-0 z-40 border-b bg-background">
+      <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-semibold">Search System</h1>
+            <h1 className="text-xl font-semibold tracking-tight">Search System</h1>
             <p className="text-sm text-muted-foreground">
               File indexing, search, and caching
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <Link href="/visualize">
+              <Button variant="ghost" size="sm">
+                <Network className="w-4 h-4 mr-2" />
+                Visualizer
+              </Button>
+            </Link>
+            <Link href="/analytics">
+              <Button variant="ghost" size="sm">
+                <BarChart2 className="w-4 h-4 mr-2" />
+                Analytics
+              </Button>
+            </Link>
+            <Link href="/docs">
+              <Button variant="ghost" size="sm">
+                <BookOpen className="w-4 h-4 mr-2" />
+                Docs
+              </Button>
+            </Link>
             <Button
               variant="outline"
               size="icon"
@@ -131,9 +150,9 @@ export default function Page() {
             >
               <RefreshCw className="w-4 h-4" />
             </Button>
-            <a href="/monitoring">
+            <Link href="/monitoring">
               <Button variant="outline">Monitoring</Button>
-            </a>
+            </Link>
           </div>
         </div>
       </header>
@@ -143,9 +162,9 @@ export default function Page() {
         {stats && <SystemStats stats={stats} />}
 
         {/* Info */}
-        <Card className="p-4">
+        <Card className="p-4 border-muted">
           <div className="flex gap-3 text-sm text-muted-foreground">
-            <Info className="w-4 h-4 mt-0.5" />
+            <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
             <div>
               Files are indexed automatically using an inverted index and cached
               with an LRU strategy for fast repeated searches.
@@ -215,12 +234,17 @@ export default function Page() {
 
       {/* Footer */}
       <footer className="border-t py-4 mt-12 text-sm text-muted-foreground">
-        <div className="max-w-7xl mx-auto px-6 flex justify-between">
+        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <span>
+              Backend: LRU Cache · Trie · Inverted Index
+            </span>
+            <span className="text-xs px-2 py-1 rounded-full bg-muted">
+              Graph · Heap · Segment Tree · Union-Find · BIT
+            </span>
+          </div>
           <span>
-            Backend: LRU Cache · Trie · Inverted Index
-          </span>
-          <span>
-            {stats ? 'Connected' : loading ? 'Connecting…' : 'offline Mode'}
+            {stats ? 'Connected' : loading ? 'Connecting…' : 'Offline Mode'}
           </span>
         </div>
       </footer>
