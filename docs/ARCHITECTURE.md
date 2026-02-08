@@ -381,6 +381,8 @@ Local Machine
 
 ## 👨‍💻 Author
 
+Designed and developed with a focus on clean architecture, performance, and developer experience.
+
 <div align="center">
 
 **Ujjwal Saini**  
