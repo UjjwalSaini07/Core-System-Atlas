@@ -11,6 +11,8 @@
 
 ![unnamed (1)](https://github.com/user-attachments/assets/9d0d79e5-0d1e-4a07-9593-8294b3efab0f)
 
+## Table of Content
+
 | #  | Section Name        | Link |
 |----|---------------------|------|
 | 1  | Overview            | [Overview](#overview) |
@@ -28,15 +30,18 @@
 | 13 | Code Style          | [Code Style](#code-style) |
 | 14 | License             | [License](#license) |
 
-## Overview
+## 📌 Overview
 
-Core System Atlas is an educational and demonstrative full-stack application that showcases:
+Core System Atlas is an educational and demonstrative full-stack application that showcases modern system design and computer science concepts through hands-on exploration:
 
-- 🎓 **Interactive Visualizations** - Learn algorithms through step-by-step animations
-- 📊 **Real-time Monitoring** - Track system metrics live
-- 🏗️ **System Design Patterns** - Production-ready implementations
-- ⚡ **Performance Analytics** - Throughput, latency, and resource tracking
-- 🔧 **Production Patterns** - Rate limiting, circuit breakers, distributed locks
+- 🎓 **Interactive Algorithm Visualizations** – Understand data structures and algorithms via step-by-step animations  
+- 📊 **Real-time System Monitoring** – Observe live metrics such as service health and performance  
+- 🏗️ **Production-Ready System Design Patterns** – Implementations inspired by real-world backend systems  
+- ⚡ **Performance Analytics** – Track throughput, latency, and resource utilization  
+- 🔧 **Resilient Infrastructure Patterns** – Includes rate limiting, circuit breakers, and distributed locks  
+- 🧠 **Core Computer Science Foundations** – Practical usage of DSA in real applications  
+- 🧩 **Modular & Scalable Architecture** – Clean separation of frontend, backend, and services  
+- 🚀 **Developer-Focused Learning Platform** – Built to help engineers move from theory to production thinking  
 
 
 ## Features
@@ -68,6 +73,8 @@ Core System Atlas is an educational and demonstrative full-stack application tha
 - Interactive performance charts
 - Error rate tracking and alerts
 
+## Demo 🖥️
+You can visit the live site here - NOT DEPLOYED YET
 
 ## Tech Stack
 
@@ -110,7 +117,6 @@ Core-System-Atlas/
 └── 📁 styles/                # Styles
 ```
 
-
 ## Quick Start
 
 ### Prerequisites
@@ -123,23 +129,28 @@ Core-System-Atlas/
 
 ### Installation
 
+- First Read this [License](https://github.com/UjjwalSaini07/Core-System-Atlas/blob/main/LICENSE) & their terms then proceed.
+- Star ⭐ the [Repository](https://github.com/UjjwalSaini07/Core-System-Atlas)
+- Fork the repository **(Optional)**
+- Project Setup:
+1. Clone the repository:
 ```bash
-# 1. Clone the repository
-git clone https://github.com/UjjwalSaini07/Core-System-Atlas.git
+    git clone https://github.com/UjjwalSaini07/Core-System-Atlas.git
 ```
+2. Navigate to the project directory:
 ```bash
-cd Core-System-Atlas
+    cd Core-System-Atlas
 ```
+- Install dependencies:
 ```bash
-# 2. Install dependencies
-pnpm install
+    pnpm install
 ```
+3. Start the Development Server:
 ```bash
-# 3. Start development server
 pnpm dev
 ```
 
-The application will be available at `http://localhost:3000`
+- Open your browser and navigate to `http://localhost:3000` to view the localhost website
 
 ### Docker Deployment
 
@@ -155,7 +166,6 @@ docker-compose logs -f
 # Stop services
 docker-compose down
 ```
-
 
 ## Pages & Routes
 
