@@ -11,24 +11,22 @@
 
 ![unnamed (1)](https://github.com/user-attachments/assets/9d0d79e5-0d1e-4a07-9593-8294b3efab0f)
 
-## 📋 Table of Contents
-
-1. [Overview](#overview)
-2. [Features](#features)
-3. [Tech Stack](#tech-stack)
-4. [Project Structure](#project-structure)
-5. [Quick Start](#quick-start)
-6. [Pages & Routes](#pages--routes)
-7. [Data Structures](#data-structures)
-8. [System Services](#system-services)
-9. [Architecture](#architecture)
-10. [API Reference](#api-reference)
-11. [Complexity Analysis](#complexity-analysis)
-12. [Design Patterns](#design-patterns)
-13. [Code Style](#code-style)
-14. [Contributing](#contributing)
-15. [License](#license)
-
+| #  | Section Name        | Link |
+|----|---------------------|------|
+| 1  | Overview            | [Overview](#overview) |
+| 2  | Features            | [Features](#features) |
+| 3  | Tech Stack          | [Tech Stack](#tech-stack) |
+| 4  | Project Structure   | [Project Structure](#project-structure) |
+| 5  | Quick Start         | [Quick Start](#quick-start) |
+| 6  | Pages & Routes      | [Pages & Routes](#pages--routes) |
+| 7  | Data Structures     | [Data Structures](#data-structures) |
+| 8  | System Services     | [System Services](#system-services) |
+| 9  | Architecture        | [Architecture](#architecture) |
+| 10 | API Reference       | [API Reference](#api-reference) |
+| 11 | Complexity Analysis | [Complexity Analysis](#complexity-analysis) |
+| 12 | Design Patterns     | [Design Patterns](#design-patterns) |
+| 13 | Code Style          | [Code Style](#code-style) |
+| 14 | License             | [License](#license) |
 
 ## Overview
 
