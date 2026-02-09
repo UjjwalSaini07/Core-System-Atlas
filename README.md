@@ -252,8 +252,6 @@ const sum = bit.prefixSum(2);
 | prefixSum | O(log n) |
 | rangeQuery | O(log n) |
 
----
-
 ## System Services
 
 ### Rate Limiter (Token Bucket)
@@ -292,7 +290,10 @@ await lock.release('resource-key');
 ## Architecture
 
 ### High-Level Architecture
---- Loading...
+
+<img width="1625" height="1078" alt="diagram-export-09-02-2026-18_11_39" src="https://github.com/user-attachments/assets/0ac4ab6d-ddbc-432c-a5f5-86421b9518c1" />
+
+~ ujjwalsaini07
 
 ### Frontend Architecture
 
