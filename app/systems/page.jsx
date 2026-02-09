@@ -232,24 +232,62 @@ function ComponentDetail({ component, isRunning, addLog }) {
 
   const [simHistory, setSimHistory] = useState([]);
 
+  // Component specific simulation behavior
+  const generateComponentMetrics = () => {
+
+    switch (component.id) {
+
+      case 'ratelimiter':
+        return {
+          throughput: Math.random() * 2000 + 1000,
+          load: Math.random() * 70 + 10
+        };
+
+      case 'circuitbreaker':
+        return {
+          latency: Math.random() * 300 + 50,
+          throughput: Math.random() * 1500 + 500,
+          load: Math.random() * 90
+        };
+
+      case 'loadbalancer':
+        return {
+          latency: Math.random() * 120 + 30,
+          throughput: Math.random() * 3500 + 1500,
+          load: Math.random() * 100
+        };
+
+      default:
+        return {
+          latency: Math.random() * 200,
+          throughput: Math.random() * 2500,
+          load: Math.random() * 80
+        };
+    }
+  };
+
   useEffect(() => {
+
+    setSimHistory([]); // Reset graph when component changes
+
     if (!isRunning) return;
 
     const interval = setInterval(() => {
+
+      const metrics = generateComponentMetrics();
+
       setSimHistory(prev => [
         ...prev.slice(-20),
         {
           time: new Date().toLocaleTimeString(),
-          latency: Math.floor(Math.random() * 200),
-          throughput: Math.floor(Math.random() * 3000),
-          load: Math.floor(Math.random() * 100)
+          ...metrics
         }
       ]);
     }, 1500);
 
     return () => clearInterval(interval);
 
-  }, [isRunning, component]);
+  }, [isRunning, component.id]);
 
   return (
     <Card>
@@ -277,14 +315,12 @@ function ComponentDetail({ component, isRunning, addLog }) {
               <Metric title="Status" value={component.status} />
             </div>
 
-            {/* Recharts Graph */}
             <Card>
               <CardHeader>
                 <CardTitle className="text-sm">Performance Trend</CardTitle>
               </CardHeader>
 
               <CardContent className="h-56">
-
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={simHistory}>
                     <XAxis dataKey="time" hide />
@@ -294,7 +330,6 @@ function ComponentDetail({ component, isRunning, addLog }) {
                     <Line type="monotone" dataKey="throughput" stroke="#2563eb" />
                   </LineChart>
                 </ResponsiveContainer>
-
               </CardContent>
             </Card>
 
@@ -311,14 +346,12 @@ function ComponentDetail({ component, isRunning, addLog }) {
               <GenericSimulation name={component.name} isRunning={isRunning} addLog={addLog} />
             )}
 
-            {/* Simulation Analytics Chart */}
             <Card>
               <CardHeader>
                 <CardTitle className="text-sm">Simulation Load Analysis</CardTitle>
               </CardHeader>
 
               <CardContent className="h-56">
-
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={simHistory}>
                     <XAxis dataKey="time" hide />
@@ -327,7 +360,6 @@ function ComponentDetail({ component, isRunning, addLog }) {
                     <Line type="monotone" dataKey="load" stroke="#f59e0b" />
                   </LineChart>
                 </ResponsiveContainer>
-
               </CardContent>
             </Card>
 
@@ -340,14 +372,12 @@ function ComponentDetail({ component, isRunning, addLog }) {
 {JSON.stringify(component, null, 2)}
             </pre>
 
-            {/* Config Analytics Graph */}
             <Card>
               <CardHeader>
                 <CardTitle className="text-sm">Configuration Impact Preview</CardTitle>
               </CardHeader>
 
               <CardContent className="h-56">
-
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={simHistory}>
                     <XAxis dataKey="time" hide />
@@ -356,7 +386,6 @@ function ComponentDetail({ component, isRunning, addLog }) {
                     <Line type="monotone" dataKey="throughput" stroke="#10b981" />
                   </LineChart>
                 </ResponsiveContainer>
-
               </CardContent>
             </Card>
 
