@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Card } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { Upload, FileText, CheckCircle, AlertCircle, File, Sparkles, CloudOff, Cloud } from 'lucide-react'
+import { Upload, FileText, CheckCircle, AlertCircle, File, Sparkles, CloudOff, Cloud, Database, HardDrive } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 
 export function FileUpload({ onFileUploaded }) {
@@ -17,6 +17,8 @@ export function FileUpload({ onFileUploaded }) {
   const [uploadStatus, setUploadStatus] = useState('idle')
   const [isServerConnected, setIsServerConnected] = useState(false)
   const [isChecking, setIsChecking] = useState(true)
+  const [storageType, setStorageType] = useState('tmp') // 'tmp' or 'mongodb'
+  const [mongoConnected, setMongoConnected] = useState(false)
   const fileInputRef = useRef(null)
   const { toast } = useToast()
 
@@ -31,6 +33,20 @@ export function FileUpload({ onFileUploaded }) {
         })
         clearTimeout(timeoutId)
         setIsServerConnected(response.ok)
+        
+        // Also check MongoDB status
+        if (response.ok) {
+          try {
+            const modeRes = await fetch('http://localhost:3001/api/storage/mode')
+            if (modeRes.ok) {
+              const modeData = await modeRes.json()
+              setStorageType(modeData.mode || 'tmp')
+              setMongoConnected(modeData.mongodbConnected || false)
+            }
+          } catch {
+            // Ignore MongoDB check errors
+          }
+        }
       } catch (error) {
         setIsServerConnected(false)
       } finally {
@@ -89,6 +105,7 @@ export function FileUpload({ onFileUploaded }) {
               filename,
               content,
               mimeType: 'text/plain',
+              storageType,
             }),
           }
         )
@@ -192,6 +209,42 @@ export function FileUpload({ onFileUploaded }) {
           </div>
         )}
       </div>
+
+      {/* Storage Type Toggle */}
+      {isServerConnected && (
+        <div className="flex items-center gap-3 p-3 rounded-lg bg-[var(--color-muted)]/30 border border-[var(--color-border)]">
+          <span className="text-sm font-medium text-[var(--color-muted-foreground)]">Storage:</span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setStorageType('tmp')}
+              disabled={uploading}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors ${
+                storageType === 'tmp'
+                  ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                  : 'text-[var(--color-muted-foreground)] hover:bg-[var(--color-muted)]/50'
+              }`}
+            >
+              <HardDrive className="w-4 h-4" />
+              Tmp
+            </button>
+            <button
+              onClick={() => setStorageType('mongodb')}
+              disabled={uploading || !mongoConnected}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors ${
+                storageType === 'mongodb'
+                  ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                  : 'text-[var(--color-muted-foreground)] hover:bg-[var(--color-muted)]/50 disabled:opacity-50'
+              }`}
+            >
+              <Database className="w-4 h-4" />
+              MongoDB
+            </button>
+          </div>
+          {!mongoConnected && (
+            <span className="text-xs text-amber-400">Connect MongoDB first</span>
+          )}
+        </div>
+      )}
 
       {/* File Selection */}
       <Card className="p-6 bg-[var(--color-card)] border-[var(--color-border)]">

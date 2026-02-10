@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const FileStorage = require('./backend/services/FileStorage');
+const MongoDBStorage = require('./backend/services/MongoDBStorage');
 const SearchEngine = require('./backend/services/SearchEngine');
 
 // DSA Imports
@@ -31,7 +32,25 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // Initialize systems
 const fileStorage = new FileStorage();
+const mongoDBStorage = new MongoDBStorage();
 const searchEngine = new SearchEngine(150);
+
+// Storage mode: 'tmp' or 'mongodb'
+let currentStorageMode = 'tmp';
+
+// Auto-connect to MongoDB on startup
+(async () => {
+  try {
+    const result = await mongoDBStorage.connect();
+    if (result.success) {
+      console.log('✅ MongoDB auto-connected successfully');
+    } else {
+      console.log('⚠️ MongoDB auto-connection failed:', result.message);
+    }
+  } catch (error) {
+    console.log('⚠️ MongoDB not available:', error.message);
+  }
+})();
 
 // DSA Instances
 const graph = new Graph(false, true);
@@ -49,9 +68,9 @@ const distributedLock = new DistributedLock({ ttl: 30000 });
 // ==================== FILE & SEARCH ENDPOINTS ====================
 
 // Upload file
-app.post('/api/files/upload', (req, res) => {
+app.post('/api/files/upload', async (req, res) => {
   try {
-    const { filename, content, mimeType } = req.body;
+    const { filename, content, mimeType, storageType } = req.body;
 
     if (!filename || !content) {
       return res.status(400).json({
@@ -60,10 +79,25 @@ app.post('/api/files/upload', (req, res) => {
       });
     }
 
-    const result = fileStorage.uploadFile(filename, content, mimeType);
-    
-    if (result.success) {
-      searchEngine.indexFile(result.fileId, filename, content);
+    // Use specified storage type or current mode
+    const mode = storageType || currentStorageMode;
+    let result;
+
+    if (mode === 'mongodb' && mongoDBStorage.connected) {
+      // Upload to MongoDB
+      result = await mongoDBStorage.uploadFile(filename, content, mimeType);
+      
+      if (result.success) {
+        // Also index in search engine
+        searchEngine.indexFile(result.fileId, filename, content);
+      }
+    } else {
+      // Upload to tmp storage
+      result = fileStorage.uploadFile(filename, content, mimeType);
+      
+      if (result.success) {
+        searchEngine.indexFile(result.fileId, filename, content);
+      }
     }
 
     res.json(result);
@@ -76,36 +110,60 @@ app.post('/api/files/upload', (req, res) => {
 });
 
 // Get all files
-app.get('/api/files', (req, res) => {
+app.get('/api/files', async (req, res) => {
   try {
-    const files = fileStorage.getAllFiles();
-    res.json({ success: true, files });
+    let files;
+    const storageType = req.query.storageType || currentStorageMode;
+    
+    if (storageType === 'mongodb' && mongoDBStorage.connected) {
+      files = await mongoDBStorage.getAllFiles();
+    } else {
+      files = fileStorage.getAllFiles();
+    }
+    
+    res.json({ success: true, files, storageType: storageType });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 });
 
 // Get specific file
-app.get('/api/files/:fileId', (req, res) => {
+app.get('/api/files/:fileId', async (req, res) => {
   try {
     const { fileId } = req.params;
-    const file = fileStorage.getFile(fileId);
+    const { storageType } = req.query;
+    const mode = storageType || currentStorageMode;
+    
+    let file;
+    if (mode === 'mongodb' && mongoDBStorage.connected) {
+      file = await mongoDBStorage.getFile(fileId);
+    } else {
+      file = fileStorage.getFile(fileId);
+    }
 
     if (!file) {
       return res.status(404).json({ success: false, message: 'File not found' });
     }
 
-    res.json({ success: true, file });
+    res.json({ success: true, file, storageType: mode });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 });
 
 // Delete file
-app.delete('/api/files/:fileId', (req, res) => {
+app.delete('/api/files/:fileId', async (req, res) => {
   try {
     const { fileId } = req.params;
-    const deleted = fileStorage.deleteFile(fileId);
+    const { storageType } = req.query;
+    const mode = storageType || currentStorageMode;
+    
+    let deleted;
+    if (mode === 'mongodb' && mongoDBStorage.connected) {
+      deleted = await mongoDBStorage.deleteFile(fileId);
+    } else {
+      deleted = fileStorage.deleteFile(fileId);
+    }
 
     res.json({ success: deleted, message: deleted ? 'File deleted' : 'File not found' });
   } catch (error) {
@@ -146,15 +204,18 @@ app.get('/api/autocomplete', (req, res) => {
 });
 
 // Stats
-app.get('/api/stats', (req, res) => {
+app.get('/api/stats', async (req, res) => {
   try {
     const systemState = searchEngine.getSystemState();
     const fileStats = fileStorage.getStats();
+    const mongoStats = await mongoDBStorage.getStats();
 
     res.json({
       success: true,
       systemState,
-      fileStorage: fileStats,
+      tmpStorage: fileStats,
+      mongodbStorage: mongoStats,
+      currentStorageMode,
       timestamp: Date.now()
     });
   } catch (error) {
@@ -510,6 +571,86 @@ app.get('/api/system/distributedlock/stats', (req, res) => {
   res.json({ success: true, ...distributedLock.getStats() });
 });
 
+// ==================== STORAGE MODE ENDPOINTS ====================
+
+// Connect to MongoDB
+app.post('/api/storage/mongodb/connect', async (req, res) => {
+  try {
+    const { connectionString } = req.body;
+    const result = await mongoDBStorage.connect(connectionString);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Get MongoDB status
+app.get('/api/storage/mongodb/status', async (req, res) => {
+  try {
+    const stats = await mongoDBStorage.getStats();
+    res.json({
+      success: true,
+      connected: mongoDBStorage.connected,
+      stats
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Set storage mode
+app.post('/api/storage/mode', (req, res) => {
+  try {
+    const { mode } = req.body;
+    
+    if (!['tmp', 'mongodb'].includes(mode)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid storage mode. Use "tmp" or "mongodb"'
+      });
+    }
+
+    if (mode === 'mongodb' && !mongoDBStorage.connected) {
+      return res.status(400).json({
+        success: false,
+        message: 'MongoDB not connected. Connect first using POST /api/storage/mongodb/connect'
+      });
+    }
+
+    currentStorageMode = mode;
+    res.json({
+      success: true,
+      mode: currentStorageMode,
+      message: `Storage mode set to ${mode}`
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Get current storage mode
+app.get('/api/storage/mode', (req, res) => {
+  res.json({
+    success: true,
+    mode: currentStorageMode,
+    mongodbConnected: mongoDBStorage.connected
+  });
+});
+
+// Disconnect from MongoDB
+app.post('/api/storage/mongodb/disconnect', async (req, res) => {
+  try {
+    await mongoDBStorage.disconnect();
+    // Switch back to tmp if MongoDB was disconnected
+    if (currentStorageMode === 'mongodb') {
+      currentStorageMode = 'tmp';
+    }
+    res.json({ success: true, message: 'Disconnected from MongoDB' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // ==================== ALL DSA STATS ====================
 
 app.get('/api/ds/stats', (req, res) => {
@@ -540,9 +681,10 @@ app.get('/api/system/stats', (req, res) => {
 });
 
 // Reset all
-app.post('/api/reset', (req, res) => {
+app.post('/api/reset', async (req, res) => {
   try {
     fileStorage.clear();
+    await mongoDBStorage.clear();
     searchEngine.clear();
     graph.clear();
     minHeap.clear();
@@ -612,6 +754,12 @@ app.listen(PORT, () => {
   console.log('   POST   /api/system/distributedlock/acquire');
   console.log('   POST   /api/system/distributedlock/release');
   console.log('   GET    /api/system/distributedlock/locks');
+
+  console.log('\n🗄️ Storage Services:');
+  console.log('   POST   /api/storage/mongodb/connect');
+  console.log('   GET    /api/storage/mongodb/status');
+  console.log('   POST   /api/storage/mode');
+  console.log('   GET    /api/storage/mode');
 
   console.log('\n📈 Combined Stats:');
   console.log('   GET    /api/ds/stats');
