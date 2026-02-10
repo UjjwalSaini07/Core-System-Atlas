@@ -4,7 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Toast, ToastProvider, ToastViewport } from '@/components/ui/toast';
 
 export function Toaster() {
-  const { toasts, dismiss } = useToast();
+  const { toasts, remove } = useToast();
 
   return (
     <ToastProvider>
@@ -12,7 +12,7 @@ export function Toaster() {
         return (
           <Toast
             key={toast.id}
-            onClose={() => dismiss(toast.id)}
+            onClose={() => remove(toast.id)}
             action={toast.action}
           >
             <div className="grid gap-1">

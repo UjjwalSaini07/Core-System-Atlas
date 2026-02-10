@@ -4,14 +4,15 @@ import * as React from 'react';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const Toast = React.forwardRef(({ className, onClose, action, children, ...props }, ref) => {
+const Toast = React.forwardRef(({ className, onClose, action, children, open, ...props }, ref) => {
   return (
     <div
       ref={ref}
       className={cn(
         'group pointer-events-auto relative flex w-full items-center justify-between gap-3 overflow-hidden rounded-md border border-[var(--color-border)] p-4 shadow-lg transition-all',
         'bg-[var(--color-card)] text-[var(--color-card-foreground)]',
-        'animate-fade-in',
+        'animate-in slide-in-from-bottom-5 fade-in duration-300',
+        open === false && 'animate-out slide-out-to-bottom-5 fade-out duration-200',
         className
       )}
       {...props}

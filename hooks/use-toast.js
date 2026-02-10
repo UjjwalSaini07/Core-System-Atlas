@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 
-const TOAST_LIMIT = 1;
-const TOAST_REMOVE_DELAY = 1000000;
+const TOAST_LIMIT = 3;
+const TOAST_REMOVE_DELAY = 5000;
 
 const actionTypes = {
   ADD_TOAST: 'ADD_TOAST',
@@ -56,7 +56,6 @@ export const reducer = (state, action) => {
     case 'DISMISS_TOAST': {
       const { toastId } = action;
 
-      // Side effects kept exactly as-is
       if (toastId) {
         addToRemoveQueue(toastId);
       } else {
@@ -116,6 +115,9 @@ function toast({ ...props }) {
   const dismiss = () =>
     dispatch({ type: 'DISMISS_TOAST', toastId: id });
 
+  const remove = () =>
+    dispatch({ type: 'REMOVE_TOAST', toastId: id });
+
   dispatch({
     type: 'ADD_TOAST',
     toast: {
@@ -123,7 +125,9 @@ function toast({ ...props }) {
       id,
       open: true,
       onOpenChange: (open) => {
-        if (!open) dismiss();
+        if (!open) {
+          dismiss();
+        }
       },
     },
   });
@@ -131,6 +135,7 @@ function toast({ ...props }) {
   return {
     id,
     dismiss,
+    remove,
     update,
   };
 }
@@ -153,6 +158,8 @@ function useToast() {
     toast,
     dismiss: (toastId) =>
       dispatch({ type: 'DISMISS_TOAST', toastId }),
+    remove: (toastId) =>
+      dispatch({ type: 'REMOVE_TOAST', toastId }),
   };
 }
 
