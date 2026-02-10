@@ -237,9 +237,9 @@ export function FileUpload({ onFileUploaded }) {
             Connected
           </div>
         ) : (
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-sm text-amber-400">
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-sm text-red-400">
             <CloudOff className="w-4 h-4" />
-            offline Mode
+            Offline
           </div>
         )}
       </div>

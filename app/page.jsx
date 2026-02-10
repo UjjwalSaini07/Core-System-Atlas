@@ -276,7 +276,19 @@ export default function Page() {
             </span>
           </div>
           <span>
-            {stats ? 'Connected' : loading ? 'Connecting…' : 'Offline Mode'}
+            {stats ? (
+              <span className="flex items-center gap-2 text-green-600">
+                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                Connected
+              </span>
+            ) : loading ? (
+              <span className="text-amber-600">Connecting…</span>
+            ) : (
+              <span className="flex items-center gap-2 text-red-600">
+                <span className="w-2 h-2 bg-red-500 rounded-full" />
+                Offline Mode
+              </span>
+            )}
           </span>
         </div>
       </footer>

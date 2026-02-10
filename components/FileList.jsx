@@ -157,9 +157,9 @@ export function FileList({ files, onDelete, onView }) {
           <p className="text-sm text-[var(--color-muted-foreground)]">
             Upload files using the search tab to get started
           </p>
-          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-[var(--color-muted-foreground)]">
+          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-red-400">
             <CloudOff className="w-4 h-4" />
-            <span>offline mode - files are stored locally</span>
+            <span>Offline - files stored locally</span>
           </div>
         </Card>
       ) : (

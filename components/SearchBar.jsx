@@ -144,16 +144,16 @@ export function SearchBar({ onSearch, isLoading }) {
   return (
     <Card className="group relative overflow-hidden p-6 bg-gradient-to-br from-[var(--color-card)] to-[var(--color-muted)]/30 border-[var(--color-border)] hover-lift animated-border h-full">
       {/* Server Status Badge */}
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-2 right-7 mt-2">
         {isServerConnected ? (
           <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-500/10 border border-green-500/30 text-xs text-green-400">
             <Cloud className="w-3 h-3" />
             Connected
           </div>
         ) : (
-          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs text-amber-400">
+          <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-xs text-red-400">
             <CloudOff className="w-3 h-3" />
-            offline Mode
+            Offline
           </div>
         )}
       </div>
@@ -169,7 +169,7 @@ export function SearchBar({ onSearch, isLoading }) {
             <p className="text-sm text-[var(--color-muted-foreground)]">Find indexed documents</p>
           </div>
         </div>
-        <Badge variant="outline" className="bg-purple-500/10 border-purple-500/20 text-purple-400">
+        <Badge variant="outline" className="bg-purple-500/10 border-purple-500/20 text-purple-400 mt-3">
           <Zap className="w-3 h-3 mr-1" />
           Instant
         </Badge>
@@ -268,7 +268,7 @@ export function SearchBar({ onSearch, isLoading }) {
       </div>
 
       {/* Search Tips */}
-      <div className="mt-6 pt-4 border-t border-[var(--color-border)]">
+      <div className="mt-3 mb-3 pt-4 border-t border-[var(--color-border)]">
         <p className="text-xs text-[var(--color-muted-foreground)] mb-3">Search Tips:</p>
         <div className="flex flex-wrap gap-2">
           <span className="px-2 py-1 bg-[var(--color-muted)]/30 rounded text-xs text-[var(--color-muted-foreground)]">
