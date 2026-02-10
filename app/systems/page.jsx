@@ -94,7 +94,7 @@ export default function SystemsPage() {
 
           <div className="flex gap-3">
 
-            <Badge className={isRunning ? 'bg-emerald-500' : 'bg-slate-300'}>
+            <Badge className={`${isRunning ? 'bg-emerald-500' : 'bg-slate-300'} px-5 -mt-1`}>
               {isRunning ? 'Running' : 'Idle'}
             </Badge>
 
