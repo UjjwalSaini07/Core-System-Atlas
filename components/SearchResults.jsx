@@ -16,7 +16,7 @@ export function SearchResults({ results, cacheHit = false, query = '', onView })
   const [copiedId, setCopiedId] = useState(null)
   const [hoveredId, setHoveredId] = useState(null)
   const [activeIndex, setActiveIndex] = useState(0)
-  const [viewMode, setViewMode] = useState('list') // 'list' | 'grid'
+  const [viewMode, setViewMode] = useState('grid') // 'list' | 'grid'
   const [sortBy, setSortBy] = useState('score') // 'score' | 'date' | 'filename'
   const [sortOrder, setSortOrder] = useState('desc') // 'asc' | 'desc'
   const [searchQuery, setSearchQuery] = useState('')

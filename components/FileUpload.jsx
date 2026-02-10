@@ -22,7 +22,7 @@ export function FileUpload({ onFileUploaded }) {
   const fileInputRef = useRef(null)
   const { toast } = useToast()
 
-  // Check if server is connected and get storage mode
+  // Check if server is connected and get storage mode (only on mount)
   useEffect(() => {
     const checkServer = async () => {
       try {
@@ -34,23 +34,17 @@ export function FileUpload({ onFileUploaded }) {
         clearTimeout(timeoutId)
         setIsServerConnected(response.ok)
         
-        // Also check MongoDB status
+        // Only check MongoDB status once on mount
         if (response.ok) {
           try {
             const modeRes = await fetch('http://localhost:3001/api/storage/mode')
             if (modeRes.ok) {
               const modeData = await modeRes.json()
-              setStorageType(modeData.mode || 'tmp')
-              setMongoConnected(modeData.mongodbConnected || false)
-            }
-            
-            // Also fetch files with current storage mode
-            const filesRes = await fetch('http://localhost:3001/api/files')
-            if (filesRes.ok) {
-              const filesData = await filesRes.json()
-              if (filesData.success && onFileUploaded) {
-                // Files are handled by parent component
+              // Only set if not already set or if MongoDB just connected
+              if (modeData.mongodbConnected) {
+                setStorageType(modeData.mode || 'tmp')
               }
+              setMongoConnected(modeData.mongodbConnected || false)
             }
           } catch {
             // Ignore MongoDB check errors
@@ -63,7 +57,7 @@ export function FileUpload({ onFileUploaded }) {
       }
     }
     checkServer()
-  }, [onFileUploaded])
+  }, [])
 
   const generateId = () => {
     return Date.now().toString(36) + Math.random().toString(36).substr(2)
@@ -125,11 +119,42 @@ export function FileUpload({ onFileUploaded }) {
 
         if (result.success) {
           setUploadStatus('success')
-          toast({
-            title: 'File Uploaded Successfully',
-            description: `${filename} has been indexed and is ready for search`,
-            variant: 'success',
-          })
+          
+          // Check if this is a MongoDB upload with a unique code
+          const uniqueCode = result.metadata?.uniqueCode
+          
+          if (uniqueCode) {
+            toast({
+              title: 'File Uploaded Successfully',
+              description: (
+                <div className="flex flex-col gap-2">
+                  <span>{filename} has been indexed and is ready for search</span>
+                  <div className="flex items-center gap-2 p-2 rounded bg-purple-500/20 border border-purple-500/30">
+                    <span className="text-sm font-medium text-purple-400">Your Unique Code:</span>
+                    <span className="text-lg font-bold tracking-widest text-white">{uniqueCode}</span>
+                    <button
+                      onClick={() => navigator.clipboard.writeText(uniqueCode)}
+                      className="text-xs text-purple-300 hover:text-white underline"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                </div>
+              ),
+              variant: 'success',
+              action: {
+                label: 'Copy Code',
+                onClick: () => navigator.clipboard.writeText(uniqueCode)
+              }
+            })
+          } else {
+            toast({
+              title: 'File Uploaded Successfully',
+              description: `${filename} has been indexed and is ready for search`,
+              variant: 'success',
+            })
+          }
+          
           onFileUploaded(result.metadata)
           setFilename('')
           setContent('')
@@ -225,7 +250,15 @@ export function FileUpload({ onFileUploaded }) {
           <span className="text-sm font-medium text-[var(--color-muted-foreground)]">Storage:</span>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setStorageType('tmp')}
+              onClick={() => {
+                setStorageType('tmp');
+                // Also update server storage mode
+                fetch('http://localhost:3001/api/storage/mode', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ mode: 'tmp' })
+                });
+              }}
               disabled={uploading}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors ${
                 storageType === 'tmp'
@@ -237,7 +270,15 @@ export function FileUpload({ onFileUploaded }) {
               Tmp
             </button>
             <button
-              onClick={() => setStorageType('mongodb')}
+              onClick={() => {
+                setStorageType('mongodb');
+                // Also update server storage mode
+                fetch('http://localhost:3001/api/storage/mode', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ mode: 'mongodb' })
+                });
+              }}
               disabled={uploading || !mongoConnected}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors ${
                 storageType === 'mongodb'
