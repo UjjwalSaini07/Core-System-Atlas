@@ -4,25 +4,39 @@ import * as React from 'react';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const Toast = React.forwardRef(({ className, ...props }, ref) => {
+const Toast = React.forwardRef(({ className, onClose, action, children, ...props }, ref) => {
   return (
     <div
       ref={ref}
       className={cn(
-        'group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border border-[var(--color-border)] p-4 pr-8 shadow-lg transition-all',
+        'group pointer-events-auto relative flex w-full items-center justify-between gap-3 overflow-hidden rounded-md border border-[var(--color-border)] p-4 shadow-lg transition-all',
         'bg-[var(--color-card)] text-[var(--color-card-foreground)]',
         'animate-fade-in',
         className
       )}
       {...props}
     >
-      {props.children}
-      <button
-        onClick={props.onClose}
-        className="absolute right-2 top-2 rounded-md p-1 text-[var(--color-muted-foreground)] opacity-0 transition-opacity hover:text-[var(--color-foreground)] focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100"
-      >
-        <X className="h-4 w-4" />
-      </button>
+      <div className="flex-1">
+        {children}
+      </div>
+      <div className="flex items-center gap-2 flex-shrink-0">
+        {action && (
+          <button
+            onClick={action.onClick}
+            className="text-sm font-medium text-cyan-400 hover:text-cyan-300 px-2 py-1 rounded hover:bg-cyan-500/10 transition-colors"
+          >
+            {action.label}
+          </button>
+        )}
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="rounded-md p-1 text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] hover:bg-[var(--color-muted)] transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
+      </div>
     </div>
   );
 });
