@@ -26,6 +26,7 @@ class MongoDBStorage {
       await this.collection.createIndex({ filename: 1 });
       await this.collection.createIndex({ hash: 1 });
       await this.collection.createIndex({ uploadedAt: -1 });
+      await this.collection.createIndex({ uniqueCode: 1 }, { unique: true, sparse: true });
       
       this.connected = true;
       console.log('Connected to MongoDB successfully');
@@ -54,7 +55,7 @@ class MongoDBStorage {
     }
   }
 
-  async uploadFile(filename, content, mimeType = 'text/plain') {
+  async uploadFile(filename, content, mimeType = 'text/plain', uniqueCode = null) {
     if (!this.connected) {
       return { success: false, message: 'MongoDB not connected' };
     }
@@ -73,6 +74,22 @@ class MongoDBStorage {
         };
       }
 
+      // Generate unique 5-digit code if not provided
+      let code = uniqueCode;
+      if (!code) {
+        code = await this._generateUniqueCode();
+      } else {
+        // Check if code already exists
+        const existingCode = await this.collection.findOne({ uniqueCode: code });
+        if (existingCode) {
+          return {
+            success: false,
+            message: 'Unique code already in use',
+            existingFileId: existingCode._id
+          };
+        }
+      }
+
       const fileData = {
         _id: fileId,
         filename,
@@ -81,7 +98,8 @@ class MongoDBStorage {
         size: Buffer.byteLength(content),
         mimeType,
         uploadedAt: Date.now(),
-        version: await this._getNextVersion(filename) + 1
+        version: await this._getNextVersion(filename) + 1,
+        uniqueCode: code
       };
 
       await this.collection.insertOne(fileData);
@@ -94,6 +112,7 @@ class MongoDBStorage {
         mimeType,
         uploadedAt: fileData.uploadedAt,
         version: fileData.version,
+        uniqueCode: code,
         wordCount: this._countWords(content),
         preview: content.substring(0, 200)
       };
@@ -117,6 +136,47 @@ class MongoDBStorage {
       };
     } catch (error) {
       return { success: false, message: error.message };
+    }
+  }
+
+  async _generateUniqueCode() {
+    // Generate a random 5-digit number (10000-99999)
+    let code;
+    let attempts = 0;
+    const maxAttempts = 100;
+    
+    do {
+      code = Math.floor(10000 + Math.random() * 90000).toString();
+      attempts++;
+      if (attempts >= maxAttempts) {
+        throw new Error('Could not generate unique code after max attempts');
+      }
+    } while (await this.collection.findOne({ uniqueCode: code }));
+    
+    return code;
+  }
+
+  async getFileByCode(code) {
+    if (!this.connected) {
+      return null;
+    }
+
+    try {
+      const file = await this.collection.findOne({ uniqueCode: code });
+      
+      if (file) {
+        this.stats.operations.push({
+          type: 'retrieve',
+          fileId: file._id,
+          filename: file.filename,
+          timestamp: Date.now()
+        });
+      }
+      
+      return file;
+    } catch (error) {
+      console.error('Failed to get file by code:', error.message);
+      return null;
     }
   }
 

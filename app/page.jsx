@@ -6,6 +6,7 @@ import { SearchBar } from '@/components/SearchBar';
 import { SearchResults } from '@/components/SearchResults';
 import { FileList } from '@/components/FileList';
 import { SystemStats } from '@/components/SystemStats';
+import { CodeFetch } from '@/components/CodeFetch';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -56,7 +57,16 @@ export default function Page() {
       try {
         const res = await fetch('http://localhost:3001/api/health');
         if (res.ok) {
-          await Promise.all([fetchFiles(), fetchStats()]);
+          // First get the current storage mode
+          const modeRes = await fetch('http://localhost:3001/api/storage/mode');
+          if (modeRes.ok) {
+            const modeData = await modeRes.json();
+            const mode = modeData.mode || 'tmp';
+            // Fetch files and stats with correct storage mode
+            await Promise.all([fetchFiles(mode), fetchStats()]);
+          } else {
+            await Promise.all([fetchFiles(), fetchStats()]);
+          }
         }
       } catch {
         console.info('Backend not running – offline mode');
@@ -202,7 +212,7 @@ export default function Page() {
 
           <TabsContent value="search" className="mt-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <FileUpload onFileUploaded={handleFileUploaded} isLoading={loading} />
+              <FileUpload onFileUploaded={handleFileUploaded} isLoading={loading} />
               <div className="space-y-6">
                 <SearchBar onSearch={handleSearch} isLoading={loading} />
                 <SearchResults
@@ -211,6 +221,7 @@ export default function Page() {
                   query={lastQuery}
                   onView={setSelectedFile}
                 />
+                <CodeFetch onView={setSelectedFile} />
               </div>
             </div>
           </TabsContent>
