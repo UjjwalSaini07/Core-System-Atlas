@@ -202,16 +202,16 @@ export default function Page() {
 
           <TabsContent value="search" className="mt-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="space-y-6">
                 <FileUpload onFileUploaded={handleFileUploaded} isLoading={loading} />
+              <div className="space-y-6">
                 <SearchBar onSearch={handleSearch} isLoading={loading} />
+                <SearchResults
+                  results={searchResults}
+                  cacheHit={cacheHit}
+                  query={lastQuery}
+                  onView={setSelectedFile}
+                />
               </div>
-              <SearchResults
-                results={searchResults}
-                cacheHit={cacheHit}
-                query={lastQuery}
-                onView={setSelectedFile}
-              />
             </div>
           </TabsContent>
 
@@ -258,7 +258,10 @@ export default function Page() {
               Backend: LRU Cache · Trie · Inverted Index
             </span>
             <span className="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-600">
-              Graph · Heap · Segment Tree · Union-Find · BIT
+              Graph · Heap · Segment Tree · Union-Find · BIT 
+            </span>
+            <span className="text-xs text-slate-600">
+              ~ujjwals07 
             </span>
           </div>
           <span>
