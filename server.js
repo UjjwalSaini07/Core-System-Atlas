@@ -38,12 +38,24 @@ const searchEngine = new SearchEngine(150);
 // Storage mode: 'tmp' or 'mongodb'
 let currentStorageMode = 'tmp';
 
-// Auto-connect to MongoDB on startup
+// Auto-connect to MongoDB on startup and load files into search index
 (async () => {
   try {
     const result = await mongoDBStorage.connect();
     if (result.success) {
       console.log('✅ MongoDB auto-connected successfully');
+      
+      // Load existing files from MongoDB into search index
+      const files = await mongoDBStorage.getAllFiles();
+      if (files.length > 0) {
+        console.log(`📚 Indexing ${files.length} files from MongoDB...`);
+        for (const file of files) {
+          if (file.content) {
+            searchEngine.indexFile(file._id || file.id, file.filename, file.content);
+          }
+        }
+        console.log('✅ Search index loaded from MongoDB');
+      }
     } else {
       console.log('⚠️ MongoDB auto-connection failed:', result.message);
     }
@@ -210,9 +222,15 @@ app.get('/api/stats', async (req, res) => {
     const fileStats = fileStorage.getStats();
     const mongoStats = await mongoDBStorage.getStats();
 
+    // Combine stats based on current storage mode
+    const currentStorage = currentStorageMode === 'mongodb' ? mongoStats : fileStats;
+    
     res.json({
       success: true,
-      systemState,
+      systemState: {
+        ...systemState,
+        fileStorage: currentStorage
+      },
       tmpStorage: fileStats,
       mongodbStorage: mongoStats,
       currentStorageMode,
