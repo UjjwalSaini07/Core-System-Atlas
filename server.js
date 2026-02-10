@@ -250,6 +250,37 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Get file by unique code
+app.get('/api/files/code/:code', async (req, res) => {
+  try {
+    const { code } = req.params;
+    
+    if (!code || code.length !== 5) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid code. Code must be 5 digits.'
+      });
+    }
+
+    const file = await mongoDBStorage.getFileByCode(code);
+
+    if (!file) {
+      return res.status(404).json({
+        success: false,
+        message: 'File not found with this code'
+      });
+    }
+
+    res.json({
+      success: true,
+      file,
+      message: 'File retrieved successfully'
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // ==================== GRAPH ENDPOINTS ====================
 
 app.post('/api/ds/graph/node', (req, res) => {
