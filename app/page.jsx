@@ -210,10 +210,10 @@ export default function Page() {
             <TabsTrigger value="files" className="data-[state=active]:bg-white data-[state=active]:text-teal-700 data-[state=active]:shadow-sm">Files</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="search" className="mt-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TabsContent value="search" className="mt-6 min-h-[500px]">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
               <FileUpload onFileUploaded={handleFileUploaded} isLoading={loading} />
-              <div className="space-y-6">
+              <div className="space-y-6 h-full flex flex-col">
                 <SearchBar onSearch={handleSearch} isLoading={loading} />
                 <SearchResults
                   results={searchResults}

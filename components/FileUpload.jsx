@@ -222,7 +222,7 @@ export function FileUpload({ onFileUploaded }) {
   ]
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 h-full flex flex-col">
       {/* Server Status */}
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-[var(--color-foreground)]">Upload File</h2>
@@ -297,7 +297,7 @@ export function FileUpload({ onFileUploaded }) {
       )}
 
       {/* File Selection */}
-      <Card className="p-6 bg-[var(--color-card)] border-[var(--color-border)]">
+      <Card className="p-6 bg-[var(--color-card)] border-[var(--color-border)] h-full">
         <div className="flex flex-col gap-4">
           {/* File Input Button */}
           <div className="flex items-center gap-4">

@@ -154,7 +154,7 @@ export function SearchResults({ results, cacheHit = false, query = '', onView })
 
   if (!results || results.length === 0) {
     return (
-      <Card className="p-12 glass-card text-center">
+      <Card className="p-12 glass-card text-center flex-1 flex flex-col justify-center">
         <div className="relative inline-block mb-4">
           <div className="w-20 h-20 rounded-full bg-[var(--color-muted)] flex items-center justify-center">
             <FileText className="w-10 h-10 text-[var(--color-muted-foreground)]" />
@@ -176,7 +176,7 @@ export function SearchResults({ results, cacheHit = false, query = '', onView })
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 flex-1 flex flex-col">
       {/* Header with controls */}
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="flex items-center">

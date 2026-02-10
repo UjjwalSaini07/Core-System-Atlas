@@ -142,7 +142,7 @@ export function SearchBar({ onSearch, isLoading }) {
   }
 
   return (
-    <Card className="group relative overflow-hidden p-6 bg-gradient-to-br from-[var(--color-card)] to-[var(--color-muted)]/30 border-[var(--color-border)] hover-lift animated-border">
+    <Card className="group relative overflow-hidden p-6 bg-gradient-to-br from-[var(--color-card)] to-[var(--color-muted)]/30 border-[var(--color-border)] hover-lift animated-border h-full">
       {/* Server Status Badge */}
       <div className="absolute top-4 right-4">
         {isServerConnected ? (

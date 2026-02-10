@@ -66,7 +66,7 @@ export function CodeFetch({ onView }) {
   }
 
   return (
-    <Card className="p-6 bg-[var(--color-card)] border-[var(--color-border)]">
+    <Card className="p-6 bg-[var(--color-card)] border-[var(--color-border)] h-full flex flex-col">
       <div className="flex flex-col gap-4">
         {/* Header */}
         <div className="flex items-center gap-3">
