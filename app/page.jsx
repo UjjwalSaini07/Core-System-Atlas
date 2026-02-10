@@ -9,10 +9,11 @@ import { SystemStats } from '@/components/SystemStats';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { RefreshCw, Info, Keyboard, X, BarChart2, BookOpen, Network } from 'lucide-react';
+import { RefreshCw, Info, Keyboard, X, BarChart2, BookOpen, Network, Server } from 'lucide-react';
 import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/hooks/use-toast';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Page() {
   const [files, setFiles] = useState([]);
@@ -115,11 +116,14 @@ export default function Page() {
 
       <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/95 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-semibold tracking-tight text-slate-900">Search System</h1>
-            <p className="text-sm text-slate-500">
-              File indexing, search, and caching
-            </p>
+          <div className="flex items-center gap-4">
+            <Image src="/mainLogo.png" alt="Core System Atlas" width={40} height={40} className="rounded-lg" />
+            <div>
+              <h1 className="text-xl font-semibold tracking-tight text-slate-900">Search System</h1>
+              <p className="text-sm text-slate-500">
+                File indexing, search, and caching
+              </p>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <Link href="/visualize">
@@ -143,7 +147,7 @@ export default function Page() {
             <Button
               variant="outline"
               size="icon"
-              className="border-slate-300 text-slate-600 hover:bg-slate-50 hover:border-slate-400"
+              className="border-slate-300 text-slate-600 hover:bg-slate-200 hover:border-slate-400 hover:text-black"
               onClick={() => {
                 fetchFiles();
                 fetchStats();
@@ -152,7 +156,13 @@ export default function Page() {
               <RefreshCw className="w-4 h-4" />
             </Button>
             <Link href="/monitoring">
-              <Button variant="outline" className="border-slate-300 text-slate-600 hover:bg-slate-50 hover:border-slate-400">Monitoring</Button>
+              <Button variant="outline" className="border-slate-300 text-slate-600 hover:bg-slate-200 hover:border-slate-400 hover:text-black">Monitoring</Button>
+            </Link>
+            <Link href="/systems">
+              <Button variant="outline" className="border-slate-300 text-slate-600 hover:bg-slate-200 hover:border-slate-400 hover:text-black">
+                <Server className="w-4 h-4 mr-2" />
+                Systems
+              </Button>
             </Link>
           </div>
         </div>
