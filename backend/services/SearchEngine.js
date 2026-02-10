@@ -168,8 +168,9 @@ class SearchEngine {
         operations: stats.cache.operations
       },
       indexState: {
-        documents: stats.index.indexedDocuments,
-        words: stats.index.indexSize,
+        indexedDocuments: stats.index.indexedDocuments,
+        indexSize: stats.index.indexSize,
+        totalWords: stats.index.totalWords,
         operations: stats.index.operations
       },
       trieState: {

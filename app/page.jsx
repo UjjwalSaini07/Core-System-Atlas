@@ -26,9 +26,9 @@ export default function Page() {
   const [activeTab, setActiveTab] = useState('search');
 
   /* ---------------- Data Fetching ---------------- */
-  const fetchFiles = useCallback(async () => {
+  const fetchFiles = useCallback(async (storageType = 'tmp') => {
     try {
-      const res = await fetch('http://localhost:3001/api/files');
+      const res = await fetch(`http://localhost:3001/api/files?storageType=${storageType}`);
       const json = await res.json();
       if (json.success) setFiles(json.files);
     } catch {
@@ -40,11 +40,15 @@ export default function Page() {
     try {
       const res = await fetch('http://localhost:3001/api/stats');
       const json = await res.json();
-      if (json.success) setStats(json);
+      if (json.success) {
+        setStats(json);
+        // Refresh files with current storage mode
+        fetchFiles(json.currentStorageMode);
+      }
     } catch {
       console.warn('Stats unavailable – offline mode');
     }
-  }, []);
+  }, [fetchFiles]);
 
   useEffect(() => {
     const init = async () => {

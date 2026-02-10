@@ -22,7 +22,7 @@ export function FileUpload({ onFileUploaded }) {
   const fileInputRef = useRef(null)
   const { toast } = useToast()
 
-  // Check if server is connected
+  // Check if server is connected and get storage mode
   useEffect(() => {
     const checkServer = async () => {
       try {
@@ -43,6 +43,15 @@ export function FileUpload({ onFileUploaded }) {
               setStorageType(modeData.mode || 'tmp')
               setMongoConnected(modeData.mongodbConnected || false)
             }
+            
+            // Also fetch files with current storage mode
+            const filesRes = await fetch('http://localhost:3001/api/files')
+            if (filesRes.ok) {
+              const filesData = await filesRes.json()
+              if (filesData.success && onFileUploaded) {
+                // Files are handled by parent component
+              }
+            }
           } catch {
             // Ignore MongoDB check errors
           }
@@ -54,7 +63,7 @@ export function FileUpload({ onFileUploaded }) {
       }
     }
     checkServer()
-  }, [])
+  }, [onFileUploaded])
 
   const generateId = () => {
     return Date.now().toString(36) + Math.random().toString(36).substr(2)
