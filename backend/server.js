@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const chalk = require('chalk');
 
 const FileStorage = require('./services/FileStorage');
 const MongoDBStorage = require('./services/MongoDBStorage');
@@ -43,24 +44,24 @@ let currentStorageMode = 'tmp';
   try {
     const result = await mongoDBStorage.connect();
     if (result.success) {
-      console.log('✅ MongoDB auto-connected successfully');
+      console.log(chalk.green('✅ MongoDB auto-connected successfully'));
       
       // Load existing files from MongoDB into search index
       const files = await mongoDBStorage.getAllFiles();
       if (files.length > 0) {
-        console.log(`📚 Indexing ${files.length} files from MongoDB...`);
+        console.log(chalk.blue(`📚 Indexing ${files.length} files from MongoDB...`));
         for (const file of files) {
           if (file.content) {
             searchEngine.indexFile(file._id || file.id, file.filename, file.content);
           }
         }
-        console.log('✅ Search index loaded from MongoDB');
+        console.log(chalk.green('✅ Search index loaded from MongoDB'));
       }
     } else {
-      console.log('⚠️ MongoDB auto-connection failed:', result.message);
+      console.log(chalk.yellow('⚠️ MongoDB auto-connection failed:'), result.message);
     }
   } catch (error) {
-    console.log('⚠️ MongoDB not available:', error.message);
+    console.log(chalk.yellow('⚠️ MongoDB not available:'), error.message);
   }
 })();
 
@@ -753,69 +754,69 @@ app.post('/api/reset', async (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`\n🚀 DSA Atlas API Server running on http://localhost:${PORT}`);
-  console.log('='.repeat(60));
-  console.log('\n📁 File & Search Endpoints:');
-  console.log('   POST   /api/files/upload');
-  console.log('   GET    /api/files');
-  console.log('   GET    /api/search?q=query');
-  console.log('   GET    /api/stats');
+  console.log(chalk.cyanBright('\n🚀 DSA Atlas API Server running on http://localhost:' + PORT));
+  console.log(chalk.gray('='.repeat(60)));
+  console.log(chalk.blue('\n📁 File & Search Endpoints:'));
+  console.log(chalk.gray('   POST   ') + chalk.white('/api/files/upload'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/files'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/search?q=query'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/stats'));
   
-  console.log('\n📊 Graph Algorithms:');
-  console.log('   POST   /api/ds/graph/node');
-  console.log('   POST   /api/ds/graph/edge');
-  console.log('   GET    /api/ds/graph/bfs?start=A&target=B');
-  console.log('   GET    /api/ds/graph/dijkstra?start=A&target=B');
-  console.log('   GET    /api/ds/graph/cycles');
-  console.log('   GET    /api/ds/graph/pagerank');
-  console.log('   GET    /api/ds/graph/stats');
+  console.log(chalk.blue('\n📊 Graph Algorithms:'));
+  console.log(chalk.gray('   POST   ') + chalk.white('/api/ds/graph/node'));
+  console.log(chalk.gray('   POST   ') + chalk.white('/api/ds/graph/edge'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/ds/graph/bfs?start=A&target=B'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/ds/graph/dijkstra?start=A&target=B'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/ds/graph/cycles'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/ds/graph/pagerank'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/ds/graph/stats'));
 
-  console.log('\n🌳 Heap:');
-  console.log('   POST   /api/ds/heap/insert');
-  console.log('   POST   /api/ds/heap/extract');
-  console.log('   GET    /api/ds/heap/peek');
-  console.log('   GET    /api/ds/heap/stats');
+  console.log(chalk.blue('\n🌳 Heap:'));
+  console.log(chalk.gray('   POST   ') + chalk.white('/api/ds/heap/insert'));
+  console.log(chalk.gray('   POST   ') + chalk.white('/api/ds/heap/extract'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/ds/heap/peek'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/ds/heap/stats'));
 
-  console.log('\n📈 Segment Tree:');
-  console.log('   POST   /api/ds/segmenttree');
-  console.log('   GET    /api/ds/segmenttree/query?l=0&r=5');
-  console.log('   POST   /api/ds/segmenttree/update');
-  console.log('   GET    /api/ds/segmenttree/stats');
+  console.log(chalk.blue('\n📈 Segment Tree:'));
+  console.log(chalk.gray('   POST   ') + chalk.white('/api/ds/segmenttree'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/ds/segmenttree/query?l=0&r=5'));
+  console.log(chalk.gray('   POST   ') + chalk.white('/api/ds/segmenttree/update'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/ds/segmenttree/stats'));
 
-  console.log('\n🔗 Union-Find:');
-  console.log('   POST   /api/ds/unionfind/union');
-  console.log('   GET    /api/ds/unionfind/find?x=5');
-  console.log('   GET    /api/ds/unionfind/connected?x=3&y=7');
-  console.log('   GET    /api/ds/unionfind/sets');
-  console.log('   GET    /api/ds/unionfind/stats');
+  console.log(chalk.blue('\n🔗 Union-Find:'));
+  console.log(chalk.gray('   POST   ') + chalk.white('/api/ds/unionfind/union'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/ds/unionfind/find?x=5'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/ds/unionfind/connected?x=3&y=7'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/ds/unionfind/sets'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/ds/unionfind/stats'));
 
-  console.log('\n📊 Binary Indexed Tree:');
-  console.log('   POST   /api/ds/bit');
-  console.log('   GET    /api/ds/bit/prefix?index=5');
-  console.log('   GET    /api/ds/bit/range?l=2&r=7');
-  console.log('   GET    /api/ds/bit/stats');
+  console.log(chalk.blue('\n📊 Binary Indexed Tree:'));
+  console.log(chalk.gray('   POST   ') + chalk.white('/api/ds/bit'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/ds/bit/prefix?index=5'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/ds/bit/range?l=2&r=7'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/ds/bit/stats'));
 
-  console.log('\n⚡ System Services:');
-  console.log('   POST   /api/system/ratelimiter/consume');
-  console.log('   GET    /api/system/ratelimiter/state');
-  console.log('   POST   /api/system/circuitbreaker/execute');
-  console.log('   GET    /api/system/circuitbreaker/state');
-  console.log('   POST   /api/system/distributedlock/acquire');
-  console.log('   POST   /api/system/distributedlock/release');
-  console.log('   GET    /api/system/distributedlock/locks');
+  console.log(chalk.blue('\n⚡ System Services:'));
+  console.log(chalk.gray('   POST   ') + chalk.white('/api/system/ratelimiter/consume'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/system/ratelimiter/state'));
+  console.log(chalk.gray('   POST   ') + chalk.white('/api/system/circuitbreaker/execute'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/system/circuitbreaker/state'));
+  console.log(chalk.gray('   POST   ') + chalk.white('/api/system/distributedlock/acquire'));
+  console.log(chalk.gray('   POST   ') + chalk.white('/api/system/distributedlock/release'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/system/distributedlock/locks'));
 
-  console.log('\n🗄️ Storage Services:');
-  console.log('   POST   /api/storage/mongodb/connect');
-  console.log('   GET    /api/storage/mongodb/status');
-  console.log('   POST   /api/storage/mode');
-  console.log('   GET    /api/storage/mode');
+  console.log(chalk.blue('\n🗄️ Storage Services:'));
+  console.log(chalk.gray('   POST   ') + chalk.white('/api/storage/mongodb/connect'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/storage/mongodb/status'));
+  console.log(chalk.gray('   POST   ') + chalk.white('/api/storage/mode'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/storage/mode'));
 
-  console.log('\n📈 Combined Stats:');
-  console.log('   GET    /api/ds/stats');
-  console.log('   GET    /api/system/stats');
-  console.log('   POST   /api/reset');
+  console.log(chalk.blue('\n📈 Combined Stats:'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/ds/stats'));
+  console.log(chalk.gray('   GET    ') + chalk.white('/api/system/stats'));
+  console.log(chalk.gray('   POST   ') + chalk.white('/api/reset'));
   
-  console.log('\n' + '='.repeat(60));
+  console.log(chalk.gray('\n' + '='.repeat(60)));
 });
 
 module.exports = app;
