@@ -1,0 +1,17 @@
+{
+  "name": "core-system-atlas-backend",
+  "version": "1.0.0",
+  "description": "Backend server for Core System Atlas",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "body-parser": "^2.2.2",
+    "cors": "^2.8.6",
+    "crypto": "^1.0.1",
+    "express": "^5.2.1",
+    "mongodb": "^6.12.0"
+  }
+}

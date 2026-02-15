@@ -32,9 +32,6 @@ importers:
       '@radix-ui/react-tabs':
         specifier: ^1.1.13
         version: 1.1.13(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      body-parser:
-        specifier: ^2.2.2
-        version: 2.2.2
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -44,27 +41,15 @@ importers:
       cmdk:
         specifier: ^1.1.1
         version: 1.1.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      cors:
-        specifier: ^2.8.6
-        version: 2.8.6
-      crypto:
-        specifier: ^1.0.1
-        version: 1.0.1
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
-      express:
-        specifier: ^5.2.1
-        version: 5.2.1
       framer-motion:
         specifier: ^12.33.0
         version: 12.33.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       lucide-react:
         specifier: ^0.563.0
         version: 0.563.0(react@19.2.3)
-      mongodb:
-        specifier: ^6.12.0
-        version: 6.21.0
       next:
         specifier: 16.1.6
         version: 16.1.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -81,7 +66,7 @@ importers:
         specifier: 19.2.3
         version: 19.2.3(react@19.2.3)
       recharts:
-        specifier: 2.15.4
+        specifier: ^2.15.4
         version: 2.15.4(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       tailwind-merge:
         specifier: ^3.4.0
@@ -102,6 +87,24 @@ importers:
       tailwindcss:
         specifier: ^4
         version: 4.1.18
+
+  backend:
+    dependencies:
+      body-parser:
+        specifier: ^2.2.2
+        version: 2.2.2
+      cors:
+        specifier: ^2.8.6
+        version: 2.8.6
+      crypto:
+        specifier: ^1.0.1
+        version: 1.0.1
+      express:
+        specifier: ^5.2.1
+        version: 5.2.1
+      mongodb:
+        specifier: ^6.12.0
+        version: 6.21.0
 
 packages:
 
