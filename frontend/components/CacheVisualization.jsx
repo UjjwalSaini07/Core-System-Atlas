@@ -12,6 +12,7 @@ const COLORS = {
   text: '#94A3B8',
 }
 
+// Author: UjjwalS, AuthorUrl: https://ujjwalsaini.vercel.app/
 export function CacheVisualization({ cacheState }) {
   const operations = cacheState?.operations || []
   const [range, setRange] = useState(30)

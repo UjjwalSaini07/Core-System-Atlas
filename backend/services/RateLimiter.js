@@ -5,6 +5,7 @@
 
 const { v4: uuidv4 } = require('crypto');
 
+// Author: UjjwalS, AuthorUrl: https://ujjwalsaini.vercel.app/
 // Token Bucket Rate Limiter
 class TokenBucket {
   constructor(options = {}) {

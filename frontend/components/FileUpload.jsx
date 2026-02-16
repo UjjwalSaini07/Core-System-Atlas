@@ -221,6 +221,7 @@ export function FileUpload({ onFileUploaded }) {
     { icon: '📊', text: 'Real-time analytics' },
   ]
 
+// Author: UjjwalS, AuthorUrl: https://ujjwalsaini.vercel.app/
   return (
     <div className="space-y-6 h-full flex flex-col">
       {/* Server Status */}

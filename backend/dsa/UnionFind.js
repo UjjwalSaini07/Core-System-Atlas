@@ -334,6 +334,7 @@ class RollbackUnionFind {
     return true;
   }
 
+  // Author: UjjwalS, AuthorUrl: https://ujjwalsaini.vercel.app/
   // Get to specific history point
   snapshot() {
     return this.history.length;

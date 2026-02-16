@@ -1,4 +1,5 @@
 // LRU Cache Implementation using HashMap + Doubly Linked List
+// Author: UjjwalS, AuthorUrl: https://ujjwalsaini.vercel.app/
 class Node {
   constructor(key, value) {
     this.key = key;

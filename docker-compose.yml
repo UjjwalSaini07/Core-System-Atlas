@@ -19,6 +19,8 @@ services:
       retries: 3
     networks:
       - app-network
+    author: UjjwalS
+    AuthorUrl: https://ujjwalsaini.vercel.app/
 
   # Redis for caching and sessions (optional)
   redis:

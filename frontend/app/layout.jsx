@@ -54,6 +54,7 @@ export const metadata = {
   },
 }
 
+// Author: UjjwalS, AuthorUrl: https://ujjwalsaini.vercel.app/
 export default function RootLayout({ children }) {
   return (
     <html lang="en">

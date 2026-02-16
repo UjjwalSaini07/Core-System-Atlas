@@ -1,0 +1,82 @@
+{
+  "project": {
+    "name": "Core-System-Atlas",
+    "description": "An interactive system design and observability tool showcasing a full-text search engine, distributed LRU cache, and file storage with real-time analytics",
+    "version": "1.0.0",
+    "releaseDate": "2026-02-16",
+    "license": "MIT",
+    "repository": "https://github.com/ujjwal-saini/Core-System-Atlas",
+    "documentation": "https://github.com/ujjwal-saini/Core-System-Atlas#readme"
+  },
+  "author": {
+    "name": "Ujjwal Saini",
+    "email": "ujjwalsaini0007@gmail.com",
+    "url": "https://www.ujjwalsaini.dev/",
+    "github": "https://github.com/ujjwal-saini",
+    "linkedin": "https://linkedin.com/in/ujjwalsaini07"
+  },
+  "technologies": {
+    "frontend": {
+      "language": "JavaScript",
+      "framework": "Next.js",
+      "version": "16.1.6",
+      "ui": "React 19",
+      "styling": "Tailwind CSS 4"
+    },
+    "backend": {
+      "language": "JavaScript",
+      "runtime": "Node.js",
+      "framework": "Express",
+      "database": "In-memory & File System"
+    },
+    "infrastructure": {
+      "containerization": "Docker",
+      "reverseProxy": "Nginx",
+      "operatingSystem": "Windows 10/11, Linux, macOS"
+    }
+  },
+  "features": {
+    "searchEngine": {
+      "type": "Full-text Search",
+      "implementation": "Inverted Index",
+      "capabilities": ["Keyword Search", "Real-time Indexing", "Search Suggestions"]
+    },
+    "distributedCache": {
+      "type": "LRU Cache",
+      "features": ["Eviction Policy", "Hit/Miss Tracking", "TTL Support"]
+    },
+    "fileStorage": {
+      "type": "File System Storage",
+      "features": ["Upload/Download", "File Listing", "Storage Type Selection"]
+    },
+    "analytics": {
+      "metrics": ["Cache Hit Rate", "Search Latency", "Storage Usage", "System Performance"]
+    },
+    "visualizations": {
+      "types": ["Gantt Charts", "Cache Visualization", "System Stats", "Data Structures"]
+    }
+  },
+  "requirements": {
+    "minimum": {
+      "node": "18.0.0",
+      "pnpm": "8.0.0",
+      "memory": "512MB",
+      "storage": "100MB"
+    },
+    "recommended": {
+      "node": "20.0.0",
+      "pnpm": "9.0.0",
+      "memory": "1GB",
+      "storage": "200MB"
+    }
+  },
+  "contributing": {
+    "guidelines": "https://github.com/ujjwal-saini/Core-System-Atlas/blob/main/CONTRIBUTING.md",
+    "issues": "https://github.com/ujjwal-saini/Core-System-Atlas/issues",
+    "pullRequests": "https://github.com/ujjwal-saini/Core-System-Atlas/pulls"
+  },
+  "acknowledgments": {
+    "inspiredBy": ["System Design Primer", "Designing Data-Intensive Applications"],
+    "thanksTo": ["Open Source Community", "Contributors"]
+  }
+}
