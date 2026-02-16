@@ -1,6 +1,5 @@
 // File Storage System Handles file uploads, versioning, hashing, and metadata management
 const crypto = require('crypto');
-
 class FileStorage {
   constructor() {
     this.files = new Map(); // filename -> file data
