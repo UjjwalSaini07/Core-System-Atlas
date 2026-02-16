@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const chalk = require('chalk');
-
 const FileStorage = require('./services/FileStorage');
 const MongoDBStorage = require('./services/MongoDBStorage');
 const SearchEngine = require('./services/SearchEngine');
