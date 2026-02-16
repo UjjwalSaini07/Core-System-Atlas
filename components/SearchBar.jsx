@@ -30,7 +30,7 @@ export function SearchBar({ onSearch, isLoading }) {
       try {
         const controller = new AbortController()
         const timeoutId = setTimeout(() => controller.abort(), 2000)
-        const response = await fetch('http://localhost:3001/api/health', { 
+        const response = await fetch('https://core-sys-backend.vercel.app/api/health', { 
           signal: controller.signal 
         })
         clearTimeout(timeoutId)
@@ -83,7 +83,7 @@ export function SearchBar({ onSearch, isLoading }) {
     try {
       if (isServerConnected) {
         const response = await fetch(
-          `http://localhost:3001/api/search?q=${encodeURIComponent(query)}&limit=20`
+          `https://core-sys-backend.vercel.app/api/search?q=${encodeURIComponent(query)}&limit=20`
         )
         const result = await response.json()
 
@@ -118,7 +118,7 @@ export function SearchBar({ onSearch, isLoading }) {
   const handleAutocomplete = async (prefix) => {
     try {
       const response = await fetch(
-        `http://localhost:3001/api/autocomplete?prefix=${encodeURIComponent(prefix)}&limit=5`
+        `https://core-sys-backend.vercel.app/api/autocomplete?prefix=${encodeURIComponent(prefix)}&limit=5`
       )
       const result = await response.json()
 

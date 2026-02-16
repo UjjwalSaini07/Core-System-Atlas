@@ -29,7 +29,7 @@ export function CodeFetch({ onView }) {
     setResult(null)
 
     try {
-      const response = await fetch(`http://localhost:3001/api/files/code/${code}`)
+      const response = await fetch(`https://core-sys-backend.vercel.app/api/files/code/${code}`)
       const data = await response.json()
 
       if (data.success) {

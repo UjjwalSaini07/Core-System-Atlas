@@ -28,7 +28,7 @@ export function FileUpload({ onFileUploaded }) {
       try {
         const controller = new AbortController()
         const timeoutId = setTimeout(() => controller.abort(), 2000)
-        const response = await fetch('http://localhost:3001/api/health', { 
+        const response = await fetch('https://core-sys-backend.vercel.app/api/health', { 
           signal: controller.signal 
         })
         clearTimeout(timeoutId)
@@ -37,7 +37,7 @@ export function FileUpload({ onFileUploaded }) {
         // Only check MongoDB status once on mount
         if (response.ok) {
           try {
-            const modeRes = await fetch('http://localhost:3001/api/storage/mode')
+            const modeRes = await fetch('https://core-sys-backend.vercel.app/api/storage/mode')
             if (modeRes.ok) {
               const modeData = await modeRes.json()
               // Only set if not already set or if MongoDB just connected
@@ -98,7 +98,7 @@ export function FileUpload({ onFileUploaded }) {
       if (isServerConnected) {
         // Real server upload
         const response = await fetch(
-          'http://localhost:3001/api/files/upload',
+          'https://core-sys-backend.vercel.app/api/files/upload',
           {
             method: 'POST',
             headers: {
@@ -253,7 +253,7 @@ export function FileUpload({ onFileUploaded }) {
               onClick={() => {
                 setStorageType('tmp');
                 // Also update server storage mode
-                fetch('http://localhost:3001/api/storage/mode', {
+                fetch('https://core-sys-backend.vercel.app/api/storage/mode', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ mode: 'tmp' })
@@ -273,7 +273,7 @@ export function FileUpload({ onFileUploaded }) {
               onClick={() => {
                 setStorageType('mongodb');
                 // Also update server storage mode
-                fetch('http://localhost:3001/api/storage/mode', {
+                fetch('https://core-sys-backend.vercel.app/api/storage/mode', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ mode: 'mongodb' })

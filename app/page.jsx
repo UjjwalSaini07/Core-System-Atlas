@@ -29,7 +29,7 @@ export default function Page() {
   /* ---------------- Data Fetching ---------------- */
   const fetchFiles = useCallback(async (storageType = 'tmp') => {
     try {
-      const res = await fetch(`http://localhost:3001/api/files?storageType=${storageType}`);
+      const res = await fetch(`https://core-sys-backend.vercel.app/api/files?storageType=${storageType}`);
       const json = await res.json();
       if (json.success) setFiles(json.files);
     } catch {
@@ -39,7 +39,7 @@ export default function Page() {
 
   const fetchStats = useCallback(async () => {
     try {
-      const res = await fetch('http://localhost:3001/api/stats');
+      const res = await fetch('https://core-sys-backend.vercel.app/api/stats');
       const json = await res.json();
       if (json.success) {
         setStats(json);
@@ -55,10 +55,10 @@ export default function Page() {
     const init = async () => {
       setLoading(true);
       try {
-        const res = await fetch('http://localhost:3001/api/health');
+        const res = await fetch('https://core-sys-backend.vercel.app/api/health');
         if (res.ok) {
           // First get the current storage mode
-          const modeRes = await fetch('http://localhost:3001/api/storage/mode');
+          const modeRes = await fetch('https://core-sys-backend.vercel.app/api/storage/mode');
           if (modeRes.ok) {
             const modeData = await modeRes.json();
             const mode = modeData.mode || 'tmp';
@@ -113,7 +113,7 @@ export default function Page() {
         label: 'Delete',
         onClick: async () => {
           try {
-            await fetch(`http://localhost:3001/api/files/${fileId}`, {
+            await fetch(`https://core-sys-backend.vercel.app/api/files/${fileId}`, {
               method: 'DELETE',
             });
           } catch {}
