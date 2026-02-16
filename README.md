@@ -74,7 +74,7 @@ Core System Atlas is an educational and demonstrative full-stack application tha
 - Error rate tracking and alerts
 
 ## Demo 🖥️
-You can visit the live site here - NOT DEPLOYED YET
+You can visit the live site here - [Live Site: Core System Atlas](https://core-system-atlas.vercel.app/)
 
 ## Tech Stack
 
@@ -98,6 +98,8 @@ You can visit the live site here - NOT DEPLOYED YET
 
 
 ## Project Structure
+
+I will Update this structure to the new one...!!!
 
 ```
 Core-System-Atlas/
