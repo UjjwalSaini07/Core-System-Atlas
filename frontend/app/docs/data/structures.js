@@ -957,6 +957,7 @@ export const DISTRIBUTED_PATTERNS = {
     useCases: ['API protection', 'DDOS prevention', 'Fair sharing between clients'],
     configuration: { capacity: 100, refillRate: 10, windowSize: 60 },
     codeId: 'ratelimiter',
+    visualization: { type: 'ratelimiter' },
     animationSteps: [
       { description: 'Token bucket with capacity 10', highlight: ['bucket'], showTokens: true },
       { description: 'Tokens refill at rate 1/second', highlight: ['bucket'], action: 'refill' },
@@ -979,6 +980,7 @@ export const DISTRIBUTED_PATTERNS = {
     thresholds: { failureCount: 5, timeout: 30000, successThreshold: 3 },
     useCases: ['Microservices', 'External API calls', 'Database connections', 'Third-party services'],
     codeId: 'circuitbreaker',
+    visualization: { type: 'circuitbreaker' },
     animationSteps: [
       { description: 'CLOSED: Normal operation, count=0', highlight: ['closed'], showState: true },
       { description: 'Request fails, increment failure count', highlight: ['counter'], action: 'fail' },
@@ -1003,6 +1005,7 @@ export const DISTRIBUTED_PATTERNS = {
     challenges: ['Clock skew', 'Network partitions', 'Lock lifetime management'],
     useCases: ['Leader election', 'Resource serialization', 'Exclusive access control', 'Atomic operations'],
     codeId: 'distributedlock',
+    visualization: { type: 'distributedlock' },
     animationSteps: [
       { description: 'Server A acquires lock (SET NX)', highlight: ['A'], action: 'acquire' },
       { description: 'Server B tries lock, fails (already held)', highlight: ['B'], action: 'try' },
@@ -1028,6 +1031,7 @@ export const DISTRIBUTED_PATTERNS = {
     healthChecks: ['TCP handshake', 'HTTP endpoint', 'Custom check interval'],
     useCases: ['High availability', 'Horizontal scaling', 'Fault tolerance', 'Zero-downtime deployments'],
     codeId: 'loadbalancer',
+    visualization: { type: 'loadbalancer' },
     animationSteps: [
       { description: 'Request 1: Round robin to Server 1', highlight: ['lb', 's1'], action: 'route' },
       { description: 'Request 2: Round robin to Server 2', highlight: ['lb', 's2'], action: 'route' },
@@ -1051,6 +1055,7 @@ export const DISTRIBUTED_PATTERNS = {
     considerations: ['Hot keys', 'Uneven distribution', 'Shard failure handling', 'Rebalancing cost'],
     useCases: ['Distributed cache clusters', 'Session storage', 'API response cache', 'Database query cache'],
     codeId: 'cachingsharding',
+    visualization: { type: 'cachingsharding' },
     animationSteps: [
       { description: 'Key "user:12345" hashes to shard 2', highlight: ['all'], action: 'hash' },
       { description: 'Consistent hash ring placement', highlight: ['ring'], showRing: true },
@@ -1074,6 +1079,7 @@ export const DISTRIBUTED_PATTERNS = {
     guarantees: ['At-least-once delivery', 'At-most-once delivery', 'Exactly-once semantics'],
     useCases: ['Async processing', 'Event sourcing', 'Service decoupling', 'Buffering/Load leveling'],
     codeId: 'messagedqueue',
+    visualization: { type: 'messagedqueue' },
     animationSteps: [
       { description: 'Producer publishes message to queue', highlight: ['producer'], action: 'publish' },
       { description: 'Message stored in durable queue', highlight: ['queue'], showMessage: true },

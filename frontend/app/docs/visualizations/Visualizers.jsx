@@ -11,6 +11,9 @@ import { Slider } from '@/components/ui/slider';
 // Import Sorting Visualizer
 import SortingVisualizerController from './SortingVisualizer';
 
+// Import Distributed Pattern Visualizer
+import DistributedVisualizerController from './DistributedVisualizer';
+
 // ==================== ARRAY VISUALIZER ====================
 export function ArrayVisualizer({ data, step, isPlaying, speed = 1000 }) {
   const { values, indices = true } = data;
@@ -894,6 +897,13 @@ export default function VisualizerController({ type, data, autoPlay = false }) {
       case 'quicksort':
       case 'heapsort':
         return <SortingVisualizerController type={type} data={data} step={currentStep} isPlaying={isPlaying} />;
+      case 'ratelimiter':
+      case 'circuitbreaker':
+      case 'distributedlock':
+      case 'loadbalancer':
+      case 'cachingsharding':
+      case 'messagedqueue':
+        return <DistributedVisualizerController type={type} data={data} step={currentStep} isPlaying={isPlaying} />;
       default:
         return <ArrayVisualizer data={data} step={currentStep} isPlaying={isPlaying} />;
     }
