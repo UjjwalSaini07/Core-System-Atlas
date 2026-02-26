@@ -503,7 +503,10 @@ function ItemDetail({
             {item.visualization && (
               <VisualizerController
                 type={item.visualization.type}
-                data={item.visualization}
+                data={{
+                  ...item.visualization,
+                  animationSteps: item.animationSteps
+                }}
                 autoPlay={isPlaying}
               />
             )}

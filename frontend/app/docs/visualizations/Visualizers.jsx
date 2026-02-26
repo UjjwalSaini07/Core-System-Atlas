@@ -8,6 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Slider } from '@/components/ui/slider';
 
+// Import Sorting Visualizer
+import SortingVisualizerController from './SortingVisualizer';
+
 // ==================== ARRAY VISUALIZER ====================
 export function ArrayVisualizer({ data, step, isPlaying, speed = 1000 }) {
   const { values, indices = true } = data;
@@ -883,8 +886,16 @@ export default function VisualizerController({ type, data, autoPlay = false }) {
         return <TrieVisualizer data={data} step={currentStep} isPlaying={isPlaying} />;
       case 'unionfind':
         return <UnionFindVisualizer data={data} step={currentStep} isPlaying={isPlaying} />;
+      case 'sorting':
+      case 'bubblesort':
+      case 'selectionsort':
+      case 'insertionsort':
+      case 'mergesort':
+      case 'quicksort':
+      case 'heapsort':
+        return <SortingVisualizerController type={type} data={data} step={currentStep} isPlaying={isPlaying} />;
       default:
-        return <div className="text-slate-400 p-6">Visualization for {type}</div>;
+        return <ArrayVisualizer data={data} step={currentStep} isPlaying={isPlaying} />;
     }
   };
   
