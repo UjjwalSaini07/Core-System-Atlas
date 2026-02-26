@@ -128,7 +128,7 @@ export default function DocsPage() {
                         <Icon className="w-4 h-4" />
                         {cat.name}
                       </div>
-                      <Badge variant="secondary" className={`text-xs ${activeCategory === cat.id ? 'bg-teal-500 text-white' : 'bg-slate-100'}`}>
+                      <Badge variant="secondary" className={`text-xs ${activeCategory === cat.id ? 'bg-teal-500 text-white' : 'bg-gray-500'}`}>
                         {cat.count}
                       </Badge>
                     </button>
@@ -680,7 +680,7 @@ function ComplexityCheatSheet() {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {c.examples.map((ex, i) => (
-                    <Badge key={i} variant="secondary" className="text-xs bg-white">{ex}</Badge>
+                    <Badge key={i} variant="secondary" className="text-xs bg-teal-500">{ex}</Badge>
                   ))}
                 </div>
               </div>
